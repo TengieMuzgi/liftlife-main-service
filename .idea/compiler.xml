@@ -7,16 +7,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="liftlife" />
+        <module name="liftlife-backend" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="liftlife" target="17" />
+      <module name="liftlife-backend" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="liftlife" options="-parameters" />
+      <module name="liftlife-backend" options="-parameters" />
     </option>
   </component>
 </project>
