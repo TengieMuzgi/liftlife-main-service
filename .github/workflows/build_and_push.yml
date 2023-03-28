@@ -43,6 +43,7 @@ jobs:
           key="${{ secrets.DB_KEY }}"
           sed -i 's/"var1"/"$key_id"/g' $json_file
           sed -i 's/"var1"/"$key"/g' $json_file
+          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
         shell: bash
 
       - name: Build Maven Image
