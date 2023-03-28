@@ -37,6 +37,7 @@ jobs:
           
       - name: Replace database connection keys
         run: |
+          ls
           cd /src/main/resources
           json_file="liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json"
           key_id=${{ secrets.DB_KEY_ID }}
