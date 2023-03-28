@@ -1,10 +1,9 @@
 name: Build and Publish
 
 on:
-  pull_request:
-    branches: ["main"]
-    types:
-      - closed
+  push:
+    branches: ["add_step_to_workflow"]
+    
 #on:
 #  push:
 #    branches: ["main"]
@@ -13,7 +12,6 @@ on:
 
 jobs:
   if_merged_build-and-push-docker-image:
-    if: github.event.pull_request.merged == true
     name: Build Docker image and push to repositories
     runs-on: ubuntu-latest
 
@@ -36,6 +34,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          
+      - name: Replace database connection keys
+        run: |
+          cd \src\main\resources
+          json_file="liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json"
+          sed -i "s/'var1'/${{ DB_KEY_ID }}/g" $json_file
+          sed -i "s/'var1'/${{ DB_KEY }}/g" $json_file
+        shell: bash
 
       - name: Build Maven Image
         run: mvn clean package
