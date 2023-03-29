@@ -1,3 +1,6 @@
+#Database access
+/src/main/resources/original.json
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar

@@ -9,13 +9,14 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Repository
 public class DB {
     private final DatabaseReference ref;
 
     public DB() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream("liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
+        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("/liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
