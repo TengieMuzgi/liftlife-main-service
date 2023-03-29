@@ -34,26 +34,28 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Setup database connection
-        uses: flcdrg/replace-multiple-action@v1
-        with:
-          files: '*-firebase-adminsdk-*.json'
-          find: '[{ "find": "variable_private_key_id", "replace": "${{ secrets.DB_KEY_ID }}" }, { "find": "variable_private_key", "replace": "${{ secrets.DB_KEY }}" }]'
-
-#      - name: Find and Replace key id
-#        uses: jacobtomlinson/gha-find-replace@v3
-#        with:
-#          find: "variable_private_key_id"
-#          replace: "${{ secrets.DB_KEY_ID }}"
-#          regex: false
 #
-#      - name: Find and Replace key
-#        uses: jacobtomlinson/gha-find-replace@v3
+#      - name: Setup database connection
+#        uses: flcdrg/replace-multiple-action@v1
 #        with:
-#          find: "variable_private_key"
-#          replace: "${{ secrets.DB_KEY }}"
-#          regex: false
+#          files: '*-firebase-adminsdk-*.json'
+#          find: '[{ "find": "variable_private_key_id", "replace": "${{ secrets.DB_KEY_ID }}" }, { "find": "variable_private_key", "replace": "${{ secrets.DB_KEY }}" }]'
+
+      - name: Find and Replace key id
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "variable_private_key_id"
+          replace: "${{ secrets.DB_KEY_ID }}"
+          include: "**-firebase-adminsdk-**.json"
+          regex: false
+
+      - name: Find and Replace key
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "variable_private_key"
+          replace: "${{ secrets.DB_KEY }}"
+          include: "*-firebase-adminsdk-*.json"
+          regex: false
 
       - name: Print acces json file
         run: |
