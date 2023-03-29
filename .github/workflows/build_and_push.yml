@@ -34,12 +34,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-#
-#      - name: Setup database connection
-#        uses: flcdrg/replace-multiple-action@v1
-#        with:
-#          files: '*-firebase-adminsdk-*.json'
-#          find: '[{ "find": "variable_private_key_id", "replace": "${{ secrets.DB_KEY_ID }}" }, { "find": "variable_private_key", "replace": "${{ secrets.DB_KEY }}" }]'
 
       - name: Find and Replace key id
         uses: jacobtomlinson/gha-find-replace@v3
@@ -59,18 +53,7 @@ jobs:
 
       - name: Print acces json file
         run: |
-          cd src/main/resources
           cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
-#      - name: Replace database connection keys
-#        run: |
-#          cd src/main/resources
-#          json_file="liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json"
-#          key_id="${{ secrets.DB_KEY_ID }}"
-#          key="${{ secrets.DB_KEY }}"
-#          sed -i "s/var1/$key_id/g" $json_file
-#          sed -i "s/var1/$key/g" $json_file
-#          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
-#        shell: bash
 
       - name: Build Maven Image
         run: mvn clean package
