@@ -35,13 +35,24 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Find and Replace
+      - name: Find and Replace key id
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: "var1"
           replace: "${{ secrets.DB_KEY_ID }}"
           regex: false
 
+      - name: Find and Replace key
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "var2"
+          replace: "${{ secrets.DB_KEY }}"
+          regex: false
+
+      - name: Print acces json file
+        run: |
+          cd src/main/resources
+          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
 #      - name: Replace database connection keys
 #        run: |
 #          cd src/main/resources
