@@ -51,10 +51,6 @@ jobs:
           include: "*-firebase-adminsdk-*.json"
           regex: false
 
-      - name: Print acces json file
-        run: |
-          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
-
       - name: Build Maven Image
         run: mvn clean package
 
