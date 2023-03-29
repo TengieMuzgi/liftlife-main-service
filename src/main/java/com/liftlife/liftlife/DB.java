@@ -7,6 +7,7 @@ import com.google.firebase.database.*;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @Repository
@@ -14,6 +15,7 @@ public class DB {
     private final DatabaseReference ref;
 
     public DB() throws IOException {
+        FileInputStream refreshToken = new FileInputStream("src/main/resources/liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault())
