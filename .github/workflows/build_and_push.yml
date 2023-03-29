@@ -34,17 +34,24 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          
-      - name: Replace database connection keys
-        run: |
-          cd src/main/resources
-          json_file="liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json"
-          key_id="${{ secrets.DB_KEY_ID }}"
-          key="${{ secrets.DB_KEY }}"
-          sed -i "s/var1/$key_id/g" $json_file
-          sed -i "s/var1/$key/g" $json_file
-          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
-        shell: bash
+
+      - naame: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "var1"
+          replace: "${{ secrets.DB_KEY_ID }}"
+          regex: false
+
+#      - name: Replace database connection keys
+#        run: |
+#          cd src/main/resources
+#          json_file="liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json"
+#          key_id="${{ secrets.DB_KEY_ID }}"
+#          key="${{ secrets.DB_KEY }}"
+#          sed -i "s/var1/$key_id/g" $json_file
+#          sed -i "s/var1/$key/g" $json_file
+#          cat liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json
+#        shell: bash
 
       - name: Build Maven Image
         run: mvn clean package
