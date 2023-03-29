@@ -18,7 +18,7 @@ public class DB {
         FileInputStream refreshToken = new FileInputStream("src/main/resources/liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.getApplicationDefault())
+                .setCredentials(GoogleCredentials.fromStream(refreshToken))
                 .setDatabaseUrl("https://liftlife-b89d1-default-rtdb.europe-west1.firebasedatabase.app")
                 .build();
 
