@@ -1,6 +1,6 @@
 #Database access
-/src/main/resources/original.json
-original.json
+/src/main/resources/local_database_connection.json
+local_database_connection.json
 
 HELP.md
 target/
