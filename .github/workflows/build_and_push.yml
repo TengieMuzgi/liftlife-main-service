@@ -35,7 +35,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - naame: Find and Replace
+      - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: "var1"
