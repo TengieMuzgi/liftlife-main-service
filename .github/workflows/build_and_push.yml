@@ -1,14 +1,10 @@
 name: Build and Publish
 
 on:
-  push:
-    branches: ["add_step_to_workflow"]
-    
-#on:
-#  push:
-#    branches: ["main"]
-#  pull_request:
-#    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+    types:
+      - closed
 
 jobs:
   if_merged_build-and-push-docker-image:
