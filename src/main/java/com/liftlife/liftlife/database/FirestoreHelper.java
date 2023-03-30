@@ -9,10 +9,11 @@ import java.util.concurrent.ExecutionException;
 
 public class FirestoreHelper {
 
-    private DatabaseReference databaseReference;
+    private DocumentReference databaseReference;
 
     public FirestoreHelper(FirestoreConnector firestoreConnector) {
-        this.databaseReference = FirestoreConnector.getInstance().getRef();
+        this.databaseReference = firestoreConnector.getDatabase().collection("users").document("alovelace");
+
     }
 
     public <T> void saveToFirestore(String collectionName, T toSave) throws ExecutionException, InterruptedException {

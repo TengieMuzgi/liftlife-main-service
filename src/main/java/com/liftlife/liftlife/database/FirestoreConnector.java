@@ -1,8 +1,10 @@
 package com.liftlife.liftlife.database;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.slf4j.Logger;
@@ -16,7 +18,9 @@ import java.io.InputStream;
 public class FirestoreConnector {
     private static Logger log = LoggerFactory.getLogger(FirestoreConnector.class);
     private static FirestoreConnector firestoreConnectorInstance;
-    private DatabaseReference ref;
+
+    private final Firestore database;
+
 
     public FirestoreConnector() throws IOException {
 //        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("/liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
@@ -27,10 +31,10 @@ public class FirestoreConnector {
                 .setDatabaseUrl("https://liftlife-b89d1-default-rtdb.europe-west1.firebasedatabase.app")
                 .build();
 
-        FirebaseApp.initializeApp(options);
+            FirebaseApp.initializeApp(options);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        ref = database.getReference("test");
+         database = FirestoreClient.getFirestore();
+
     }
 
     public static synchronized FirestoreConnector getInstance() {
@@ -46,7 +50,7 @@ public class FirestoreConnector {
         return firestoreConnectorInstance;
     }
 
-    public DatabaseReference getRef() {
-        return ref;
+    public Firestore getDatabase() {
+        return database;
     }
 }
