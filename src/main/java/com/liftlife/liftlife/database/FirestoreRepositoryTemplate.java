@@ -6,6 +6,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@DependsOn("firestoreConnector")
 @Slf4j
 public class FirestoreRepositoryTemplate {
 
