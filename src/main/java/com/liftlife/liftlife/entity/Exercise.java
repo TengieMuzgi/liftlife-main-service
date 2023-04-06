@@ -1,9 +1,6 @@
 package com.liftlife.liftlife.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /*
 Temporary exercise class, that resembles
@@ -13,7 +10,8 @@ collection from firestore
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Exercise {
+@ToString
+public class Exercise extends FirestoreEntity{
     private String bodyPart;
     private String description;
     private int duration;
