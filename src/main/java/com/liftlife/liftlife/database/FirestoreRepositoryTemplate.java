@@ -44,7 +44,6 @@ public class FirestoreRepositoryTemplate {
         return firestoreMapper.mapToObject(document, tClass);
     }
 
-    //TODO findManyTemplate
     public <T extends FirestoreEntity, Q> List<T> findByField(String fieldName, Q fieldValue, Class<T> tClass) throws ExecutionException, InterruptedException {
         ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
         List<T> list = new ArrayList<>();

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/exercise")
 public class ExerciseController {
     private final ExerciseRepository repository;
 
