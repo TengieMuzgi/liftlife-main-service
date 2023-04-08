@@ -1,7 +1,5 @@
-package com.liftlife.liftlife.controller;
+package com.liftlife.liftlife.exercise;
 
-import com.liftlife.liftlife.database.ExerciseRepository;
-import com.liftlife.liftlife.entity.Exercise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +9,11 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
-public class Controller {
+public class ExerciseController {
     private final ExerciseRepository repository;
 
     @Autowired
-    public Controller(ExerciseRepository repository) {
+    public ExerciseController(ExerciseRepository repository) {
         this.repository = repository;
     }
 
@@ -23,5 +21,10 @@ public class Controller {
     public void saveExampleString() throws ExecutionException, InterruptedException {
         Exercise exercise = new Exercise("chest", "test", 10, "chest-exercise", false);
         repository.insertExercise(exercise);
+    }
+
+    @GetMapping("/findExample")
+    public Exercise getExample() throws ExecutionException, InterruptedException {
+        return repository.findExerciseByDocumentId("2W2m1IR0boK6QYQ882sU");
     }
 }

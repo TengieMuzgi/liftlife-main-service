@@ -7,11 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="liftlife-backend" />
+        <module name="liftlife" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="liftlife" target="17" />
       <module name="liftlife-backend" target="17" />
     </bytecodeTargetLevel>
   </component>

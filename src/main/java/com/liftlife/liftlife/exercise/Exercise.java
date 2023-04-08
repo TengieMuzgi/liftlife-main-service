@@ -1,5 +1,6 @@
-package com.liftlife.liftlife.entity;
+package com.liftlife.liftlife.exercise;
 
+import com.liftlife.liftlife.database.FirestoreEntity;
 import lombok.*;
 
 /*
@@ -11,7 +12,7 @@ collection from firestore
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Exercise extends FirestoreEntity{
+public class Exercise extends FirestoreEntity {
     private String bodyPart;
     private String description;
     private int duration;
