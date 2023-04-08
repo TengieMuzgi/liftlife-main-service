@@ -16,7 +16,7 @@ public class DB {
     private final DatabaseReference ref;
 
     public DB() throws IOException {
-        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("/liftlife-b89d1-firebase-adminsdk-1v4ox-c62b51cb58.json");
+        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
