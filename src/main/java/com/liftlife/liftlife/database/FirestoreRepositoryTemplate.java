@@ -4,17 +4,16 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/*
+
+ */
 @Slf4j
 public class FirestoreRepositoryTemplate {
 
@@ -28,11 +27,14 @@ public class FirestoreRepositoryTemplate {
     }
 
     public <T extends FirestoreEntity> String insertTemplate(T toSave) throws ExecutionException, InterruptedException {
-        ApiFuture<DocumentReference> inserted = collectionReference.add(toSave);
+        Map<String, Object> json = firestoreMapper.objectToMap(toSave);
+        ApiFuture<DocumentReference> inserted = collectionReference.add(json);
         String insertedId = inserted.get().getId();
         log.info("Result while saving to db: " + insertedId);
         return insertedId;
     }
+
+    //TODO insertManyTemplate
 
     public <T extends FirestoreEntity> T findOneByIdTemplate(String documentId, Class<T> tClass)
             throws ExecutionException, InterruptedException {
@@ -45,9 +47,18 @@ public class FirestoreRepositoryTemplate {
 
     //TODO findManyTemplate
 
-    public <T extends FirestoreEntity> T updateTemplate(T toChange) throws ExecutionException, InterruptedException {
+    public <T extends FirestoreEntity> WriteResult updateTemplate(T toChange) throws ExecutionException, InterruptedException {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
+        Map<String, Object> json = firestoreMapper.objectToMap(toChange);
+        ApiFuture<WriteResult> result = documentReference.update(json);
+        return result.get();
+    }
 
-        return null;
+    public <T extends FirestoreEntity> void deleteTemplate(String documentId) {
+        collectionReference.document(documentId).delete();
+    }
+
+    public <T extends FirestoreEntity> void deleteTemplate(T objectToDelete) {
+        collectionReference.document(objectToDelete.getDocumentId()).delete();
     }
 }
