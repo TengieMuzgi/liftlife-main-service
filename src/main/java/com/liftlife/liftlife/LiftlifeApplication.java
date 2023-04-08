@@ -10,11 +10,6 @@ public class LiftlifeApplication {
 		SpringApplication.run(LiftlifeApplication.class, args);
 	}
 
-
-	//test for presentation
-	
-	
-	
 	
 	
 }
