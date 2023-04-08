@@ -4,8 +4,10 @@ import com.liftlife.liftlife.database.FirestoreEntity;
 import com.liftlife.liftlife.exercise.Exercise;
 import com.liftlife.liftlife.exercise.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +39,11 @@ public class TrainingController{
     @GetMapping("/findTemplate")
     public List<Training> getByTemplate(@RequestParam("template") boolean template) throws ExecutionException, InterruptedException {
         return repository.findTrainingByTemplate(template);
+    }
+
+    @GetMapping("/findDate")
+    public List<Training> getByDate(@RequestParam("date") String date) throws ExecutionException, InterruptedException {
+        return repository.findTrainingByDate(date);
     }
 
 }

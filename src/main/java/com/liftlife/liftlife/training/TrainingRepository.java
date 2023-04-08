@@ -39,7 +39,7 @@ public class TrainingRepository extends FirestoreRepositoryTemplate {
         return super.findOneByIdTemplate(trainingId, Training.class);
     }
 
-    public List<Training> findTrainingByDate(LocalDate date) throws ExecutionException, InterruptedException {
+    public List<Training> findTrainingByDate(String date) throws ExecutionException, InterruptedException {
         return super.findByField("date",date, Training.class);
     }
 

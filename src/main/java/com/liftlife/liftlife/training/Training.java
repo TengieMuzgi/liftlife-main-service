@@ -5,6 +5,7 @@ import com.liftlife.liftlife.database.FirestoreEntity;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,4 +23,12 @@ public class Training extends FirestoreEntity {
     private String name;
     private boolean isTemplate;
     private String trainerId;
+
+    public LocalDate getDate(){
+        try{
+            return LocalDate.parse(date);
+        }catch (DateTimeParseException e){
+            return null;
+        }
+    }
 }
