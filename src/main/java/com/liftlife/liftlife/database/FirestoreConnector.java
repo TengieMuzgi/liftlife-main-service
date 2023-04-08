@@ -19,7 +19,7 @@ public class FirestoreConnector {
         InputStream serviceAccount =
                 new FileInputStream("src/main/resources/local_database_connection.json");
 //        InputStream serviceAccount = getClass().getClassLoader()
-//                .getResourceAsStream("/local_database_connection.json");
+//                .getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(credentials)
