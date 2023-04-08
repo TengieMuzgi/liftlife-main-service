@@ -16,7 +16,7 @@ public class FirestoreConnector {
 //        InputStream serviceAccount = getClass()
 //                .getResourceAsStream("/local_database_connection.json");
         InputStream serviceAccount = getClass()
-                .getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
+                .getResourceAsStream("/local_database_connection.json");
 
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         FirebaseOptions options = new FirebaseOptions.Builder()

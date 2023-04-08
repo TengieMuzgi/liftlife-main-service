@@ -15,15 +15,13 @@ public class ExerciseController {
         this.repository = repository;
     }
 
-    @PutMapping("/saveExample")
+    @PostMapping("/saveExample")
     public String saveExampleString(@RequestBody Exercise newExercise) throws ExecutionException, InterruptedException {
-        Exercise exercise = new Exercise("chest", "test", 10, "chest-exercise", false);
-        exercise.setDocumentId("i shouldn't be seen");
-        return repository.insertExercise(exercise);
+        return repository.insertExercise(newExercise);
     }
 
     @GetMapping("/findExample")
-    public Exercise getExample(@PathVariable String documentId) throws ExecutionException, InterruptedException {
+    public Exercise getExample(@RequestParam("id") String documentId) throws ExecutionException, InterruptedException {
         return repository.findExerciseByDocumentId("2W2m1IR0boK6QYQ882sU");
     }
 }
