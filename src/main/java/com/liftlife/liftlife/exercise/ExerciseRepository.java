@@ -6,6 +6,7 @@ import com.liftlife.liftlife.exercise.Exercise;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Repository
@@ -21,5 +22,9 @@ public class ExerciseRepository extends FirestoreRepositoryTemplate {
 
     public Exercise findExerciseByDocumentId(String documentId) throws ExecutionException, InterruptedException {
         return super.findOneByIdTemplate(documentId, Exercise.class);
+    }
+
+    public List<Exercise> findExerciseByBodyPart(String bodyPart) throws ExecutionException, InterruptedException {
+        return super.findByField("bodyPart",bodyPart, Exercise.class);
     }
 }

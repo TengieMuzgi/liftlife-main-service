@@ -1,13 +1,12 @@
 package com.liftlife.liftlife.database;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -46,6 +45,15 @@ public class FirestoreRepositoryTemplate {
     }
 
     //TODO findManyTemplate
+    public <T extends FirestoreEntity, Q> List<T> findByField(String fieldName, Q fieldValue, Class<T> tClass) throws ExecutionException, InterruptedException {
+        ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
+        List<T> list = new ArrayList<>();
+        for(DocumentSnapshot documentSnapshot : future.get()){
+            list.add(firestoreMapper.mapToObject(documentSnapshot,tClass));
+        }
+
+        return list;
+    }
 
     public <T extends FirestoreEntity> WriteResult updateTemplate(T toChange) throws ExecutionException, InterruptedException {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
