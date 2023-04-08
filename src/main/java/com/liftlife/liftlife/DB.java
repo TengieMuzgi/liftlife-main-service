@@ -15,6 +15,7 @@ import java.io.InputStream;
 public class DB {
     private final DatabaseReference ref;
 
+    
     public DB() throws IOException {
         InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
 
