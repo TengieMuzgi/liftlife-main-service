@@ -48,7 +48,7 @@ public class TrainingRepository extends FirestoreRepositoryTemplate {
     }
 
     public List<Training> findTrainingByTemplate(boolean template) throws ExecutionException, InterruptedException {
-        return super.findByField("template",template, Training.class);
+        return super.findByField("isTemplate",template, Training.class);
     }
 
     public List<Training> findTrainingByTrainer(String trainerId) throws ExecutionException, InterruptedException {

@@ -25,6 +25,15 @@ public class FirestoreRepositoryTemplate {
         this.firestoreMapper = firestoreMapper;
     }
 
+    public FirestoreRepositoryTemplate(CollectionReference collectionReference, FirestoreMapper firestoreMapper){
+        this.collectionReference = collectionReference;
+        this.firestoreMapper = firestoreMapper;
+    }
+
+    public FirestoreMapper getFirestoreMapper(){
+        return this.firestoreMapper;
+    }
+
     public <T extends FirestoreEntity> String insertTemplate(T toSave) throws ExecutionException, InterruptedException {
         Map<String, Object> json = firestoreMapper.objectToMap(toSave);
         ApiFuture<DocumentReference> inserted = collectionReference.add(json);
