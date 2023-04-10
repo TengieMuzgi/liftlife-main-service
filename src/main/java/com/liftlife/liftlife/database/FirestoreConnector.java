@@ -13,8 +13,6 @@ import java.io.InputStream;
 public class FirestoreConnector {
 
     public FirestoreConnector() throws IOException {
-//        InputStream serviceAccount = getClass()
-//                .getResourceAsStream("/local_database_connection.json");
         InputStream serviceAccount = getClass()
                 .getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
 
