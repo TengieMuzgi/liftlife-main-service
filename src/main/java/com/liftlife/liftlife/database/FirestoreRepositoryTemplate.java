@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +16,14 @@ import java.util.concurrent.ExecutionException;
  */
 @Slf4j
 public class FirestoreRepositoryTemplate {
-
     private final CollectionReference collectionReference;
-    private final FirestoreMapper firestoreMapper;
 
-    public FirestoreRepositoryTemplate(String collectionName, FirestoreMapper firestoreMapper) {
+    @Autowired
+    private FirestoreMapper firestoreMapper;
+
+    public FirestoreRepositoryTemplate(String collectionName) {
         this.collectionReference = FirestoreClient.getFirestore()
                 .collection(collectionName);
-        this.firestoreMapper = firestoreMapper;
     }
 
     public FirestoreRepositoryTemplate(CollectionReference collectionReference, FirestoreMapper firestoreMapper){
