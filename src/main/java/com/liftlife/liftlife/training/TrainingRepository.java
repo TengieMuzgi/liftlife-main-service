@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 @Repository
 @DependsOn("firestoreConnector")
 public class TrainingRepository extends FirestoreRepositoryTemplate<Training> {
-    public TrainingRepository(FirestoreMapper firestoreMapper) {
+    public TrainingRepository() {
         super(Training.class);
     }
 
