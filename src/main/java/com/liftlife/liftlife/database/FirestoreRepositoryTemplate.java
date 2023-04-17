@@ -15,15 +15,16 @@ import java.util.concurrent.ExecutionException;
 
  */
 @Slf4j
-public class FirestoreRepositoryTemplate {
+public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     private final CollectionReference collectionReference;
-
     @Autowired
     private FirestoreMapper firestoreMapper;
+    private Class<T> classType;
 
-    public FirestoreRepositoryTemplate(String collectionName) {
+    public FirestoreRepositoryTemplate(Class<T> classType) {
+        this.classType = classType;
         this.collectionReference = FirestoreClient.getFirestore()
-                .collection(collectionName);
+                .collection(classType.getSimpleName().toLowerCase());
     }
 
     public FirestoreRepositoryTemplate(CollectionReference collectionReference, FirestoreMapper firestoreMapper){
@@ -35,7 +36,7 @@ public class FirestoreRepositoryTemplate {
         return this.firestoreMapper;
     }
 
-    public <T extends FirestoreEntity> String insertTemplate(T toSave) throws ExecutionException, InterruptedException {
+    public String insert(T toSave) throws ExecutionException, InterruptedException {
         Map<String, Object> json = firestoreMapper.objectToMap(toSave);
         ApiFuture<DocumentReference> inserted = collectionReference.add(json);
         String insertedId = inserted.get().getId();
@@ -43,39 +44,39 @@ public class FirestoreRepositoryTemplate {
         return insertedId;
     }
 
-    //TODO insertManyTemplate
-
-    public <T extends FirestoreEntity> T findOneByIdTemplate(String documentId, Class<T> tClass)
+    public T findById(String documentId)
             throws ExecutionException, InterruptedException {
         DocumentReference documentReference = collectionReference.document(documentId);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
         log.info("Result while saving to db: " + document);
-        return firestoreMapper.mapToObject(document, tClass);
+        return firestoreMapper.mapToObject(document, classType);
     }
 
-    public <T extends FirestoreEntity, Q> List<T> findByField(String fieldName, Q fieldValue, Class<T> tClass) throws ExecutionException, InterruptedException {
+    //TODO - handle ExecutionException, InterruptedException in here
+
+    public <Q> List<T> findByField(String fieldName, Q fieldValue) throws ExecutionException, InterruptedException {
         ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
         List<T> list = new ArrayList<>();
         for(DocumentSnapshot documentSnapshot : future.get()){
-            list.add(firestoreMapper.mapToObject(documentSnapshot,tClass));
+            list.add(firestoreMapper.mapToObject(documentSnapshot, classType));
         }
 
         return list;
     }
 
-    public <T extends FirestoreEntity> WriteResult updateTemplate(T toChange) throws ExecutionException, InterruptedException {
+    public WriteResult update(T toChange) throws ExecutionException, InterruptedException {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
         Map<String, Object> json = firestoreMapper.objectToMap(toChange);
         ApiFuture<WriteResult> result = documentReference.update(json);
         return result.get();
     }
 
-    public <T extends FirestoreEntity> void deleteTemplate(String documentId) {
+    public void delete(String documentId) {
         collectionReference.document(documentId).delete();
     }
 
-    public <T extends FirestoreEntity> void deleteTemplate(T objectToDelete) {
+    public void delete(T objectToDelete) {
         collectionReference.document(objectToDelete.getDocumentId()).delete();
     }
 }

@@ -16,14 +16,14 @@ public class ExerciseController {
         this.repository = repository;
     }
 
-    @PostMapping("/saveExample")
+    @PostMapping("/insert")
     public String saveExampleString(@RequestBody Exercise newExercise) throws ExecutionException, InterruptedException {
-        return repository.insertExercise(newExercise);
+        return repository.insert(newExercise);
     }
 
-    @GetMapping("/findExample")
+    @GetMapping("/find")
     public Exercise getExample(@RequestParam("id") String documentId) throws ExecutionException, InterruptedException {
-        return repository.findExerciseByDocumentId("2W2m1IR0boK6QYQ882sU");
+        return repository.findById(documentId);
     }
 
     @GetMapping("/findBodyPart")

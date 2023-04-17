@@ -1,49 +1,49 @@
 package com.liftlife.liftlife.training;
 
-import com.liftlife.liftlife.database.FirestoreEntity;
-import com.liftlife.liftlife.exercise.Exercise;
-import com.liftlife.liftlife.exercise.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/training")
 public class TrainingController{
-    private final TrainingRepository repository;
+    private TrainingService trainingService;
+
+    //TODO - handle ExecutionException, InterruptedException in repo template
 
     @Autowired
-    public TrainingController(TrainingRepository repository) {
-        this.repository = repository;
+    public TrainingController(TrainingService trainingService) {
+        this.trainingService = trainingService;
     }
 
-    @PostMapping("/saveExample")
-    public String saveExampleString(@RequestBody Training newTraining) throws ExecutionException, InterruptedException {
-        return repository.insertTraining(newTraining);
+    @PostMapping("/insert")
+    public ResponseEntity<String> insert(@RequestBody Training training) {
+        return trainingService.insert(training);
     }
 
-    @GetMapping("/findExample")
-    public Training getExample(@RequestParam("id") String documentId) throws ExecutionException, InterruptedException {
-        return repository.findTrainingById(documentId);
+    @GetMapping("/find")
+    public ResponseEntity<Training> findById(@RequestParam("id") String id) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(trainingService.findByID(id));
     }
 
-    @GetMapping("/findTrainer")
-    public List<Training> getByTrainer(@RequestParam("trainer") String trainerId) throws ExecutionException, InterruptedException {
-        return repository.findTrainingByTrainer(trainerId);
+    @GetMapping("/findByTrainer")
+    public ResponseEntity<List<Training>> findByTrainer(@RequestParam("trainer") String trainerId) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(trainingService.findByTrainer(trainerId));
     }
 
-    @GetMapping("/findTemplate")
-    public List<Training> getByTemplate(@RequestParam("template") boolean template) throws ExecutionException, InterruptedException {
-        return repository.findTrainingByTemplate(template);
+    @GetMapping("/findByTemplate")
+    public ResponseEntity<List<Training>> findByTemplate(@RequestParam("template") boolean template) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(trainingService.findByTemplate(template));
     }
 
     @GetMapping("/findDate")
-    public List<Training> getByDate(@RequestParam("date") String date) throws ExecutionException, InterruptedException {
-        return repository.findTrainingByDate(date);
+    public ResponseEntity<List<Training>> findByDate(@RequestParam("date") String date) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(trainingService.findByDate(date));
     }
+
+
 
 }

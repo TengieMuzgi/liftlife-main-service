@@ -1,6 +1,6 @@
 package com.liftlife.liftlife.diet;
 
-import com.liftlife.liftlife.training.TrainingRepository;
+import com.liftlife.liftlife.meal.Meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,20 +14,20 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api/diet")
 public class DietController {
 
-    private final DietRepository repository;
+    private final DietRepository dietRepository;
 
     @Autowired
     public DietController(DietRepository repository) {
-        this.repository = repository;
+        this.dietRepository = repository;
     }
 
     @GetMapping("/getById")
     public Diet getById(@RequestParam("id") String dietId) throws ExecutionException, InterruptedException {
-        return repository.findDietById(dietId);
+        return dietRepository.findById(dietId);
     }
 
     @GetMapping("/meal/getByName")
     public List<Meal> getByName(@RequestParam("dietId") String dietId, @RequestParam("name") String name) throws ExecutionException, InterruptedException {
-        return repository.findMealByName(dietId, name);
+        return dietRepository.findMealByName(dietId, name);
     }
 }
