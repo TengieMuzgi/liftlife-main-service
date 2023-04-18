@@ -5,7 +5,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn({"firestoreConnector", "firestoreMapper"})

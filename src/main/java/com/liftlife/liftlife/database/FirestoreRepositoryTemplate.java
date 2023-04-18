@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 /*
 
@@ -45,7 +46,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
             String insertedId = inserted.get().getId();
             log.info("Saved to db with ID: " + insertedId);
             return insertedId;
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            throw new DbAccessException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new DbAccessException(e);
         }
     }
@@ -58,7 +62,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
             DocumentSnapshot document = future.get();
             log.info("Result while saving to db: " + document);
             return firestoreMapper.mapToObject(document, classType);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            throw new DbAccessException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new DbAccessException(e);
         }
     }
@@ -72,7 +79,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
                 list.add(firestoreMapper.mapToObject(documentSnapshot, classType));
             }
             return list;
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            throw new DbAccessException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new DbAccessException(e);
         }
     }
@@ -83,7 +93,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         ApiFuture<WriteResult> result = documentReference.update(json);
         try{
             return result.get();
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            throw new DbAccessException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new DbAccessException(e);
         }
     }

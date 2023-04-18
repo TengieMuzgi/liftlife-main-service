@@ -1,12 +1,10 @@
 package com.liftlife.liftlife.training;
 
-import com.liftlife.liftlife.database.FirestoreMapper;
 import com.liftlife.liftlife.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn("firestoreConnector")
