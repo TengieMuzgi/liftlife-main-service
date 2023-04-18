@@ -12,5 +12,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public abstract class FirestoreEntity {
     @JsonIgnore
-    private transient String documentId;
+    private String documentId;
 }
