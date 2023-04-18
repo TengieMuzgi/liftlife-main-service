@@ -15,7 +15,7 @@ public class ExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
         super(Exercise.class);
     }
 
-    public List<Exercise> findExerciseByBodyPart(String bodyPart) throws ExecutionException, InterruptedException {
+    public List<Exercise> findExerciseByBodyPart(String bodyPart) {
         return super.findByField("bodyPart", bodyPart);
     }
 }

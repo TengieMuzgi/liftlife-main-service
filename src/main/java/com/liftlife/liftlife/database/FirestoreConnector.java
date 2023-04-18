@@ -12,8 +12,8 @@ import java.io.InputStream;
 public class FirestoreConnector {
 
     public FirestoreConnector() throws IOException {
-        InputStream serviceAccount = getClass()
-                .getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
+        InputStream serviceAccount = getClass().getResourceAsStream("/local_database_connection.json");
+//                .getResourceAsStream("/liftlife-firebase-adminsdk-connection-string.json");
 
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         FirebaseOptions options = new FirebaseOptions.Builder()

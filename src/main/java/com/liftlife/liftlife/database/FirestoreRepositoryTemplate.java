@@ -3,6 +3,7 @@ package com.liftlife.liftlife.database;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.liftlife.liftlife.exception.DbAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,40 +37,55 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         return this.firestoreMapper;
     }
 
-    public String insert(T toSave) throws ExecutionException, InterruptedException {
+    public String insert(T toSave) {
         Map<String, Object> json = firestoreMapper.objectToMap(toSave);
         ApiFuture<DocumentReference> inserted = collectionReference.add(json);
-        String insertedId = inserted.get().getId();
-        log.info("Result while saving to db: " + insertedId);
-        return insertedId;
+
+        try{
+            String insertedId = inserted.get().getId();
+            log.info("Saved to db with ID: " + insertedId);
+            return insertedId;
+        } catch (ExecutionException | InterruptedException e) {
+            throw new DbAccessException(e);
+        }
     }
 
-    public T findById(String documentId)
-            throws ExecutionException, InterruptedException {
+    public T findById(String documentId) {
         DocumentReference documentReference = collectionReference.document(documentId);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
-        DocumentSnapshot document = future.get();
-        log.info("Result while saving to db: " + document);
-        return firestoreMapper.mapToObject(document, classType);
+
+        try{
+            DocumentSnapshot document = future.get();
+            log.info("Result while saving to db: " + document);
+            return firestoreMapper.mapToObject(document, classType);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new DbAccessException(e);
+        }
     }
 
-    //TODO - handle ExecutionException, InterruptedException in here
-
-    public <Q> List<T> findByField(String fieldName, Q fieldValue) throws ExecutionException, InterruptedException {
+    public <Q> List<T> findByField(String fieldName, Q fieldValue) {
         ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
         List<T> list = new ArrayList<>();
-        for(DocumentSnapshot documentSnapshot : future.get()){
-            list.add(firestoreMapper.mapToObject(documentSnapshot, classType));
-        }
 
-        return list;
+        try{
+            for(DocumentSnapshot documentSnapshot : future.get()){
+                list.add(firestoreMapper.mapToObject(documentSnapshot, classType));
+            }
+            return list;
+        } catch (ExecutionException | InterruptedException e) {
+            throw new DbAccessException(e);
+        }
     }
 
-    public WriteResult update(T toChange) throws ExecutionException, InterruptedException {
+    public WriteResult update(T toChange) {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
         Map<String, Object> json = firestoreMapper.objectToMap(toChange);
         ApiFuture<WriteResult> result = documentReference.update(json);
-        return result.get();
+        try{
+            return result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new DbAccessException(e);
+        }
     }
 
     public void delete(String documentId) {

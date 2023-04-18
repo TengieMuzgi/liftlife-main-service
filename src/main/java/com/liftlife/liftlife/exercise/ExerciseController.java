@@ -17,17 +17,17 @@ public class ExerciseController {
     }
 
     @PostMapping("/insert")
-    public String saveExampleString(@RequestBody Exercise newExercise) throws ExecutionException, InterruptedException {
+    public String saveExampleString(@RequestBody Exercise newExercise) {
         return repository.insert(newExercise);
     }
 
     @GetMapping("/find")
-    public Exercise getExample(@RequestParam("id") String documentId) throws ExecutionException, InterruptedException {
+    public Exercise getExample(@RequestParam("id") String documentId) {
         return repository.findById(documentId);
     }
 
     @GetMapping("/findBodyPart")
-    public List<Exercise> getByBodyPart(@RequestParam("bodyPart") String bodyPart) throws ExecutionException, InterruptedException {
+    public List<Exercise> getByBodyPart(@RequestParam("bodyPart") String bodyPart) {
         return repository.findExerciseByBodyPart(bodyPart);
     }
 }

@@ -22,12 +22,12 @@ public class DietController {
     }
 
     @GetMapping("/getById")
-    public Diet getById(@RequestParam("id") String dietId) throws ExecutionException, InterruptedException {
+    public Diet getById(@RequestParam("id") String dietId) {
         return dietRepository.findById(dietId);
     }
 
     @GetMapping("/meal/getByName")
-    public List<Meal> getByName(@RequestParam("dietId") String dietId, @RequestParam("name") String name) throws ExecutionException, InterruptedException {
+    public List<Meal> getByName(@RequestParam("dietId") String dietId, @RequestParam("name") String name) {
         return dietRepository.findMealByName(dietId, name);
     }
 }

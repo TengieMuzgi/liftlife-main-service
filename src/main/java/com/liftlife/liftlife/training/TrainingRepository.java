@@ -15,19 +15,19 @@ public class TrainingRepository extends FirestoreRepositoryTemplate<Training> {
         super(Training.class);
     }
 
-    public List<Training> findByDate(String date) throws ExecutionException, InterruptedException {
+    public List<Training> findByDate(String date) {
         return super.findByField("date", date);
     }
 
-    public List<Training> findTrainingByName(String name) throws ExecutionException, InterruptedException {
+    public List<Training> findTrainingByName(String name) {
         return super.findByField("name", name);
     }
 
-    public List<Training> findTrainingByTemplate(boolean template) throws ExecutionException, InterruptedException {
+    public List<Training> findTrainingByTemplate(boolean template) {
         return super.findByField("isTemplate", template);
     }
 
-    public List<Training> findTrainingByTrainer(String trainerId) throws ExecutionException, InterruptedException {
+    public List<Training> findTrainingByTrainer(String trainerId) {
         return super.findByField("trainerId", trainerId);
     }
 

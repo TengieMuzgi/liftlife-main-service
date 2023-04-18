@@ -14,19 +14,21 @@ import java.util.concurrent.ExecutionException;
 @DependsOn("firestoreConnector")
 public class DietRepository extends FirestoreRepositoryTemplate<Diet> {
 
+    //TODO - to rework after changes in MealRepository
+
     public DietRepository() {
         super(Diet.class);
     }
 
-    public List<Diet> findDietByName(String name) throws ExecutionException, InterruptedException {
+    public List<Diet> findDietByName(String name) {
         return super.findByField("name", name);
     }
 
-    public List<Diet> findDietByTemplate(boolean template) throws ExecutionException, InterruptedException {
+    public List<Diet> findDietByTemplate(boolean template) {
         return super.findByField("isTemplate", template);
     }
 
-    public List<Diet> findDietByTrainer(String trainerId) throws ExecutionException, InterruptedException {
+    public List<Diet> findDietByTrainer(String trainerId) {
         return super.findByField("trainerId", trainerId);
     }
 
@@ -42,22 +44,22 @@ public class DietRepository extends FirestoreRepositoryTemplate<Diet> {
         helper.delete(meal);
     }
 
-    public String insertMeal(String dietId, Meal meal) throws ExecutionException, InterruptedException {
+    public String insertMeal(String dietId, Meal meal) {
         MealRepository helper = new MealRepository(dietId, super.getFirestoreMapper());
         return helper.insert(meal);
     }
 
-    public WriteResult updateMeal(String dietId, Meal meal) throws ExecutionException, InterruptedException {
+    public WriteResult updateMeal(String dietId, Meal meal) {
         MealRepository helper = new MealRepository(dietId, super.getFirestoreMapper());
         return helper.update(meal);
     }
 
-    public Meal findMealById(String dietId, String mealId) throws ExecutionException, InterruptedException {
+    public Meal findMealById(String dietId, String mealId) {
         MealRepository helper = new MealRepository(dietId, super.getFirestoreMapper());
         return helper.findById(mealId);
     }
 
-    public List<Meal> findMealByName(String dietId, String name) throws ExecutionException, InterruptedException {
+    public List<Meal> findMealByName(String dietId, String name) {
         MealRepository helper = new MealRepository(dietId, super.getFirestoreMapper());
         return helper.findMealByName(name);
     }

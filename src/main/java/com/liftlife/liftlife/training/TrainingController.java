@@ -25,22 +25,22 @@ public class TrainingController{
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Training> findById(@RequestParam("id") String id) throws ExecutionException, InterruptedException {
+    public ResponseEntity<Training> findById(@RequestParam("id") String id) {
         return ResponseEntity.ok(trainingService.findByID(id));
     }
 
     @GetMapping("/findByTrainer")
-    public ResponseEntity<List<Training>> findByTrainer(@RequestParam("trainer") String trainerId) throws ExecutionException, InterruptedException {
+    public ResponseEntity<List<Training>> findByTrainer(@RequestParam("trainer") String trainerId) {
         return ResponseEntity.ok(trainingService.findByTrainer(trainerId));
     }
 
     @GetMapping("/findByTemplate")
-    public ResponseEntity<List<Training>> findByTemplate(@RequestParam("template") boolean template) throws ExecutionException, InterruptedException {
+    public ResponseEntity<List<Training>> findByTemplate(@RequestParam("template") boolean template) {
         return ResponseEntity.ok(trainingService.findByTemplate(template));
     }
 
     @GetMapping("/findDate")
-    public ResponseEntity<List<Training>> findByDate(@RequestParam("date") String date) throws ExecutionException, InterruptedException {
+    public ResponseEntity<List<Training>> findByDate(@RequestParam("date") String date) {
         return ResponseEntity.ok(trainingService.findByDate(date));
     }
 

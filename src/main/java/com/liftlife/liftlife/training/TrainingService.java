@@ -19,17 +19,11 @@ public class TrainingService {
         this.trainingRepository = trainingRepository;
     }
 
-    //TODO - handle ExecutionException, InterruptedException in repo template
-
     public ResponseEntity<String> insert(Training training) {
-        try{
-            return ResponseEntity.ok().body("Training inserted with ID " + trainingRepository.insert(training));
-        } catch (ExecutionException | InterruptedException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        return ResponseEntity.ok().body("Training inserted with ID " + trainingRepository.insert(training));
     }
 
-    public Training findByID(String id) throws ExecutionException, InterruptedException {
+    public Training findByID(String id) {
         Training training = trainingRepository.findById(id);
 
         if(training == null)
@@ -38,7 +32,7 @@ public class TrainingService {
         return training;
     }
 
-    public List<Training> findByTrainer(String trainerId) throws ExecutionException, InterruptedException {
+    public List<Training> findByTrainer(String trainerId) {
         List<Training> trainingList = trainingRepository.findTrainingByTrainer(trainerId);
 
         if(trainingList.isEmpty())
@@ -47,7 +41,7 @@ public class TrainingService {
         return trainingList;
     }
 
-    public List<Training> findByTemplate(boolean template) throws ExecutionException, InterruptedException {
+    public List<Training> findByTemplate(boolean template) {
         List<Training> trainingList = trainingRepository.findTrainingByTemplate(template);
 
         if(trainingList.isEmpty())
@@ -56,7 +50,7 @@ public class TrainingService {
         return trainingList;
     }
 
-    public List<Training> findByDate(String date) throws ExecutionException, InterruptedException {
+    public List<Training> findByDate(String date) {
         List<Training> trainingList = trainingRepository.findByDate(date);
 
         if(trainingList.isEmpty())
