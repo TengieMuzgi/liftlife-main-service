@@ -3,10 +3,10 @@ package com.liftlife.liftlife.exercise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/exercise")
 public class ExerciseController {
     private final ExerciseRepository repository;
 
@@ -15,13 +15,18 @@ public class ExerciseController {
         this.repository = repository;
     }
 
-    @PostMapping("/saveExample")
-    public String saveExampleString(@RequestBody Exercise newExercise) throws ExecutionException, InterruptedException {
-        return repository.insertExercise(newExercise);
+    @PostMapping("/insert")
+    public String saveExampleString(@RequestBody Exercise newExercise) {
+        return repository.insert(newExercise);
     }
 
-    @GetMapping("/findExample")
-    public Exercise getExample(@RequestParam("id") String documentId) throws ExecutionException, InterruptedException {
-        return repository.findExerciseByDocumentId("2W2m1IR0boK6QYQ882sU");
+    @GetMapping("/find")
+    public Exercise getExample(@RequestParam("id") String documentId) {
+        return repository.findById(documentId);
+    }
+
+    @GetMapping("/findBodyPart")
+    public List<Exercise> getByBodyPart(@RequestParam("bodyPart") String bodyPart) {
+        return repository.findExerciseByBodyPart(bodyPart);
     }
 }

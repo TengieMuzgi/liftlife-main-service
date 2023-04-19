@@ -1,25 +1,20 @@
 package com.liftlife.liftlife.exercise;
 
-import com.liftlife.liftlife.database.FirestoreMapper;
 import com.liftlife.liftlife.database.FirestoreRepositoryTemplate;
-import com.liftlife.liftlife.exercise.Exercise;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 @Repository
-@DependsOn("firestoreConnector")
-public class ExerciseRepository extends FirestoreRepositoryTemplate {
-    public ExerciseRepository(FirestoreMapper firestoreMapper) {
-        super("exercises", firestoreMapper);
+@DependsOn({"firestoreConnector", "firestoreMapper"})
+public class ExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
+
+    public ExerciseRepository() {
+        super(Exercise.class);
     }
 
-    public String insertExercise(Exercise exercise) throws ExecutionException, InterruptedException {
-        return super.insertTemplate(exercise);
-    }
-
-    public Exercise findExerciseByDocumentId(String documentId) throws ExecutionException, InterruptedException {
-        return super.findOneByIdTemplate(documentId, Exercise.class);
+    public List<Exercise> findExerciseByBodyPart(String bodyPart) {
+        return super.findByField("bodyPart", bodyPart);
     }
 }

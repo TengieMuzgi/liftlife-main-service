@@ -12,10 +12,47 @@ import java.util.Map;
 @Component
 public class FirestoreMapper {
     private final Gson gson;
+    /*
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    class LocalDateSerializer implements JsonSerializer<LocalDate> {
+
+        private DateTimeFormatter formatter;
+
+        public LocalDateSerializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(formatter.format(src));
+        }
+    }
+
+    class LocalDateDeserializer implements JsonDeserializer<LocalDate>{
+
+        private DateTimeFormatter formatter;
+
+        public LocalDateDeserializer(DateTimeFormatter formatter) {
+            this.formatter = formatter;
+        }
+
+        @Override
+        public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            String dateStr = json.getAsJsonPrimitive().getAsString();
+            return LocalDate.parse(dateStr, formatter);
+        }
+    }
+
+     */
 
     public FirestoreMapper() {
         this.gson = new GsonBuilder()
+                //.registerTypeAdapter(LocalDate.class, new LocalDateSerializer(formatter))
+                //.registerTypeAdapter(LocalDate.class, new LocalDateDeserializer(formatter))
                 .create();
+
     }
 
     public <T> T mapToObject(DocumentSnapshot documentSnapshot, Class<T> clazz) {
