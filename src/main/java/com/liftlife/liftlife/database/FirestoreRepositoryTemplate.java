@@ -6,6 +6,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.liftlife.liftlife.exception.DbAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
                 .collection(classType.getSimpleName().toLowerCase());
     }
 
-    public FirestoreRepositoryTemplate(CollectionReference collectionReference, FirestoreMapper firestoreMapper){
+    public FirestoreRepositoryTemplate(Class<T> classType, CollectionReference collectionReference, FirestoreMapper mapper){
+        this.classType = classType;
         this.collectionReference = collectionReference;
-        this.firestoreMapper = firestoreMapper;
+        this.firestoreMapper = mapper;
     }
 
     public FirestoreMapper getFirestoreMapper(){
