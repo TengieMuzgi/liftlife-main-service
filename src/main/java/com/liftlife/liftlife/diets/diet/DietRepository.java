@@ -1,9 +1,9 @@
-package com.liftlife.liftlife.diet;
+package com.liftlife.liftlife.diets.diet;
 
 import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.database.FirestoreRepositoryTemplate;
-import com.liftlife.liftlife.diet.meal.Meal;
-import com.liftlife.liftlife.diet.meal.MealRepository;
+import com.liftlife.liftlife.diets.diet.meal.Meal;
+import com.liftlife.liftlife.diets.diet.meal.MealRepository;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 

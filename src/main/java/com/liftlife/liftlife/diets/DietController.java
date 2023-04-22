@@ -1,6 +1,8 @@
-package com.liftlife.liftlife.diet;
+package com.liftlife.liftlife.diets;
 
-import com.liftlife.liftlife.diet.meal.Meal;
+import com.liftlife.liftlife.diets.diet.Diet;
+import com.liftlife.liftlife.diets.diet.DietRepository;
+import com.liftlife.liftlife.diets.diet.meal.Meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

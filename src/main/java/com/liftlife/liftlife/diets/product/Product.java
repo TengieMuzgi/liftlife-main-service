@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.product;
+package com.liftlife.liftlife.diets.product;
 
 import com.liftlife.liftlife.database.FirestoreEntity;
 import lombok.*;

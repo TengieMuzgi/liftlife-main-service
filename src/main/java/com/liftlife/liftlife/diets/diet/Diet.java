@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.diet;
+package com.liftlife.liftlife.diets.diet;
 
 
 import com.liftlife.liftlife.database.FirestoreEntity;

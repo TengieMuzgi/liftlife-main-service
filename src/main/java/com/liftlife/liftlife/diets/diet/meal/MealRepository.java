@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.diet.meal;
+package com.liftlife.liftlife.diets.diet.meal;
 
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
