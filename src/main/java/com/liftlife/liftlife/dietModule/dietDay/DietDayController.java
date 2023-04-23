@@ -1,6 +1,6 @@
-package com.liftlife.liftlife.diet;
+package com.liftlife.liftlife.dietModule.diet;
 
-import com.liftlife.liftlife.diet.meal.Meal;
+import com.liftlife.liftlife.dietModule.diet.meal.Meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ public class DietController {
     }
 
     @GetMapping("/find")
-    public Diet getById(@RequestParam("id") String dietId) {
+    public DietDay getById(@RequestParam("id") String dietId) {
         return dietRepository.findById(dietId);
     }
 

@@ -1,6 +1,6 @@
 package com.liftlife.liftlife.exercise;
 
-import com.liftlife.liftlife.database.FirestoreEntity;
+import com.liftlife.liftlife.utils.database.FirestoreEntity;
 import lombok.*;
 
 /*

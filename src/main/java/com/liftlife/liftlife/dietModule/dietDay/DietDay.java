@@ -1,7 +1,7 @@
-package com.liftlife.liftlife.diet;
+package com.liftlife.liftlife.dietModule.diet;
 
 
-import com.liftlife.liftlife.database.FirestoreEntity;
+import com.liftlife.liftlife.utils.database.FirestoreEntity;
 import lombok.*;
 
 @Getter
@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Diet extends FirestoreEntity {
+public class DietDay extends FirestoreEntity {
 
     private String name;
     private String trainerId;

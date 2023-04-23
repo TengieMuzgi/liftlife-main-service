@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.training;
+package com.liftlife.liftlife.trainingModule.training;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +19,27 @@ public class TrainingController{
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<String> insert(@RequestBody Training training) {
-        return trainingService.insert(training);
+    public ResponseEntity<String> insert(@RequestBody TrainingSession trainingSession) {
+        return trainingService.insert(trainingSession);
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Training> findById(@RequestParam("id") String id) {
+    public ResponseEntity<TrainingSession> findById(@RequestParam("id") String id) {
         return ResponseEntity.ok(trainingService.findByID(id));
     }
 
     @GetMapping("/findByTrainer")
-    public ResponseEntity<List<Training>> findByTrainer(@RequestParam("trainer") String trainerId) {
+    public ResponseEntity<List<TrainingSession>> findByTrainer(@RequestParam("trainer") String trainerId) {
         return ResponseEntity.ok(trainingService.findByTrainer(trainerId));
     }
 
     @GetMapping("/findByTemplate")
-    public ResponseEntity<List<Training>> findByTemplate(@RequestParam("template") boolean template) {
+    public ResponseEntity<List<TrainingSession>> findByTemplate(@RequestParam("template") boolean template) {
         return ResponseEntity.ok(trainingService.findByTemplate(template));
     }
 
     @GetMapping("/findDate")
-    public ResponseEntity<List<Training>> findByDate(@RequestParam("date") String date) {
+    public ResponseEntity<List<TrainingSession>> findByDate(@RequestParam("date") String date) {
         return ResponseEntity.ok(trainingService.findByDate(date));
     }
 

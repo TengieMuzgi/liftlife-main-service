@@ -1,7 +1,7 @@
-package com.liftlife.liftlife.training;
+package com.liftlife.liftlife.trainingModule.training;
 
 
-import com.liftlife.liftlife.database.FirestoreEntity;
+import com.liftlife.liftlife.utils.database.FirestoreEntity;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Training extends FirestoreEntity {
+public class TrainingSession extends FirestoreEntity {
 
     //:TODO change to LocalDate
     private String date;
