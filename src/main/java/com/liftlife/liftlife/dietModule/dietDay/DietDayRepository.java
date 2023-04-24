@@ -3,8 +3,8 @@ package com.liftlife.liftlife.dietModule.dietDay;
 import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.common.DayOfWeek;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
-import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.dietModule.dietDay.meal.MealRepository;
+import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 

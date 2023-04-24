@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.liftlife.liftlife.util.database.FirestoreEntity;
 
 import java.io.IOException;
 import java.util.List;

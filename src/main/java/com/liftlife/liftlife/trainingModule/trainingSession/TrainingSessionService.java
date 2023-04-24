@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
-import com.liftlife.liftlife.trainingModule.exercise.Exercise;
 import com.liftlife.liftlife.trainingModule.exercise.ExerciseRepository;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

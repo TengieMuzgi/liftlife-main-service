@@ -1,16 +1,8 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.liftlife.liftlife.trainingModule.exercise.Exercise;
-import com.liftlife.liftlife.trainingModule.exercise.serialization.ExerciseDeserializer;
-import com.liftlife.liftlife.trainingModule.exercise.serialization.ExerciseSerializer;
-import com.liftlife.liftlife.util.database.ChildSerializer;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
-
-import java.util.List;
 
 /*
 POJO class representing one training session, that exists in client's/coach's calendar.
