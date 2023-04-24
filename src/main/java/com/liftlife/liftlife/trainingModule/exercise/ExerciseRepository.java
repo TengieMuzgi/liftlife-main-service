@@ -1,6 +1,6 @@
-package com.liftlife.liftlife.exercise;
+package com.liftlife.liftlife.trainingModule.exercise;
 
-import com.liftlife.liftlife.utils.database.FirestoreRepositoryTemplate;
+import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 

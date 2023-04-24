@@ -1,8 +1,11 @@
-package com.liftlife.liftlife.product;
+package com.liftlife.liftlife.dietModule.product;
 
-import com.liftlife.liftlife.utils.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
+/*
+POJO class representing single product present in client's meal. Atomic part of diet.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

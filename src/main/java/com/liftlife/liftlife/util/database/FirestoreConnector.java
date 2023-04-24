@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.database;
+package com.liftlife.liftlife.util.database;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

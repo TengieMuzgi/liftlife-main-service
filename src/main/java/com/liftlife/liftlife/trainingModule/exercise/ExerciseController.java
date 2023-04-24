@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.exercise;
+package com.liftlife.liftlife.trainingModule.exercise;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

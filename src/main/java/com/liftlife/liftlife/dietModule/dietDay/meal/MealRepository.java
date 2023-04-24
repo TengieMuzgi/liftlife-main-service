@@ -1,9 +1,9 @@
-package com.liftlife.liftlife.dietModule.diet.meal;
+package com.liftlife.liftlife.dietModule.dietDay.meal;
 
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
-import com.liftlife.liftlife.utils.database.FirestoreMapper;
-import com.liftlife.liftlife.utils.database.FirestoreRepositoryTemplate;
+import com.liftlife.liftlife.util.database.FirestoreMapper;
+import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

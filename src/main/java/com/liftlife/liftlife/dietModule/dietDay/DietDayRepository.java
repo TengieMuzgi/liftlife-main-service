@@ -1,9 +1,10 @@
-package com.liftlife.liftlife.dietModule.diet;
+package com.liftlife.liftlife.dietModule.dietDay;
 
 import com.google.cloud.firestore.WriteResult;
-import com.liftlife.liftlife.dietModule.diet.meal.Meal;
-import com.liftlife.liftlife.utils.database.FirestoreRepositoryTemplate;
-import com.liftlife.liftlife.dietModule.diet.meal.MealRepository;
+import com.liftlife.liftlife.common.DayOfWeek;
+import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
+import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
+import com.liftlife.liftlife.dietModule.dietDay.meal.MealRepository;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
@@ -11,14 +12,14 @@ import java.util.List;
 
 @Repository
 @DependsOn("firestoreConnector")
-public class DietRepository extends FirestoreRepositoryTemplate<DietDay> {
+public class DietDayRepository extends FirestoreRepositoryTemplate<DietDay> {
 
-    public DietRepository() {
+    public DietDayRepository() {
         super(DietDay.class);
     }
 
-    public List<DietDay> findDietByName(String name) {
-        return super.findByField("name", name);
+    public List<DietDay> findDietByDayOfWeek(DayOfWeek dayOfWeek) {
+        return super.findByField("dayOfWeek", dayOfWeek);
     }
 
     public List<DietDay> findDietByTemplate(boolean template) {

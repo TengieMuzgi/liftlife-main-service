@@ -1,11 +1,11 @@
-package com.liftlife.liftlife.exercise;
+package com.liftlife.liftlife.trainingModule.exercise;
 
-import com.liftlife.liftlife.utils.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
 /*
-Temporary exercise class, that resembles
-collection from firestore
+POJO class representing one exercise in training session assigned to client.
+It's atomic part of training.
  */
 @Getter
 @Setter

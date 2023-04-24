@@ -1,6 +1,6 @@
-package com.liftlife.liftlife.dietModule.diet.meal;
+package com.liftlife.liftlife.dietModule.dietDay.meal;
 
-import com.liftlife.liftlife.utils.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
 import java.util.List;

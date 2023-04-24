@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.user;
+package com.liftlife.liftlife.userModule.user;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

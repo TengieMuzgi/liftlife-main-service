@@ -1,18 +1,16 @@
-package com.liftlife.liftlife.database;
+package com.liftlife.liftlife.util.database;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import com.liftlife.liftlife.exception.DbAccessException;
+import com.liftlife.liftlife.util.exception.DbAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 
 /*
 
@@ -74,6 +72,19 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
 
     public <Q> List<T> findByField(String fieldName, Q fieldValue) {
         ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
+        return getResultFromQuery(future);
+    }
+
+    public <Q> List<T> findByFields(Map<String, Object> nameValueMap) {
+        Query query = collectionReference;
+        for (Map.Entry<String, Object> nameValue : nameValueMap.entrySet()) {
+            collectionReference.whereEqualTo(nameValue.getKey(), nameValue.getValue());
+        }
+        ApiFuture<QuerySnapshot> future = query.get();
+        return getResultFromQuery(future);
+    }
+
+    private List<T> getResultFromQuery(ApiFuture<QuerySnapshot> future) {
         List<T> list = new ArrayList<>();
 
         try{

@@ -1,6 +1,6 @@
-package com.liftlife.liftlife.trainingModule.training;
+package com.liftlife.liftlife.trainingModule.trainingSession;
 
-import com.liftlife.liftlife.utils.database.FirestoreRepositoryTemplate;
+import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 @DependsOn("firestoreConnector")
-public class TrainingRepository extends FirestoreRepositoryTemplate<TrainingSession> {
-    public TrainingRepository() {
+public class TrainingSessionRepository extends FirestoreRepositoryTemplate<TrainingSession> {
+    public TrainingSessionRepository() {
         super(TrainingSession.class);
     }
 

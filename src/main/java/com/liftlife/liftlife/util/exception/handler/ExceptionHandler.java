@@ -1,7 +1,7 @@
-package com.liftlife.liftlife.utils.database.exception.handler;
+package com.liftlife.liftlife.util.exception.handler;
 
-import com.liftlife.liftlife.utils.database.exception.DbAccessException;
-import com.liftlife.liftlife.utils.database.exception.NotFoundException;
+import com.liftlife.liftlife.util.exception.DbAccessException;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.utils.database.exception;
+package com.liftlife.liftlife.util.exception;
 
 public class DbAccessException extends RuntimeException{
     public DbAccessException() {

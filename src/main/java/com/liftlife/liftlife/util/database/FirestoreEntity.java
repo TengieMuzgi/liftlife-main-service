@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.database;
+package com.liftlife.liftlife.util.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
