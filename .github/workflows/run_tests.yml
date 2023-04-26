@@ -1,12 +1,10 @@
 name: Run Tests
 
 on:
-  push:
-    branches: ["workflow_for_tests"]
-#  pull_request:
-#    branches: ["main"]
-#    types:
-#      - opened
+  pull_request:
+    branches: ["main"]
+    types:
+      - opened
 
 jobs:
   run-tests:
