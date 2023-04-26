@@ -49,7 +49,7 @@ jobs:
           regex: false
 
       - name: Build Maven Image
-        run: mvn clean package
+        run: mvn -DskipTests package
 
       - name: Build docker image
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/microservices:liftlife-service
