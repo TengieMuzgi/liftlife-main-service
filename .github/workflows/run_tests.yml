@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-tests:
-    name: Build Docker image and push to repositories
+    name: Run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +23,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build Maven Image
+      - name: Run tests with Maven
         run: mvn test
 
