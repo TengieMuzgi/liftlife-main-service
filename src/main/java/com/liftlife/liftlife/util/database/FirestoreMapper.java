@@ -13,9 +13,8 @@ import java.util.Map;
 public class FirestoreMapper {
     private final Gson gson;
     public FirestoreMapper() {
-        this.gson = new GsonBuilder()
+        this.gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
-
     }
 
     public <T> T mapToObject(DocumentSnapshot documentSnapshot, Class<T> clazz) {

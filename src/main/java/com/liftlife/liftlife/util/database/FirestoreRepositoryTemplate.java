@@ -78,7 +78,7 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     public <Q> List<T> findByFields(Map<String, Object> nameValueMap) {
         Query query = collectionReference;
         for (Map.Entry<String, Object> nameValue : nameValueMap.entrySet()) {
-            collectionReference.whereEqualTo(nameValue.getKey(), nameValue.getValue());
+            query = query.whereEqualTo(nameValue.getKey(), nameValue.getValue());
         }
         ApiFuture<QuerySnapshot> future = query.get();
         return getResultFromQuery(future);
@@ -87,7 +87,7 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     private List<T> getResultFromQuery(ApiFuture<QuerySnapshot> future) {
         List<T> list = new ArrayList<>();
 
-        try{
+        try {
             for(DocumentSnapshot documentSnapshot : future.get()){
                 list.add(firestoreMapper.mapToObject(documentSnapshot, classType));
             }
@@ -104,7 +104,7 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
         Map<String, Object> json = firestoreMapper.objectToMap(toChange);
         ApiFuture<WriteResult> result = documentReference.update(json);
-        try{
+        try {
             return result.get();
         } catch (ExecutionException e) {
             throw new DbAccessException(e);
