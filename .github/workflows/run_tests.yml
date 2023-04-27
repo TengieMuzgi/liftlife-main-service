@@ -1,0 +1,26 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches: ["main"]
+    types:
+      - opened
+
+jobs:
+  run-tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Java version
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run tests with Maven
+        run: mvn test
+
