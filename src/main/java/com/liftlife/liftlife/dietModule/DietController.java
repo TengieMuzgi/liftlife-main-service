@@ -1,5 +1,7 @@
-package com.liftlife.liftlife.dietModule.dietDay;
+package com.liftlife.liftlife.dietModule;
 
+import com.liftlife.liftlife.dietModule.dietDay.DietDay;
+import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/dietDay")
-public class DietDayController {
+public class DietController {
 
     private final DietDayRepository dietDayRepository;
 
     @Autowired
-    public DietDayController(DietDayRepository repository) {
+    public DietController(DietDayRepository repository) {
         this.dietDayRepository = repository;
     }
 

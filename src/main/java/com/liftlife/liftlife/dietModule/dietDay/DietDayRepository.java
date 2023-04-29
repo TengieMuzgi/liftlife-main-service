@@ -9,6 +9,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @DependsOn("firestoreConnector")
@@ -50,6 +51,11 @@ public class DietDayRepository extends FirestoreRepositoryTemplate<DietDay> {
     public WriteResult updateMeal(String dietId, Meal meal) {
         MealRepository helper = new MealRepository(dietId, getFirestoreMapper());
         return helper.update(meal);
+    }
+
+    public List<Meal> findMealByFields(String dietId, Map<String, Object> fields){
+        MealRepository helper = new MealRepository(dietId, getFirestoreMapper());
+        return helper.findByFields(fields);
     }
 
     public Meal findMealById(String dietId, String mealId) {
