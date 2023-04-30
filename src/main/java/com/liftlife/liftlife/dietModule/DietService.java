@@ -5,11 +5,15 @@ package com.liftlife.liftlife.dietModule;
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
+import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
+import com.liftlife.liftlife.dietModule.product.Product;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
+import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -163,4 +167,79 @@ public class DietService {
 
         return diets;
     }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> update(T object) {
+
+        if(object == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        switch(object.getClass().getSimpleName()){
+            case "DietDay" : return ResponseEntity.ok().body("DietDay updated with ID "
+                    + dietDayRepository.update((DietDay) object));
+            case "Product" : return ResponseEntity.ok().body("Product updated with ID "
+                    + productRepository.update((Product) object));
+            case "DietPlan" : return ResponseEntity.ok().body("DietPlan updated with ID "
+                    + dietPlanRepository.update((DietPlan) object));
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public ResponseEntity<String> update(String dietId, Meal meal){
+        if(meal == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        return ResponseEntity.ok().body("meal updated with ID " + dietDayRepository.updateMeal(dietId, meal));
+    }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> delete(T object){
+        if(object == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        switch(object.getClass().getSimpleName()){
+            case "DietDay" : dietDayRepository.delete((DietDay) object);
+                    return ResponseEntity.ok().body("DietDay deleted with ID "
+                    + object.getDocumentId());
+            case "Product" : productRepository.delete((Product) object);
+                    return ResponseEntity.ok().body("Product deleted with ID "
+                    + object.getDocumentId());
+            case "DietPlan" : dietPlanRepository.delete((DietPlan) object);
+            return ResponseEntity.ok().body("DietPlan deleted with ID "
+                    + object.getDocumentId());
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> delete(String objectId, DietServiceType type){
+
+        switch(type){
+            case DIET_DAY : dietDayRepository.delete(objectId);
+                return ResponseEntity.ok().body("DietDay deleted with ID "
+                        + objectId);
+            case PRODUCT : productRepository.delete(objectId);
+                return ResponseEntity.ok().body("Product deleted with ID "
+                        + objectId);
+            case DIET_PLAN : dietPlanRepository.delete(objectId);
+                return ResponseEntity.ok().body("DietPlan deleted with ID "
+                        + objectId);
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public ResponseEntity<String> delete(String dietId, Meal meal){
+        if(meal == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        dietDayRepository.deleteMeal(dietId, meal);
+        return ResponseEntity.ok().body("DietPlan deleted with ID "
+                + meal.getDocumentId());
+    }
+
+    public ResponseEntity<String> delete(String dietId, String mealId){
+
+        dietDayRepository.deleteMeal(dietId, mealId);
+        return ResponseEntity.ok().body("DietPlan deleted with ID "
+                + mealId);
+    }
+
+
 }
