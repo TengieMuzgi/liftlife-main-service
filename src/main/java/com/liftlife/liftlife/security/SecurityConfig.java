@@ -19,20 +19,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorization -> {
-                            try {
-                                authorization
-                                                .requestMatchers("/api/**").authenticated()
-                                                .anyRequest().permitAll()
-                                                .and()
-                                                .apply(new JwtConfigurer(firebaseTokenProvider));
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-                .csrf(csrf -> csrf.disable())
-                .httpBasic();
+        http.csrf().disable().authorizeHttpRequests()
+                .requestMatchers("/api/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .apply(new JwtConfigurer(firebaseTokenProvider));
+//        http.authorizeHttpRequests(authorization -> authorization
+//                                .requestMatchers("/api/**").permitAll()
+//                                .anyRequest().authenticated()
+//                                .and()
+//                                .apply(new JwtConfigurer(firebaseTokenProvider))
+//                )
+//
+//                .csrf(csrf -> csrf.disable())
         return http.build();
     }
 

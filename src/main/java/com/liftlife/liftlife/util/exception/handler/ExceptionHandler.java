@@ -32,4 +32,11 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { Exception.class})
+    protected ResponseEntity<Object> handleDatabaseGet(Exception exception, WebRequest request) {
+        String bodyOfResponse = "Unhandled exception, E: " + exception.getMessage();
+        logger.error(bodyOfResponse);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
+    }
+
 }
