@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.security;
+package com.liftlife.liftlife.security.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
