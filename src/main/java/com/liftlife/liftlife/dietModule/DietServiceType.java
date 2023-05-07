@@ -1,5 +1,5 @@
 package com.liftlife.liftlife.dietModule;
 
 public enum DietServiceType {
-    DIET_DAY, PRODUCT, DIET_PLAN
+    DIET_DAY, DIET_PLAN //PRODUCT,
 }

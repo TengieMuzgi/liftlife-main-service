@@ -105,7 +105,7 @@ public class DietService {
 
         switch(type){
             case DIET_DAY : entity = (T) dietDayRepository.findById(id); break;
-            case PRODUCT: entity = (T) productRepository.findById(id); break;
+            //case PRODUCT: entity = (T) productRepository.findById(id); break;
             case DIET_PLAN: entity = (T) dietPlanRepository.findById(id); break;
         }
 
@@ -140,7 +140,7 @@ public class DietService {
 
         switch(type){
             case DIET_DAY : entityList = (List<T>) dietDayRepository.findByFields(fields); break;
-            case PRODUCT: entityList = (List<T>) productRepository.findByFields(fields); break;
+            //case PRODUCT: entityList = (List<T>) productRepository.findByFields(fields); break;
             case DIET_PLAN: entityList = (List<T>) dietPlanRepository.findByFields(fields); break;
         }
 
@@ -176,8 +176,11 @@ public class DietService {
         switch(object.getClass().getSimpleName()){
             case "DietDay" : return ResponseEntity.ok().body("DietDay updated with ID "
                     + dietDayRepository.update((DietDay) object));
+            /*
             case "Product" : return ResponseEntity.ok().body("Product updated with ID "
                     + productRepository.update((Product) object));
+
+             */
             case "DietPlan" : return ResponseEntity.ok().body("DietPlan updated with ID "
                     + dietPlanRepository.update((DietPlan) object));
             default: return ResponseEntity.badRequest().body("Class cannot be recognized");
@@ -199,9 +202,12 @@ public class DietService {
             case "DietDay" : dietDayRepository.delete((DietDay) object);
                     return ResponseEntity.ok().body("DietDay deleted with ID "
                     + object.getDocumentId());
+                    /*
             case "Product" : productRepository.delete((Product) object);
                     return ResponseEntity.ok().body("Product deleted with ID "
                     + object.getDocumentId());
+
+                     */
             case "DietPlan" : dietPlanRepository.delete((DietPlan) object);
             return ResponseEntity.ok().body("DietPlan deleted with ID "
                     + object.getDocumentId());
@@ -215,9 +221,12 @@ public class DietService {
             case DIET_DAY : dietDayRepository.delete(objectId);
                 return ResponseEntity.ok().body("DietDay deleted with ID "
                         + objectId);
+                /*
             case PRODUCT : productRepository.delete(objectId);
                 return ResponseEntity.ok().body("Product deleted with ID "
                         + objectId);
+
+                 */
             case DIET_PLAN : dietPlanRepository.delete(objectId);
                 return ResponseEntity.ok().body("DietPlan deleted with ID "
                         + objectId);
@@ -239,6 +248,34 @@ public class DietService {
         dietDayRepository.deleteMeal(dietId, mealId);
         return ResponseEntity.ok().body("DietPlan deleted with ID "
                 + mealId);
+    }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> createTemplate(T object){
+        if(object == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        switch(object.getClass().getSimpleName()){
+            case "DietDay" : return ResponseEntity.ok().body(dietDayRepository.insert((DietDay) object));
+            case "DietPlan" : return ResponseEntity.ok().body(dietPlanRepository.insert((DietPlan) object));
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public ResponseEntity<String> createForUser(DietPlan dietPlan){
+        if(dietPlan == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        StringBuilder response = new StringBuilder();
+        response.append(dietPlanRepository.insert(dietPlan));
+        response.append(" ");
+        //TODO add plan to user
+
+        return ResponseEntity.ok().body(response.toString());
+    }
+
+    //TODO implement function
+    public ResponseEntity<String> addPlanToUser(DietPlan dietPlan, Long userId){
+        return null;
     }
 
 
