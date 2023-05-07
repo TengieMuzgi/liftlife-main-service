@@ -1,7 +1,5 @@
 package com.liftlife.liftlife.security;
 
-//import com.example.aipms.service.DBUserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,38 +12,37 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private FirebaseTokenProvider firebaseTokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeHttpRequests()
-                .requestMatchers("/api/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .apply(new JwtConfigurer(firebaseTokenProvider));
-//        http.authorizeHttpRequests(authorization -> authorization
-//                                .requestMatchers("/api/**").permitAll()
-//                                .anyRequest().authenticated()
-//                                .and()
-//                                .apply(new JwtConfigurer(firebaseTokenProvider))
-//                )
+
 //
-//                .csrf(csrf -> csrf.disable())
+//        http.csrf().disable().authorizeHttpRequests()
+//                .requestMatchers("/auth/**").permitAll()
+//                .requestMatchers("/api/**").permitAll()
+//                .anyRequest().authenticated();
+        http.authorizeRequests(authorization -> authorization
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                )
+                .csrf(csrf -> csrf.disable())
+                .httpBasic();
         return http.build();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-//        AuthenticationManagerBuilder authenticationManagerBuilder =
-//                http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.authenticationProvider(new DBAuthenticationProvider());
-//        return authenticationManagerBuilder.build();
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(new DBAuthenticationProvider());
+        return authenticationManagerBuilder.build();
+    }
 
 }

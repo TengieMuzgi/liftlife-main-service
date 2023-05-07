@@ -2,15 +2,18 @@ package com.liftlife.liftlife.security;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.security.util.LoginRequest;
+import com.liftlife.liftlife.security.util.RegisterRequest;
+import com.liftlife.liftlife.userModule.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
 public class AuthController {
 
     private AuthService authService;
@@ -22,14 +25,13 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
+    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
+        return ResponseEntity.ok(authService.login(loginRequest));
+    }
 
-
-//        List<GrantedAuthority> authorities = Collections.emptyList();
-//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return null;
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.ok(authService.register(registerRequest));
     }
 
     //    @PostMapping("/authenticate")

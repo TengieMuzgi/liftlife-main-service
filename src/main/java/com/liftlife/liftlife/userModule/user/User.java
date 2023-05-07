@@ -1,34 +1,41 @@
 package com.liftlife.liftlife.userModule.user;
 
+import com.liftlife.liftlife.common.UserRole;
+import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class User implements UserDetails {
-    private String uid;
+public class User extends FirestoreEntity implements UserDetails  {
+    private String email;
+    private String password;
+    private boolean enabled;
+    private UserRole userRole;
+    private Date registerDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
+        return Collections.singletonList(authority);    }
 
     @Override
-    public String getPassword() {
-        return null;
-    }
+    public String getPassword() {return this.password;}
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
@@ -48,6 +55,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.enabled;
     }
 }
