@@ -9,9 +9,9 @@ import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn({"firestoreConnector", "firestoreMapper"})
-public class PresetExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
+public class TemplateExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
 
-    public PresetExerciseRepository() {
+    public TemplateExerciseRepository() {
         super(Exercise.class);
     }
 
