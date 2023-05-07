@@ -9,22 +9,10 @@ import java.util.Date;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
     private String email;
     private String password;
     private String passwordRepeated;
     private UserRole role;
-    private Date registerDate;
-
-    public RegisterRequest(String email, String password, String passwordRepeated, UserRole role) {
-        this.email = email;
-        this.password = password;
-        this.passwordRepeated = passwordRepeated;
-        this.role = role;
-        this.registerDate = new Date();
-    }
-
-    public RegisterRequest() {
-        this.registerDate = new Date();
-    }
 }

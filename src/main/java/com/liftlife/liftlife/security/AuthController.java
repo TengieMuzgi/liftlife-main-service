@@ -20,35 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
-
-    @Autowired
     private AuthService authService;
 
-
+    @Autowired
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+        return authService.login(loginRequest);
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authService.register(registerRequest));
+        return authService.register(registerRequest);
     }
-
-    //    @PostMapping("/authenticate")
-//    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request) {
-//        try {
-//            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(request.getToken());
-//            String uid = decodedToken.getUid();
-//
-//            // wykonaj logikę autentykacji
-//
-//            return ResponseEntity.ok("Użytkownik autoryzowany");
-//        } catch (FirebaseAuthException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błąd autentykacji: " + e.getMessage());
-//        }
-//    }
-
 }

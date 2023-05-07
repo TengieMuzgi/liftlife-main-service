@@ -1,13 +1,12 @@
 package com.liftlife.liftlife.security;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.security.util.LoginRequest;
 import com.liftlife.liftlife.security.util.RegisterRequest;
 import com.liftlife.liftlife.userModule.user.User;
 import com.liftlife.liftlife.userModule.user.UserRepository;
+import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,15 +15,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AuthService {
-
     private AuthenticationManager authenticationManager;
     private DBUserDetailsServiceImpl userDetailsService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private JwtTokenUtil jwtTokenUtil;
-
 
     @Autowired
     public AuthService(AuthenticationManager authenticationManager, DBUserDetailsServiceImpl userDetailsService,
@@ -36,35 +35,40 @@ public class AuthService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-
-    public String login(LoginRequest loginRequest) {
+    public ResponseEntity<String> login(LoginRequest loginRequest) {
 
         User user = (User) userDetailsService.loadUserByUsername(loginRequest.getEmail());
         if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
-            Authentication authentication = authenticationManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            Line below calls Auth Manager which is automatically called by request with auth in header,
+//            returns same token that is created above
+//            Authentication authentication = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(token);
 
             String jwtToken = jwtTokenUtil.generateToken(user);
-            return jwtToken;
+            return ResponseEntity.ok(jwtToken);
         }
-        else {
-            throw new BadCredentialsException("Invalid login details");
-        }
+        else
+            return ResponseEntity.accepted().body("Bad credentials");
     }
 
-    public String register(RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(RegisterRequest registerRequest) {
+        if(userRepository.isPresent(registerRequest.getEmail())) {
+            return ResponseEntity.accepted().body("User with email: " + registerRequest.getEmail() + " is already registered!");
+        }
+
         User user = new User(
                 registerRequest.getEmail(),
                 passwordEncoder.encode(registerRequest.getPassword()),
                 false,
                 registerRequest.getRole(),
-                registerRequest.getRegisterDate());
+                new Date());
 
         String uid = userRepository.insert(user);
+        user.setDocumentId(uid);
 
-        return "User created with id: " + uid;
+        //201 - created
+        return ResponseEntity.status(201).body("User created with id: " + uid);
     }
-
 }

@@ -121,4 +121,5 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     public void delete(T objectToDelete) {
         collectionReference.document(objectToDelete.getDocumentId()).delete();
     }
+
 }

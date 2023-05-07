@@ -16,7 +16,6 @@ import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
 public class User extends FirestoreEntity implements UserDetails  {
     private String email;
@@ -24,6 +23,13 @@ public class User extends FirestoreEntity implements UserDetails  {
     private boolean enabled;
     private UserRole userRole;
     private Date registerDate;
+
+    public User(String email, String password, boolean enabled, UserRole userRole) {
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.userRole = userRole;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,5 +62,9 @@ public class User extends FirestoreEntity implements UserDetails  {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public Date getRegisterDate() {
+        return this.registerDate;
     }
 }

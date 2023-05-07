@@ -2,6 +2,7 @@ package com.liftlife.liftlife.util.exception.handler;
 
 import com.liftlife.liftlife.util.exception.DbAccessException;
 import com.liftlife.liftlife.util.exception.NotFoundException;
+import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +38,14 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException exception, WebRequest request) {
         String bodyOfResponse = "Bad credentials";
         logger.error(bodyOfResponse);
-        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.ACCEPTED, request);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = { UserNotFound.class})
-    protected ResponseEntity<Object> handleNotFound(UserNotFound exception, WebRequest request) {
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { UserNotFoundException.class})
+    protected ResponseEntity<Object> handleUserNotFound(UserNotFoundException exception, WebRequest request) {
         String bodyOfResponse = exception.getMessage();
         logger.info(bodyOfResponse);
-        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = { Exception.class})
