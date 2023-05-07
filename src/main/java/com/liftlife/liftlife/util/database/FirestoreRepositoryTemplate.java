@@ -114,6 +114,12 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         }
     }
 
+    //TODO learn and add pagination
+    public List<T> findAll() throws ExecutionException, InterruptedException {
+        ApiFuture<QuerySnapshot> future = collectionReference.limit(100).get();
+        return getResultFromQuery(future);
+    }
+
     public void delete(String documentId) {
         collectionReference.document(documentId).delete();
     }

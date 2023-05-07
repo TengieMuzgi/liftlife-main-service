@@ -7,11 +7,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/trainings/templateExercise")
-public class ExerciseController {
-    private final PresetExerciseService service;
+public class TemplateExerciseController {
+    private final TemplateExerciseService service;
 
     @Autowired
-    public ExerciseController(PresetExerciseService service) {
+    public TemplateExerciseController(TemplateExerciseService service) {
         this.service = service;
     }
 

@@ -1,22 +1,21 @@
 package com.liftlife.liftlife.util.database;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChildSerializer<T extends FirestoreEntity> extends JsonSerializer<List<T>> {
+public class ChildSerializer<T extends FirestoreEntity> implements JsonSerializer<AttributeList<T>> {
     @Override
-    public void serialize(List<T> tList,
-                          JsonGenerator jsonGenerator,
-                          SerializerProvider serializerProvider)
-            throws IOException {
-        List<String> tIds = tList.stream()
-                .map(FirestoreEntity::getDocumentId)
-                .collect(Collectors.toList());
-        jsonGenerator.writeObject(tIds);
+    public JsonElement serialize(AttributeList<T> ts, Type type, JsonSerializationContext jsonSerializationContext) {
+        JsonArray documentIds = new JsonArray();
+        ts.stream()
+                .map(T::getDocumentId).forEach(documentIds::add);
+        return documentIds;
     }
 }

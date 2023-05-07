@@ -5,11 +5,12 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn("firestoreConnector")
-public class TrainingSessionRepository extends FirestoreRepositoryTemplate<TrainingSession> {
-    public TrainingSessionRepository() {
+public class TemplateTrainingSessionRepository extends FirestoreRepositoryTemplate<TrainingSession> {
+    public TemplateTrainingSessionRepository() {
         super(TrainingSession.class);
     }
 
@@ -17,17 +18,21 @@ public class TrainingSessionRepository extends FirestoreRepositoryTemplate<Train
         return super.findByField("date", date);
     }
 
-    public List<TrainingSession> findTrainingByName(String name) {
+    public List<TrainingSession> findByName(String name) {
         return super.findByField("name", name);
     }
 
-    public List<TrainingSession> findTrainingByTemplate(boolean template) {
+    public List<TrainingSession> findByTemplate(boolean template) {
         return super.findByField("isTemplate", template);
     }
 
-    public List<TrainingSession> findTrainingByTrainer(String trainerId) {
+    public List<TrainingSession> findByTrainer(String trainerId) {
         return super.findByField("trainerId", trainerId);
     }
 
+    @Override
+    public List<TrainingSession> findAll() throws ExecutionException, InterruptedException {
+        return super.findAll();
+    }
 
 }
