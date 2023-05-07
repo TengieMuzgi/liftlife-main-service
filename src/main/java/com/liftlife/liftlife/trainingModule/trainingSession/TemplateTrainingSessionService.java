@@ -1,6 +1,6 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
-import com.liftlife.liftlife.trainingModule.exercise.ExerciseRepository;
+import com.liftlife.liftlife.trainingModule.exercise.TemplateExerciseRepository;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +13,13 @@ public class TrainingSessionService {
 
     private final TrainingSessionRepository trainingSessionRepository;
 
-    private final ExerciseRepository exerciseRepository;
+    private final TemplateExerciseRepository templateExerciseRepository;
 
     @Autowired
     public TrainingSessionService(TrainingSessionRepository trainingSessionRepository,
-                                  ExerciseRepository exerciseRepository) {
+                                  TemplateExerciseRepository templateExerciseRepository) {
         this.trainingSessionRepository = trainingSessionRepository;
-        this.exerciseRepository = exerciseRepository;
+        this.templateExerciseRepository = templateExerciseRepository;
     }
 
     public ResponseEntity<String> insert(TrainingSession trainingSession) {
