@@ -2,15 +2,19 @@ package com.liftlife.liftlife.trainingModule.exercise;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Service
-public class TemplateExerciseService {
-    private final TemplateExerciseRepository repository;
+public class PresetExerciseService {
+    private final PresetExerciseRepository repository;
 
     @Autowired
-    public TemplateExerciseService(TemplateExerciseRepository repository) {
+    public PresetExerciseService(PresetExerciseRepository repository) {
         this.repository = repository;
     }
 
@@ -19,7 +23,7 @@ public class TemplateExerciseService {
     }
 
 
-    public Exercise findTemplateExercise(String documentId) {
+    public Exercise findPresetExercise(String documentId) {
         return repository.findById(documentId);
     }
 
@@ -28,7 +32,4 @@ public class TemplateExerciseService {
         return repository.findExerciseByBodyPart(bodyPart);
     }
 
-    public List<Exercise> findAll() {
-        return repository.findAll();
-    }
 }

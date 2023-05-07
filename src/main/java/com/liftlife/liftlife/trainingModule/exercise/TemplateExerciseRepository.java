@@ -5,16 +5,21 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn({"firestoreConnector", "firestoreMapper"})
-public class TemplateExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
+public class PresetExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
 
-    public TemplateExerciseRepository() {
+    public PresetExerciseRepository() {
         super(Exercise.class);
     }
 
     public List<Exercise> findExerciseByBodyPart(String bodyPart) {
         return super.findByField("bodyPart", bodyPart);
+    }
+
+    public List<Exercise> findAllPresetExercises() throws ExecutionException, InterruptedException {
+        return super.findAll();
     }
 }
