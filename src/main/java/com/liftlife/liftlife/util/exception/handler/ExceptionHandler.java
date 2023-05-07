@@ -5,6 +5,7 @@ import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -32,11 +33,28 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { BadCredentialsException.class})
+    protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException exception, WebRequest request) {
+        String bodyOfResponse = "Bad credentials";
+        logger.error(bodyOfResponse);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { UserNotFound.class})
+    protected ResponseEntity<Object> handleNotFound(UserNotFound exception, WebRequest request) {
+        String bodyOfResponse = exception.getMessage();
+        logger.info(bodyOfResponse);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(value = { Exception.class})
     protected ResponseEntity<Object> handleDatabaseGet(Exception exception, WebRequest request) {
         String bodyOfResponse = "Unhandled exception, E: " + exception.getMessage();
         logger.error(bodyOfResponse);
-        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
+
+
+
 
 }
