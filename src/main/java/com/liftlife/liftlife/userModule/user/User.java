@@ -67,4 +67,5 @@ public class User extends FirestoreEntity implements UserDetails  {
     public Date getRegisterDate() {
         return this.registerDate;
     }
+    
 }
