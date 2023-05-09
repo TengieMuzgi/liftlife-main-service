@@ -1,9 +1,7 @@
-package com.liftlife.liftlife.security;
+package com.liftlife.liftlife.security.util;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -50,11 +48,29 @@ public class JwtTokenUtil {
     }
 
     public boolean isTokenExpired(String token) {
-        Date expirationDate = getExpirationDateFromToken(token);
-        return expirationDate.before(new Date());
+        try{
+            Date expirationDate = getExpirationDateFromToken(token);
+            return expirationDate.before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 
-    private Date getExpirationDateFromToken(String token) {
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = "";
+        try{
+            username = getUsernameFromToken(token);
+        } catch (SignatureException | ExpiredJwtException e) {
+            return false;
+        }
+
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public String getUsernameFromToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
+    }
+    public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 }

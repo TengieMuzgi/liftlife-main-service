@@ -1,16 +1,14 @@
 package com.liftlife.liftlife.security;
 
+import com.liftlife.liftlife.security.util.JwtTokenUtil;
 import com.liftlife.liftlife.security.util.LoginRequest;
 import com.liftlife.liftlife.security.util.RegisterRequest;
 import com.liftlife.liftlife.userModule.user.User;
 import com.liftlife.liftlife.userModule.user.UserRepository;
-import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
