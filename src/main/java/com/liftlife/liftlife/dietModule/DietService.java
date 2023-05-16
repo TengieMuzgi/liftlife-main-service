@@ -2,6 +2,7 @@ package com.liftlife.liftlife.dietModule;
 
 
 
+import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
@@ -10,6 +11,8 @@ import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
 import com.liftlife.liftlife.dietModule.product.Product;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
 import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
+import com.liftlife.liftlife.userModule.user.ReferenceType;
+import com.liftlife.liftlife.userModule.user.UserRepository;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,14 +264,16 @@ public class DietService {
         }
     }
 
-    public ResponseEntity<String> createForUser(DietPlan dietPlan){
+    public ResponseEntity<String> createForUser(DietPlan dietPlan, String userId){
         if(dietPlan == null)
             return ResponseEntity.badRequest().body("Object is null");
 
         StringBuilder response = new StringBuilder();
-        response.append(dietPlanRepository.insert(dietPlan));
+        String dietPlanId = dietPlanRepository.insert(dietPlan);
+        response.append(dietPlanId);
         response.append(" ");
-        //TODO add plan to user
+        UserRepository userRepository = new UserRepository();
+        response.append(userRepository.addToUser(userId,new ArrayList<>(List.of(dietPlanId)), ReferenceType.DIET));
 
         return ResponseEntity.ok().body(response.toString());
     }

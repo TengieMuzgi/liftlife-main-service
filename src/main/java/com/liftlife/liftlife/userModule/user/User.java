@@ -10,9 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,12 +21,14 @@ public class User extends FirestoreEntity implements UserDetails  {
     private boolean enabled;
     private UserRole userRole;
     private Date registerDate;
+    private List<String> dietsIds;
 
-    public User(String email, String password, boolean enabled, UserRole userRole) {
+    public User(String email, String password, boolean enabled, UserRole userRole, Date registerDate) {
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.userRole = userRole;
+        this.registerDate = registerDate;
     }
 
     @Override
@@ -68,5 +68,7 @@ public class User extends FirestoreEntity implements UserDetails  {
         return this.registerDate;
     }
 
-
+    public List<String> getDietsIds() {
+        return dietsIds;
+    }
 }
