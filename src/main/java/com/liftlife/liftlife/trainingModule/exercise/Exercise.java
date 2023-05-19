@@ -13,9 +13,10 @@ It's atomic part of training.
 @NoArgsConstructor
 @ToString
 public class Exercise extends FirestoreEntity {
+    private String name;
     private String bodyPart;
     private String description;
-    private int duration;
-    private String name;
-    private boolean isTemplate;
+    private int numberOfReps;
+    private int numberOfSets;
+    private transient boolean isTemplate;
 }

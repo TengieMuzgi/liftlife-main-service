@@ -1,18 +1,35 @@
 package com.liftlife.liftlife.util.database;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.google.gson.*;
 
-import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
-public abstract class ChildDeserializer<T extends FirestoreEntity> extends JsonDeserializer<List<T>> {
+public class
+ChildDeserializer<T extends FirestoreEntity> implements JsonDeserializer<AttributeList<T>> {
+    private final Class<T> classType;
+
+    public ChildDeserializer(Class<T> classType) {
+        this.classType = classType;
+    }
+
     @Override
-    public abstract List<T> deserialize(JsonParser jsonParser,
-                               DeserializationContext deserializationContext)
-            throws IOException, JacksonException;
-
-
+    public AttributeList<T> deserialize(
+            JsonElement jsonElement,
+            Type type,
+            JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        AttributeList<T> deserializedList = new AttributeList<>();
+        JsonArray array = jsonElement.getAsJsonArray();
+        for (JsonElement element : array) {
+            try {
+                T entity = classType.getDeclaredConstructor().newInstance();
+                entity.setDocumentId(element.getAsString());
+                deserializedList.add(entity);
+            } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
+                     IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return deserializedList;
+    }
 }

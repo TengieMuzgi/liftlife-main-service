@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
-
+import com.liftlife.liftlife.trainingModule.exercise.Exercise;
+import com.liftlife.liftlife.util.database.AttributeList;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
@@ -14,12 +15,11 @@ Is a part of training day.
 @NoArgsConstructor
 @ToString
 public class TrainingSession extends FirestoreEntity {
-    private Integer duration;
-    /* Commented till tests
-    @JsonSerialize(using = ExerciseSerializer.class)
-    @JsonDeserialize(using = ExerciseDeserializer.class)
-    private List<Exercise> exercises;*/
+
+    private int startHour;
+    private int finishHour;
     private String name;
+    private AttributeList<Exercise> exercises;
     private boolean isTemplate;
-    private String trainerId;
+    private String coachId;
 }

@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
 
+import com.liftlife.liftlife.trainingModule.trainingSession.template.TemplateTrainingSessionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,10 +16,10 @@ import static org.mockito.Mockito.when;
 public class TrainingSessionControllerTest {
 
     @Mock
-    private TrainingSessionService trainingSessionService;
+    private TemplateTrainingSessionService templateTrainingSessionService;
 
     @InjectMocks
-    private TrainingSessionController trainingSessionController;
+    private TrainingSessionController templateTrainingSessionController;
 
     @BeforeEach
     public void init() {
@@ -29,9 +30,9 @@ public class TrainingSessionControllerTest {
     public void givenTrainingSession_whenInsert_thenStatus200IsRecieved() {
         TrainingSession trainingSession = new TrainingSession();
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Training session created successfully", HttpStatus.CREATED);
-        when(trainingSessionService.insert(trainingSession)).thenReturn(responseEntity);
+        when(templateTrainingSessionService.insert(trainingSession)).thenReturn(responseEntity);
 
-        ResponseEntity<String> result = trainingSessionController.insert(trainingSession);
+        ResponseEntity<String> result = templateTrainingSessionController.insertTemplate(trainingSession);
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("Training session created successfully", result.getBody());
@@ -42,9 +43,9 @@ public class TrainingSessionControllerTest {
         String id = "1dasd2dasd3";
         TrainingSession trainingSession = new TrainingSession();
         ResponseEntity<TrainingSession> responseEntity = new ResponseEntity<>(trainingSession, HttpStatus.OK);
-        when(trainingSessionService.findByID(id)).thenReturn(trainingSession);
+        when(templateTrainingSessionService.findByID(id)).thenReturn(trainingSession);
 
-        ResponseEntity<TrainingSession> result = trainingSessionController.findById(id);
+        ResponseEntity<TrainingSession> result = templateTrainingSessionController.findTemplateById(id);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(trainingSession, result.getBody());
