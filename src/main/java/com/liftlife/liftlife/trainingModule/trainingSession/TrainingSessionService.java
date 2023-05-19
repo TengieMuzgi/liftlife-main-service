@@ -1,66 +1,62 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
-import com.liftlife.liftlife.trainingModule.exercise.ExerciseRepository;
-import com.liftlife.liftlife.util.exception.NotFoundException;
+import com.google.cloud.firestore.WriteResult;
+import com.liftlife.liftlife.trainingModule.exercise.Exercise;
+import com.liftlife.liftlife.trainingModule.exercise.TemplateExerciseRepository;
+import com.liftlife.liftlife.util.database.AttributeList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
 public class TrainingSessionService {
-
-    private final TrainingSessionRepository trainingSessionRepository;
-
-    private final ExerciseRepository exerciseRepository;
+    private final TrainingSessionRepository repository;
+    private final TemplateExerciseRepository templateExerciseRepository;
 
     @Autowired
-    public TrainingSessionService(TrainingSessionRepository trainingSessionRepository,
-                                  ExerciseRepository exerciseRepository) {
-        this.trainingSessionRepository = trainingSessionRepository;
-        this.exerciseRepository = exerciseRepository;
+    public TrainingSessionService(TrainingSessionRepository repository, TemplateExerciseRepository templateExerciseRepository) {
+        this.repository = repository;
+        this.templateExerciseRepository = templateExerciseRepository;
     }
 
-    public ResponseEntity<String> insert(TrainingSession trainingSession) {
-        return ResponseEntity.ok().body("Training inserted with ID "
-                + trainingSessionRepository.insert(trainingSession));
+    public String insertSession(TrainingSession trainingSession, String planId, String dayId) {
+        LinkedHashMap<String, String> documentToSubCollection = buildPathToSubCollection(planId, dayId);
+        return repository.insert(trainingSession, documentToSubCollection);
     }
 
-    public TrainingSession findByID(String id) {
-        TrainingSession trainingSession = trainingSessionRepository.findById(id);
-
-        if(trainingSession == null)
-            throw new NotFoundException("Training with ID " + id + " not found");
-
-        return trainingSession;
+    public List<TrainingSession> findSessionsForDay(String planId, String dayId) {
+        LinkedHashMap<String, String> documentToSubCollection = buildPathToSubCollection(planId, dayId);
+        List<TrainingSession> sessions = repository.findAll(documentToSubCollection);
+        for (TrainingSession session : sessions) {
+            fetchExercises(session);
+        }
+        return sessions;
     }
 
-    public List<TrainingSession> findByTrainer(String trainerId) {
-        List<TrainingSession> trainingSessionList = trainingSessionRepository.findTrainingByTrainer(trainerId);
-
-        if(trainingSessionList.isEmpty())
-            throw new NotFoundException("Trainings for trainer with ID " + trainerId + " not found");
-
-        return trainingSessionList;
+    public WriteResult updateSession(TrainingSession trainingSession, String planId, String dayId) {
+        LinkedHashMap<String, String> documentToSubCollection = buildPathToSubCollection(planId, dayId);
+        return repository.update(trainingSession, documentToSubCollection);
     }
 
-    public List<TrainingSession> findByTemplate(boolean template) {
-        List<TrainingSession> trainingSessionList = trainingSessionRepository.findTrainingByTemplate(template);
-
-        if(trainingSessionList.isEmpty())
-            throw new NotFoundException("Trainings templates not found");
-
-        return trainingSessionList;
+    public void deleteSession(String sessionId, String planId, String dayId) {
+        LinkedHashMap<String, String> documentToSubCollection = buildPathToSubCollection(planId, dayId);
+        repository.delete(sessionId, documentToSubCollection);
     }
 
-    public List<TrainingSession> findByDate(String date) {
-        List<TrainingSession> trainingSessionList = trainingSessionRepository.findByDate(date);
-
-        if(trainingSessionList.isEmpty())
-            throw new NotFoundException("Trainings by date not found");
-
-        return trainingSessionList;
+    private LinkedHashMap<String, String> buildPathToSubCollection(String planId, String dayId) {
+        LinkedHashMap<String, String> documentToSubCollection = new LinkedHashMap<>();
+        documentToSubCollection.put(planId, "trainingday");
+        documentToSubCollection.put(dayId, "trainingsession");
+        return documentToSubCollection;
     }
 
+    private void fetchExercises(TrainingSession session) {
+        AttributeList<Exercise> exercises = new AttributeList<>();  //Try to do it better
+        for (Exercise exercise: session.getExercises()) {
+            exercises.add(templateExerciseRepository.findById(exercise.getDocumentId()));
+        }
+        session.setExercises(exercises);
+    }
 }

@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 @DependsOn({"firestoreConnector", "firestoreMapper"})
-public class ExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
+public class TemplateExerciseRepository extends FirestoreRepositoryTemplate<Exercise> {
 
-    public ExerciseRepository() {
+    public TemplateExerciseRepository() {
         super(Exercise.class);
     }
 
