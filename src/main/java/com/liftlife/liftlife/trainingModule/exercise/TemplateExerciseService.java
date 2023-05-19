@@ -19,7 +19,7 @@ public class TemplateExerciseService {
     }
 
 
-    public Exercise findPresetExercise(String documentId) {
+    public Exercise findTemplateExercise(String documentId) {
         return repository.findById(documentId);
     }
 
@@ -28,4 +28,7 @@ public class TemplateExerciseService {
         return repository.findExerciseByBodyPart(bodyPart);
     }
 
+    public List<Exercise> findAll() {
+        return repository.findAll();
+    }
 }

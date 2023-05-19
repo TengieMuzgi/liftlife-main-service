@@ -8,39 +8,32 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-/*
-
- */
 @Slf4j
-public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
-    private final CollectionReference collectionReference;
+public class FirestoreSubRepositoryTemplate<T extends FirestoreEntity> {
+    private final CollectionReference mainCollectionReference;
     @Autowired
     private FirestoreMapper firestoreMapper;
     private final Class<T> classType;
 
-    public FirestoreRepositoryTemplate(Class<T> classType) {
-        this.classType = classType;
-        this.collectionReference = FirestoreClient.getFirestore()
-                .collection(classType.getSimpleName().toLowerCase());
-    }
-
-    public FirestoreRepositoryTemplate(Class<T> classType, CollectionReference collectionReference, FirestoreMapper mapper){
-        this.classType = classType;
-        this.collectionReference = collectionReference;
-        this.firestoreMapper = mapper;
+    public FirestoreSubRepositoryTemplate(Class<T> subClassType, String mainClassLowerCase) {
+        this.classType = subClassType;
+        this.mainCollectionReference = FirestoreClient.getFirestore()
+                .collection(mainClassLowerCase);
     }
 
     public FirestoreMapper getFirestoreMapper(){
         return this.firestoreMapper;
     }
 
-    public String insert(T toSave) {
+    public String insert(T toSave, LinkedHashMap<String, String> documentIdsToSubCollections) {
         Map<String, Object> json = firestoreMapper.objectToMap(toSave);
-        ApiFuture<DocumentReference> inserted = collectionReference.add(json);
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        ApiFuture<DocumentReference> inserted = subReference.add(json);
 
         try{
             String insertedId = inserted.get().getId();
@@ -54,10 +47,11 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         }
     }
 
-    public T findById(String documentId) {
-        DocumentReference documentReference = collectionReference.document(documentId);
+    public T findById(String documentId,  LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        DocumentReference documentReference = subReference.document(documentId);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
-
+        
         try{
             DocumentSnapshot document = future.get();
             log.info("Result while saving to db: " + document);
@@ -72,13 +66,14 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         }
     }
 
-    public <Q> List<T> findByField(String fieldName, Q fieldValue) {
-        ApiFuture<QuerySnapshot> future = collectionReference.whereEqualTo(fieldName, fieldValue).get();
+    public <Q> List<T> findByField(String fieldName, Q fieldValue,  LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        ApiFuture<QuerySnapshot> future = subReference.whereEqualTo(fieldName, fieldValue).get();
         return getResultFromQuery(future);
     }
 
-    public <Q> List<T> findByFields(Map<String, Q> nameValueMap) {
-        Query query = collectionReference;
+    public <Q> List<T> findByFields(Map<String, Q> nameValueMap,  LinkedHashMap<String, String> documentIdsToSubCollections) {
+        Query query = getSubCollectionReference(documentIdsToSubCollections);
         for (Map.Entry<String, Q> nameValue : nameValueMap.entrySet()) {
             query = query.whereEqualTo(nameValue.getKey(), nameValue.getValue());
         }
@@ -104,8 +99,20 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
         }
     }
 
-    public WriteResult update(T toChange) {
-        DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
+    /*
+    @param LinkedHashMap containing documentId to name of collection inside. Linked, because of maintaining order.
+     */
+    private CollectionReference getSubCollectionReference(LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = mainCollectionReference;
+        for (Map.Entry<String, String> entry : documentIdsToSubCollections.entrySet()) {
+            subReference = subReference.document(entry.getKey()).collection(entry.getValue());
+        }
+        return subReference;
+    }
+
+    public WriteResult update(T toChange, LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        DocumentReference documentReference = subReference.document(toChange.getDocumentId());
         Map<String, Object> json = firestoreMapper.objectToMap(toChange);
         ApiFuture<WriteResult> result = documentReference.update(json);
         try {
@@ -119,17 +126,20 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     }
 
     //TODO learn and add pagination
-    public List<T> findAll() {
-        ApiFuture<QuerySnapshot> future = collectionReference.limit(100).get();
+    public List<T> findAll(LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        ApiFuture<QuerySnapshot> future = subReference.limit(100).get();
         return getResultFromQuery(future);
-
     }
 
-    public void delete(String documentId) {
-        collectionReference.document(documentId).delete();
+    public void delete(String documentId, LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        subReference.document(documentId).delete();
     }
 
-    public void delete(T objectToDelete) {
-        collectionReference.document(objectToDelete.getDocumentId()).delete();
+    public void delete(T objectToDelete, LinkedHashMap<String, String> documentIdsToSubCollections) {
+        CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
+        subReference.document(objectToDelete.getDocumentId()).delete();
     }
 }
+

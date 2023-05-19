@@ -5,10 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ChildSerializer<T extends FirestoreEntity> implements JsonSerializer<AttributeList<T>> {
     @Override

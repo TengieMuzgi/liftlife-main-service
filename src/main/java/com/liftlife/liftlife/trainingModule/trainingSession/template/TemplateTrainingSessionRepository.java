@@ -1,11 +1,11 @@
-package com.liftlife.liftlife.trainingModule.trainingSession;
+package com.liftlife.liftlife.trainingModule.trainingSession.template;
 
+import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Repository
 @DependsOn("firestoreConnector")
@@ -18,21 +18,15 @@ public class TemplateTrainingSessionRepository extends FirestoreRepositoryTempla
         return super.findByField("date", date);
     }
 
-    public List<TrainingSession> findByName(String name) {
+    public List<TrainingSession> findTrainingByName(String name) {
         return super.findByField("name", name);
     }
 
-    public List<TrainingSession> findByTemplate(boolean template) {
+    public List<TrainingSession> findTrainingByTemplate(boolean template) {
         return super.findByField("isTemplate", template);
     }
 
-    public List<TrainingSession> findByTrainer(String trainerId) {
+    public List<TrainingSession> findTrainingByTrainer(String trainerId) {
         return super.findByField("trainerId", trainerId);
     }
-
-    @Override
-    public List<TrainingSession> findAll() throws ExecutionException, InterruptedException {
-        return super.findAll();
-    }
-
 }

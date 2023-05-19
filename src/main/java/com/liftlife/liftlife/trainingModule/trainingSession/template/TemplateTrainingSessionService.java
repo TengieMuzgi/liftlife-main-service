@@ -1,19 +1,20 @@
-package com.liftlife.liftlife.trainingModule.trainingSession;
+package com.liftlife.liftlife.trainingModule.trainingSession.template;
 
+import com.liftlife.liftlife.trainingModule.exercise.Exercise;
 import com.liftlife.liftlife.trainingModule.exercise.TemplateExerciseRepository;
+import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
+import com.liftlife.liftlife.util.database.AttributeList;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public class TemplateTrainingSessionService {
 
     private final TemplateTrainingSessionRepository templateTrainingSessionRepository;
-
     private final TemplateExerciseRepository templateExerciseRepository;
 
     @Autowired
@@ -38,7 +39,7 @@ public class TemplateTrainingSessionService {
     }
 
     public List<TrainingSession> findByTrainer(String trainerId) {
-        List<TrainingSession> trainingSessionList = templateTrainingSessionRepository.findByTrainer(trainerId);
+        List<TrainingSession> trainingSessionList = templateTrainingSessionRepository.findTrainingByTrainer(trainerId);
 
         if(trainingSessionList.isEmpty())
             throw new NotFoundException("Trainings for trainer with ID " + trainerId + " not found");
@@ -47,7 +48,7 @@ public class TemplateTrainingSessionService {
     }
 
     public List<TrainingSession> findByTemplate(boolean template) {
-        List<TrainingSession> trainingSessionList = templateTrainingSessionRepository.findByTemplate(template);
+        List<TrainingSession> trainingSessionList = templateTrainingSessionRepository.findTrainingByTemplate(template);
 
         if(trainingSessionList.isEmpty())
             throw new NotFoundException("Trainings templates not found");
@@ -64,12 +65,23 @@ public class TemplateTrainingSessionService {
         return trainingSessionList;
     }
 
-
-    public List<TrainingSession> findAllAvailable(String coachId) throws ExecutionException, InterruptedException {
-        return templateTrainingSessionRepository.findAll();
-    }
-
     public void delete(String documentId) {
         templateTrainingSessionRepository.delete(documentId);
+    }
+
+    public List<TrainingSession> findAllByCoach(String trainerId) {
+        List<TrainingSession> sessions = templateTrainingSessionRepository.findAll();
+        for (TrainingSession session : sessions) {
+            fetchExercises(session);
+        }
+        return sessions;
+    }
+
+    private void fetchExercises(TrainingSession session) {
+        AttributeList<Exercise> exercises = new AttributeList<>();  //Try to do it better
+        for (Exercise exercise: session.getExercises()) {
+            exercises.add(templateExerciseRepository.findById(exercise.getDocumentId()));
+        }
+        session.setExercises(exercises);
     }
 }

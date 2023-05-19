@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.trainingModule.trainingSession;
 
 
+import com.liftlife.liftlife.trainingModule.trainingSession.template.TemplateTrainingSessionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,13 +13,13 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class TemplateTrainingSessionControllerTest {
+public class TrainingSessionControllerTest {
 
     @Mock
     private TemplateTrainingSessionService templateTrainingSessionService;
 
     @InjectMocks
-    private TemplateTrainingSessionController templateTrainingSessionController;
+    private TrainingSessionController templateTrainingSessionController;
 
     @BeforeEach
     public void init() {
@@ -31,7 +32,7 @@ public class TemplateTrainingSessionControllerTest {
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Training session created successfully", HttpStatus.CREATED);
         when(templateTrainingSessionService.insert(trainingSession)).thenReturn(responseEntity);
 
-        ResponseEntity<String> result = templateTrainingSessionController.insert(trainingSession);
+        ResponseEntity<String> result = templateTrainingSessionController.insertTemplate(trainingSession);
 
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals("Training session created successfully", result.getBody());
@@ -44,7 +45,7 @@ public class TemplateTrainingSessionControllerTest {
         ResponseEntity<TrainingSession> responseEntity = new ResponseEntity<>(trainingSession, HttpStatus.OK);
         when(templateTrainingSessionService.findByID(id)).thenReturn(trainingSession);
 
-        ResponseEntity<TrainingSession> result = templateTrainingSessionController.findById(id);
+        ResponseEntity<TrainingSession> result = templateTrainingSessionController.findTemplateById(id);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(trainingSession, result.getBody());

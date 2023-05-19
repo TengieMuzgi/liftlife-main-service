@@ -1,12 +1,13 @@
 package com.liftlife.liftlife.trainingModule.exercise;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/trainings/templateExercise")
+@RequestMapping("/api/trainings/templateExercises")
 public class TemplateExerciseController {
     private final TemplateExerciseService service;
 
@@ -16,17 +17,22 @@ public class TemplateExerciseController {
     }
 
     @PostMapping("/insert")
-    public String insertPresetExercise(@RequestBody Exercise newExercise) {
-        return service.insertPresetExercise(newExercise);
+    public ResponseEntity<String> insertPresetExercise(@RequestBody Exercise newExercise) {
+        return ResponseEntity.ok(service.insertPresetExercise(newExercise));
     }
 
     @GetMapping("/find")
-    public Exercise findPresetExercise(@RequestParam("id") String documentId) {
-        return service.findPresetExercise(documentId);
+    public ResponseEntity<Exercise> findTemplateExercise(@RequestParam("id") String documentId) {
+        return ResponseEntity.ok(service.findTemplateExercise(documentId));
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<List<Exercise>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/findBodyPart")
-    public List<Exercise> findPresetExercisesByBodyPart(@RequestParam("bodyPart") String bodyPart) {
-        return service.findPresetExercisesByBodyPart(bodyPart);
+    public ResponseEntity<List<Exercise>> findPresetExercisesByBodyPart(@RequestParam("bodyPart") String bodyPart) {
+        return ResponseEntity.ok(service.findPresetExercisesByBodyPart(bodyPart));
     }
 }
