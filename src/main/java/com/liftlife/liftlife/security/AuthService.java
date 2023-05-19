@@ -17,16 +17,14 @@ import java.util.Date;
 
 @Service
 public class AuthService {
-    private AuthenticationManager authenticationManager;
     private DBUserDetailsServiceImpl userDetailsService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, DBUserDetailsServiceImpl userDetailsService,
+    public AuthService( DBUserDetailsServiceImpl userDetailsService,
                        UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil) {
-        this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

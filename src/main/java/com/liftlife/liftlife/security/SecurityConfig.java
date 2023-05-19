@@ -1,18 +1,13 @@
 package com.liftlife.liftlife.security;
 
-import com.liftlife.liftlife.userModule.user.UserRepository;
+import
+        com.liftlife.liftlife.security.jwt.FirebaseTokenProvider;
+import com.liftlife.liftlife.security.jwt.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,27 +15,36 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Autowired
-    private DBAuthenticationProvider dbAuthenticationProvider;
+    private FirebaseTokenProvider firebaseTokenProvider;
+
+//    @Autowired
+//    private DBAuthenticationProvider dbAuthenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorization -> authorization
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")
-                        .anyRequest()
-                        .authenticated()
-                )
-                .csrf(csrf -> csrf.disable())
-                .httpBasic();
+//        http.authorizeRequests(authorization -> authorization
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/api/**").hasAnyAuthority("USER", "ADMIN")
+//                        .anyRequest()
+//                        .authenticated()
+//                )
+//                .csrf(csrf -> csrf.disable())
+//                .httpBasic();
+        http.csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .apply(new JwtConfigurer(firebaseTokenProvider));
         return http.build();
     }
 
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(dbAuthenticationProvider);
-        return authenticationManagerBuilder.build();
-    }
+//    @Bean
+//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+//        AuthenticationManagerBuilder authenticationManagerBuilder =
+//                http.getSharedObject(AuthenticationManagerBuilder.class);
+//        authenticationManagerBuilder.authenticationProvider(dbAuthenticationProvider);
+//        return authenticationManagerBuilder.build();
+//    }
 
 }

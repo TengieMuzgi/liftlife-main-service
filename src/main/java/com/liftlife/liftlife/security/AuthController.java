@@ -1,21 +1,15 @@
 package com.liftlife.liftlife.security;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.security.util.LoginRequest;
 import com.liftlife.liftlife.security.util.RegisterRequest;
-import com.liftlife.liftlife.userModule.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,8 +26,22 @@ public class AuthController {
         return authService.login(loginRequest);
     }
 
+    @GetMapping("/register")
+    public ResponseEntity<String> registerGet() throws FirebaseAuthException {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                .setEmail("test2@mail.com")
+                .setPassword("pwdpwd");
+
+        UserRecord userRecord = auth.createUser(request);
+
+
+        return ResponseEntity.ok("User utworzony: " + auth.createCustomToken(userRecord.getUid()));
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest)  {
         return authService.register(registerRequest);
     }
 }
