@@ -48,7 +48,7 @@ public class UserRepository extends FirestoreRepositoryTemplate<User> {
 
         currentUser.setDietsIds(currentIds);
         super.update(currentUser);
-        return ResponseEntity.ok().body("User updated");
+        return ResponseEntity.ok().body("Updated user with ID " + userId);
     }
 
 }

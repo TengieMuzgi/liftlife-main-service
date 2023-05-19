@@ -18,6 +18,6 @@ public class DietPlan extends FirestoreEntity {
     private String name;
     //id's for presentation, no implementation for now
     private String userId;
-    private String coachId;
+    private String trainerId;
     private List<String> dietDays;
 }

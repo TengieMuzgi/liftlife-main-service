@@ -14,7 +14,7 @@ public class MealRepository extends FirestoreRepositoryTemplate<Meal> {
 
     public MealRepository(String dietId, FirestoreMapper mapper) {
         super(Meal.class,
-                FirestoreClient.getFirestore().collection("diet").document(dietId).collection("meal"),
+                FirestoreClient.getFirestore().collection("dietday").document(dietId).collection("meal"),
                 mapper);
     }
 

@@ -31,12 +31,14 @@ public class DietService {
     private ProductRepository productRepository;
     private DietDayRepository dietDayRepository;
     private DietPlanRepository dietPlanRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public DietService(ProductRepository productRepository, DietDayRepository dietDayRepository, DietPlanRepository dietPlanRepository) {
+    public DietService(ProductRepository productRepository, DietDayRepository dietDayRepository, DietPlanRepository dietPlanRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.dietDayRepository = dietDayRepository;
         this.dietPlanRepository = dietPlanRepository;
+        this.userRepository = userRepository;
     }
 
     //draft
@@ -112,6 +114,8 @@ public class DietService {
             case DIET_PLAN: entity = (T) dietPlanRepository.findById(id); break;
         }
 
+        System.out.println(type);
+
         if(entity == null)
             throw new NotFoundException("Object with ID " + id + " not found");
 
@@ -171,21 +175,42 @@ public class DietService {
         return diets;
     }
 
+    public List<DietPlan> findPlanByTrainer(String id){
+        List<DietPlan> diets = dietPlanRepository.findDietByTrainer(id);
+
+        if(diets.isEmpty())
+            throw new NotFoundException("No diets for trainerId " + id + " were found");
+
+        return diets;
+    }
+
+    public DietPlan findDietPlan(String id){
+        DietPlan dietPlan = dietPlanRepository.findById(id);
+        List<DietDay> dietDays = new ArrayList<>();
+
+        for(String dietId: dietPlan.getDietDays()){
+            if(dietDayRepository.findById(dietId) != null)
+                dietDays.add(dietDayRepository.findById(dietId));
+        }
+
+        return dietPlan;
+    }
+
     public <T extends FirestoreEntity> ResponseEntity<String> update(T object) {
 
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
 
         switch(object.getClass().getSimpleName()){
-            case "DietDay" : return ResponseEntity.ok().body("DietDay updated with ID "
-                    + dietDayRepository.update((DietDay) object));
+            case "DietDay" : return ResponseEntity.ok().body("DietDay updated "
+                    + dietDayRepository.update((DietDay) object).getUpdateTime());
             /*
             case "Product" : return ResponseEntity.ok().body("Product updated with ID "
                     + productRepository.update((Product) object));
 
              */
-            case "DietPlan" : return ResponseEntity.ok().body("DietPlan updated with ID "
-                    + dietPlanRepository.update((DietPlan) object));
+            case "DietPlan" : return ResponseEntity.ok().body("DietPlan updated "
+                    + dietPlanRepository.update((DietPlan) object).getUpdateTime());
             default: return ResponseEntity.badRequest().body("Class cannot be recognized");
         }
     }
@@ -194,7 +219,7 @@ public class DietService {
         if(meal == null)
             return ResponseEntity.badRequest().body("Object is null");
 
-        return ResponseEntity.ok().body("meal updated with ID " + dietDayRepository.updateMeal(dietId, meal));
+        return ResponseEntity.ok().body("meal updated " + dietDayRepository.updateMeal(dietId, meal).getUpdateTime());
     }
 
     public <T extends FirestoreEntity> ResponseEntity<String> delete(T object){
@@ -258,8 +283,8 @@ public class DietService {
             return ResponseEntity.badRequest().body("Object is null");
 
         switch(object.getClass().getSimpleName()){
-            case "DietDay" : return ResponseEntity.ok().body(dietDayRepository.insert((DietDay) object));
-            case "DietPlan" : return ResponseEntity.ok().body(dietPlanRepository.insert((DietPlan) object));
+            case "DietDay" : return ResponseEntity.ok().body("Created DietDay template with ID " + dietDayRepository.insert((DietDay) object));
+            case "DietPlan" : return ResponseEntity.ok().body("Created DietPlan template with ID " + dietPlanRepository.insert((DietPlan) object));
             default: return ResponseEntity.badRequest().body("Class cannot be recognized");
         }
     }
@@ -270,9 +295,8 @@ public class DietService {
 
         StringBuilder response = new StringBuilder();
         String dietPlanId = dietPlanRepository.insert(dietPlan);
-        response.append(dietPlanId);
+        response.append("Created DietPlan with ID ").append(dietPlanId);
         response.append(" ");
-        UserRepository userRepository = new UserRepository();
         response.append(userRepository.addToUser(userId,new ArrayList<>(List.of(dietPlanId)), ReferenceType.DIET));
 
         return ResponseEntity.ok().body(response.toString());

@@ -18,4 +18,6 @@ public class DietDay extends FirestoreEntity {
     private DayOfWeek dayOfWeek;
     private transient int caloriesSum;
     private boolean isTemplate;
+    private String trainerId;
+
 }
