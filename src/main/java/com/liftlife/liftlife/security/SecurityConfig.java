@@ -17,9 +17,6 @@ public class SecurityConfig {
     @Autowired
     private FirebaseTokenProvider firebaseTokenProvider;
 
-//    @Autowired
-//    private DBAuthenticationProvider dbAuthenticationProvider;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http.authorizeRequests(authorization -> authorization
@@ -32,19 +29,12 @@ public class SecurityConfig {
 //                .httpBasic();
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(firebaseTokenProvider));
         return http.build();
     }
 
-//    @Bean
-//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-//        AuthenticationManagerBuilder authenticationManagerBuilder =
-//                http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.authenticationProvider(dbAuthenticationProvider);
-//        return authenticationManagerBuilder.build();
-//    }
 
 }

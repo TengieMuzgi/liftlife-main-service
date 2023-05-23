@@ -1,70 +1,127 @@
 package com.liftlife.liftlife.security;
 
-import com.liftlife.liftlife.security.util.JwtTokenUtil;
-import com.liftlife.liftlife.security.util.LoginRequest;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.security.util.RegisterRequest;
-import com.liftlife.liftlife.userModule.user.User;
 import com.liftlife.liftlife.userModule.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
+@Slf4j
 public class AuthService {
-    private DBUserDetailsServiceImpl userDetailsService;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtTokenUtil jwtTokenUtil;
+    private FirebaseAuth firebaseAuth;
 
     @Autowired
-    public AuthService( DBUserDetailsServiceImpl userDetailsService,
-                       UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil) {
-        this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenUtil = jwtTokenUtil;
+    public AuthService(FirebaseAuth firebaseAuth) {
+        this.firebaseAuth = firebaseAuth;
     }
 
-    public ResponseEntity<String> login(LoginRequest loginRequest) {
-
-        User user = (User) userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
-            UsernamePasswordAuthenticationToken token =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
-//            Line below calls Auth Manager which is automatically called by request with auth in header,
-//            returns same token that is created above
-//            Authentication authentication = authenticationManager.authenticate(token);
-            SecurityContextHolder.getContext().setAuthentication(token);
-
-            String jwtToken = jwtTokenUtil.generateToken(user);
-            return ResponseEntity.ok(jwtToken);
-        }
-        else
-            return ResponseEntity.accepted().body("Bad credentials");
-    }
 
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
-        if(userRepository.isPresent(registerRequest.getEmail())) {
-            return ResponseEntity.accepted().body("User with email: " + registerRequest.getEmail() + " is already registered!");
+        if(validateRegisterRequest(registerRequest))
+            return ResponseEntity.badRequest().body("Register request is invalid");
+
+        if(checkIfUserExists(registerRequest.getEmail()))  //409 resource conflict
+            return ResponseEntity.status(409).body("User with email: " + registerRequest.getEmail() + " is already registered!");
+
+        if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated()))
+            return ResponseEntity.badRequest().body("Password is not matching conditions");
+
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                .setEmail(registerRequest.getEmail())
+                .setEmailVerified(false)
+                .setPassword(registerRequest.getPassword())
+                .setDisplayName(registerRequest.getFirstName() + registerRequest.getLastName());
+
+        try{
+            UserRecord createdUser = firebaseAuth.createUser(request);
+            //201 - created
+            return ResponseEntity.status(201).body("User created with id: " + createdUser.getUid());
+        } catch (FirebaseAuthException e) {
+            log.warn("Error registering user with email: " + registerRequest.getEmail());
+            return ResponseEntity.internalServerError().body("User with email" + registerRequest.getEmail() + " not registered");
+        }
+    }
+
+    private boolean checkIfUserExists(String email) {
+        try {
+            if(firebaseAuth.getUserByEmail(email) != null)
+                return true;
+        } catch (FirebaseAuthException e) {
+            return false;
+        }
+        return false;
+    }
+
+    private boolean verifyPassword(String password, String repeatedPassword) {
+        if(!password.equals(repeatedPassword))
+            return false;
+
+        if (password.length() < 8 || password.length() > 25) {
+            return false;
         }
 
-        User user = new User(
-                registerRequest.getEmail(),
-                passwordEncoder.encode(registerRequest.getPassword()),
-                false,
-                registerRequest.getRole(),
-                new Date());
+        boolean hasUppercase = false;
+        boolean hasLowercase = false;
+        boolean hasDigit = false;
 
-        String uid = userRepository.insert(user);
-        user.setDocumentId(uid);
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUppercase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowercase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            }
 
-        //201 - created
-        return ResponseEntity.status(201).body("User created with id: " + uid);
+            if (hasUppercase && hasLowercase && hasDigit) {
+                break;
+            }
+        }
+
+        return hasUppercase && hasLowercase && hasDigit;
+    }
+
+    private boolean validateRegisterRequest(RegisterRequest request) {
+        if (request == null)
+            return false;
+
+        if (request.getEmail() == null || request.getEmail().isEmpty()) {
+            return false;
+        }
+
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            return false;
+        }
+
+        if (request.getPasswordRepeated() == null || request.getPasswordRepeated().isEmpty()) {
+            return false;
+        }
+
+        if (!request.getPassword().equals(request.getPasswordRepeated())) {
+            return false;
+        }
+
+        if (request.getFirstName() == null || request.getFirstName().isEmpty()) {
+            return false;
+        }
+
+        if (request.getLastName() == null || request.getLastName().isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static UserRecord getCurrentUser() throws FirebaseAuthException {
+        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return FirebaseAuth.getInstance().getUser(uid);
     }
 }
