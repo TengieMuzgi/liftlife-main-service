@@ -23,7 +23,6 @@ public class AuthService {
         this.firebaseAuth = firebaseAuth;
     }
 
-
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
         if(validateRegisterRequest(registerRequest))
             return ResponseEntity.badRequest().body("Register request is invalid");
