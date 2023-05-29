@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.dietModule;
 
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
-import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
@@ -43,13 +42,13 @@ public class DietController {
     }
 
     @GetMapping("/meals/{dietId}")
-    public ResponseEntity<List<Meal>> getMealsByFields(@PathVariable String dietId, @RequestParam Map<String, Object> fields) {
+    public ResponseEntity<List<Meal>> getMealsByFields(@PathVariable String dietId, @RequestBody Map<String, Object> fields) {
         List<Meal> meals = dietService.findByFields(dietId, fields);
         return ResponseEntity.ok(meals);
     }
 
     @GetMapping("/{type}")
-    public <T extends FirestoreEntity> ResponseEntity<List<T>> getByFields(@PathVariable String type, @RequestParam Map<String, Object> fields) {
+    public <T extends FirestoreEntity> ResponseEntity<List<T>> getByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> entities = dietService.findByFields(serviceType, fields);
         return ResponseEntity.ok(entities);
@@ -61,9 +60,16 @@ public class DietController {
         return ResponseEntity.ok(diets);
     }
 
+    @GetMapping("/trainer/{type}/{id}")
+    public ResponseEntity<List<DietDay>> getByTrainerId(@PathVariable String type, @PathVariable String id) {
+        DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
+        List<DietDay> diets = dietService.findByTrainer(serviceType, id);
+        return ResponseEntity.ok(diets);
+    }
+
     @GetMapping("/trainer/day/{id}")
     public ResponseEntity<List<DietDay>> getDietsByTrainerId(@PathVariable String id) {
-        List<DietDay> diets = dietService.findByTrainer(id);
+        List<DietDay> diets = dietService.findDayByTrainer(id);
         return ResponseEntity.ok(diets);
     }
 
@@ -78,6 +84,8 @@ public class DietController {
         DietPlan dietPlan = dietService.findDietPlan(id);
         return ResponseEntity.ok(dietPlan);
     }
+
+    //TODO get full dietPlan and DietDay;;; ?add trainer id in plan?
 
     @PutMapping("/update")
     public <T extends FirestoreEntity> ResponseEntity<String> update(@RequestBody T entity) {
@@ -99,6 +107,11 @@ public class DietController {
     public ResponseEntity<String> deleteMeal(@PathVariable String dietId, @PathVariable String mealId) {
         ResponseEntity<String> response = dietService.delete(dietId, mealId);
         return response;
+    }
+
+    @PostMapping("/{dietId}/createMeal")
+    public ResponseEntity<String> createMeal(@PathVariable String dietId, @RequestBody Meal meal) {
+        return dietService.createMeal(dietId, meal);
     }
 
     @PostMapping("/create")

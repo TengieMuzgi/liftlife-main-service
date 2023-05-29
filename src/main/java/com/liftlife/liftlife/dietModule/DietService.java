@@ -2,15 +2,12 @@ package com.liftlife.liftlife.dietModule;
 
 
 
-import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
-import com.liftlife.liftlife.dietModule.product.Product;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
-import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
 import com.liftlife.liftlife.userModule.user.ReferenceType;
 import com.liftlife.liftlife.userModule.user.UserRepository;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
@@ -166,7 +163,22 @@ public class DietService {
         return diets;
     }
 
-    public List<DietDay> findByTrainer(String id){
+    public <T extends FirestoreEntity> List<T> findByTrainer(DietServiceType type, String id){
+        List<T> entityList = new ArrayList<>();
+
+        switch(type){
+            case DIET_DAY : entityList = (List<T>) dietDayRepository.findDietByTrainer(id);; break;
+            //case PRODUCT: entityList = (List<T>) productRepository.findByFields(fields); break;
+            case DIET_PLAN: entityList = (List<T>) dietPlanRepository.findDietByTrainer(id); break;
+        }
+
+        if(entityList.isEmpty())
+            throw new NotFoundException("No objects found");
+
+        return entityList;
+    }
+
+    public List<DietDay> findDayByTrainer(String id){
         List<DietDay> diets = dietDayRepository.findDietByTrainer(id);
 
         if(diets.isEmpty())
@@ -276,6 +288,10 @@ public class DietService {
         dietDayRepository.deleteMeal(dietId, mealId);
         return ResponseEntity.ok().body("DietPlan deleted with ID "
                 + mealId);
+    }
+
+    public ResponseEntity<String> createMeal(String dietId, Meal meal){
+        return ResponseEntity.ok().body(dietDayRepository.insertMeal(dietId, meal));
     }
 
     public <T extends FirestoreEntity> ResponseEntity<String> createTemplate(T object){
