@@ -1,5 +1,6 @@
 package com.liftlife.liftlife.dietModule.dietDay;
 
+import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.common.DayOfWeek;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
@@ -32,6 +33,11 @@ public class DietDayRepository extends FirestoreRepositoryTemplate<DietDay> {
     }
 
     //meals
+
+    public List<Meal> findMeals(String dietId){
+        MealRepository helper = new MealRepository(dietId, getFirestoreMapper());
+        return helper.findAll();
+    }
 
     public void deleteMeal(String dietId, String mealId){
         MealRepository helper = new MealRepository(dietId, getFirestoreMapper());

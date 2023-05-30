@@ -4,9 +4,13 @@ package com.liftlife.liftlife.dietModule;
 
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
+import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
+import com.liftlife.liftlife.dietModule.dietDay.FullDietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
+import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
+import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlanRepository;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
 import com.liftlife.liftlife.userModule.user.ReferenceType;
 import com.liftlife.liftlife.userModule.user.UserRepository;
@@ -29,13 +33,19 @@ public class DietService {
     private DietDayRepository dietDayRepository;
     private DietPlanRepository dietPlanRepository;
     private UserRepository userRepository;
+    private FullDietDayRepository fullDietDayRepository;
+    private FullDietPlanRepository fullDietPlanRepository;
 
     @Autowired
-    public DietService(ProductRepository productRepository, DietDayRepository dietDayRepository, DietPlanRepository dietPlanRepository, UserRepository userRepository) {
+    public DietService(ProductRepository productRepository, DietDayRepository dietDayRepository,
+                       DietPlanRepository dietPlanRepository, UserRepository userRepository,
+                       FullDietPlanRepository fullDietPlanRepository, FullDietDayRepository fullDietDayRepository) {
         this.productRepository = productRepository;
         this.dietDayRepository = dietDayRepository;
         this.dietPlanRepository = dietPlanRepository;
         this.userRepository = userRepository;
+        this.fullDietDayRepository = fullDietDayRepository;
+        this.fullDietPlanRepository = fullDietPlanRepository;
     }
 
     //draft
@@ -323,5 +333,256 @@ public class DietService {
         return null;
     }
 
+    private DietDay convertDietDay(FullDietDay day){
+        DietDay dietDay =  new DietDay(day.getDayOfWeek(),day.getCaloriesSum(),day.isTemplate(),day.getTrainerId(), day.getDocumentId());
+        dietDay.setDocumentId(dietDay.getDocumentId());
+        return dietDay;
+    }
 
+    private DietPlan convertDietPlan(FullDietPlan fullPlan){
+        DietPlan plan = new DietPlan(fullPlan.getName(),fullPlan.getUserId(),fullPlan.getTrainerId(),new ArrayList<>());
+        List<String> ids = new ArrayList<>();
+        for(FullDietDay day: fullPlan.getDietDays()){
+            ids.add(day.getDocumentId());
+        }
+        plan.setDietDays(ids);
+        plan.setDocumentId(fullPlan.getDocumentId());
+        return plan;
+    }
+    //TODO handling no object with this id
+    private <T extends FirestoreEntity, Q extends FirestoreEntity> T returnFull(Q object){
+
+        if(object == null)
+            return null;
+
+        switch(object.getClass().getSimpleName()){
+            case "DietDay" : FullDietDay fullDay = new FullDietDay(((DietDay) object).getDayOfWeek(),((DietDay) object).getCaloriesSum(),
+                        ((DietDay) object).isTemplate(), ((DietDay) object).getTrainerId(), new ArrayList<>());
+                fullDay.setMeals(dietDayRepository.findMeals(object.getDocumentId()));
+                fullDay.setDocumentId(object.getDocumentId());
+                return (T) fullDay;
+            //case PRODUCT: entity = (T) productRepository.findById(id); break;
+            case "DietPlan": FullDietPlan fullPlan = new FullDietPlan(((DietPlan) object).getName(), ((DietPlan) object).getUserId(),
+                        ((DietPlan) object).getTrainerId(),new ArrayList<FullDietDay>());
+                List<FullDietDay> days = new ArrayList<>();
+                System.out.println(object.toString());
+                for(String day: ((DietPlan) object).getDietDays()){
+                    System.out.println(day);
+                    DietDay dietDay = dietDayRepository.findById(day);
+                    FullDietDay fullDietDay = new FullDietDay(dietDay.getDayOfWeek(),dietDay.getCaloriesSum(),
+                            dietDay.isTemplate(),dietDay.getTrainerId(),new ArrayList<>());
+                    List<Meal> meals = dietDayRepository.findMeals(dietDay.getDocumentId());
+                    fullDietDay.setMeals(meals);
+                    fullDietDay.setDocumentId(dietDay.getDocumentId());
+                    System.out.println("saved");
+                    days.add(fullDietDay);
+                }
+                System.out.println("ssss");
+                fullPlan.setDietDays(days);
+                fullPlan.setDocumentId(object.getDocumentId());
+                return (T) fullPlan;
+        }
+
+        return null;
+    }
+
+
+    public <T extends FirestoreEntity> T findFullById(String id, DietServiceType type) {
+        T entity = null;
+
+        switch(type){
+            case DIET_DAY : entity = (T) dietDayRepository.findById(id);
+                System.out.println(entity);
+                return returnFull(entity);
+            //case PRODUCT: entity = (T) productRepository.findById(id); break;
+            case DIET_PLAN: entity = (T) dietPlanRepository.findById(id);
+                System.out.println("plan " + entity.getDocumentId());
+                return returnFull(entity);
+        }
+
+        System.out.println(type);
+
+        if(entity == null)
+            throw new NotFoundException("Object with ID " + id + " not found");
+
+        return entity;
+    }
+
+    public <T extends FirestoreEntity> List<T> findFullByFields(DietServiceType type, Map<String, Object> fields) {
+        List<T> entityList = new ArrayList<>();
+
+        switch(type){
+            case DIET_DAY : entityList = (List<T>) dietDayRepository.findByFields(fields);
+            List<T> fullDietDays = new ArrayList<>();
+            for(T day: entityList){
+                fullDietDays.add(returnFull(day));
+            }
+            return fullDietDays;
+            //case PRODUCT: entityList = (List<T>) productRepository.findByFields(fields); break;
+            case DIET_PLAN: entityList = (List<T>) dietPlanRepository.findByFields(fields);
+            List<T> fullDietPlans = new ArrayList<>();
+            for(T day: entityList){
+                fullDietPlans.add(returnFull(day));
+            }
+            return fullDietPlans;
+        }
+
+        if(entityList.isEmpty())
+            throw new NotFoundException("No objects found");
+
+        return entityList;
+    }
+
+    public List<FullDietDay> findFullByTemplate() {
+        List<DietDay> diets = dietDayRepository.findDietByTemplate(true);
+
+        if(diets.isEmpty())
+            throw new NotFoundException("No template diets were found");
+        List<FullDietDay> fullDietDays = new ArrayList<>();
+        for(DietDay day: diets){
+            fullDietDays.add(returnFull(day));
+        }
+
+        return fullDietDays;
+    }
+
+    public <T extends FirestoreEntity> List<T> findFullByTrainer(DietServiceType type, String id) {
+
+        List<T> entityList;
+
+        switch(type){
+            case DIET_DAY : entityList = (List<T>) dietDayRepository.findDietByTrainer(id);
+                List<T> fullDietDays = new ArrayList<>();
+                for(T day: entityList){
+                    fullDietDays.add(returnFull(day));
+                }
+                return fullDietDays;
+            //case PRODUCT: entityList = (List<T>) productRepository.findByFields(fields); break;
+            case DIET_PLAN: entityList = (List<T>) dietPlanRepository.findDietByTrainer(id);
+            List<T> fullDietPlans = new ArrayList<>();
+                for(T day: entityList){
+                    fullDietPlans.add(returnFull(day));
+                }
+                return fullDietPlans;
+        }
+
+
+        throw new NotFoundException("No objects found");
+    }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> updateFull(T object) {
+
+        if(object == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        switch(object.getClass().getSimpleName()){
+            case "FullDietDay" :
+                dietDayRepository.update(convertDietDay((FullDietDay) object));
+                for(Meal meal: ((FullDietDay) object).getMeals()){
+                    dietDayRepository.updateMeal(object.getDocumentId(), meal);
+                }
+                return ResponseEntity.ok().body("DietDay fully updated");
+            /*
+            case "Product" : return ResponseEntity.ok().body("Product updated with ID "
+                    + productRepository.update((Product) object));
+
+             */
+            case "FullDietPlan" :
+                System.out.println("1");
+                dietPlanRepository.update(convertDietPlan((FullDietPlan) object));
+                System.out.println("2");
+                for(FullDietDay day: ((FullDietPlan) object).getDietDays()){
+                    System.out.println("3");
+                    dietDayRepository.update(convertDietDay(day));
+                    System.out.println("4");
+                    for(Meal meal: day.getMeals()){
+                        System.out.println("5");
+                        dietDayRepository.updateMeal(day.getDocumentId(), meal);
+                        System.out.println("6");
+                    }
+                }
+                System.out.println("7");
+                return ResponseEntity.ok().body("DietPlan updated");
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public ResponseEntity<String> deleteFull(String objectId, DietServiceType type) {
+        switch(type){
+            case DIET_DAY : dietDayRepository.delete(objectId);
+                return ResponseEntity.ok().body("DietDay deleted with ID "
+                        + objectId);
+                /*
+            case PRODUCT : productRepository.delete(objectId);
+                return ResponseEntity.ok().body("Product deleted with ID "
+                        + objectId);
+
+                 */
+            case DIET_PLAN :
+                FullDietPlan fullDietPlan = returnFull(dietPlanRepository.findById(objectId));
+                for(FullDietDay day: fullDietPlan.getDietDays()){
+                    dietDayRepository.delete(day.getDocumentId());
+                }
+                dietPlanRepository.delete(objectId);
+                return ResponseEntity.ok().body("DietPlan fully deleted with ID "
+                        + objectId);
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public <T extends FirestoreEntity> ResponseEntity<String> createFullTemplate(T object) {
+        if(object == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        switch(object.getClass().getSimpleName()){
+            case "FullDietDay" : DietDay day = new DietDay(((FullDietDay) object).getDayOfWeek(),((FullDietDay) object).getCaloriesSum(),
+                    ((FullDietDay) object).isTemplate(), ((FullDietDay) object).getTrainerId(), object.getDocumentId());
+                    String id = dietDayRepository.insert(day);
+                    for(Meal meal: ((FullDietDay) object).getMeals()){
+                        dietDayRepository.insertMeal(id,meal);
+                    }
+                return ResponseEntity.ok().body("Created FullDietDay template");
+            case "FullDietPlan" :
+                List<String> ids = new ArrayList<>();
+                DietPlan plan = new DietPlan(((FullDietPlan) object).getName(), ((FullDietPlan) object).getUserId(),
+                        ((FullDietPlan) object).getTrainerId(),ids);
+                for(FullDietDay dietDay: ((FullDietPlan) object).getDietDays()){
+                    ids.add(dietDay.getDocumentId());
+                    id = dietDayRepository.insert(convertDietDay(dietDay));
+                    List<Meal> meals = dietDay.getMeals();
+                    for(Meal meal: meals){
+                        dietDayRepository.insertMeal(id,meal);
+                    }
+                }
+                plan.setDietDays(ids);
+                dietPlanRepository.insert(plan);
+                return ResponseEntity.ok().body("Created DietPlan template with ID");
+            default: return ResponseEntity.badRequest().body("Class cannot be recognized");
+        }
+    }
+
+    public ResponseEntity<String> createFullForUser(FullDietPlan dietPlan, String userId) {
+        if(dietPlan == null)
+            return ResponseEntity.badRequest().body("Object is null");
+
+        StringBuilder response = new StringBuilder();
+        List<String> ids = new ArrayList<>();
+        DietPlan plan = new DietPlan(dietPlan.getName(), dietPlan.getUserId(),
+                dietPlan.getTrainerId(),ids);
+        for(FullDietDay dietDay: dietPlan.getDietDays()){
+            ids.add(dietDay.getDocumentId());
+            String id = dietDayRepository.insert(convertDietDay(dietDay));
+            List<Meal> meals = dietDay.getMeals();
+            for(Meal meal: meals){
+                dietDayRepository.insertMeal(id,meal);
+            }
+        }
+        plan.setDietDays(ids);
+        String dietPlanId =  dietPlanRepository.insert(plan);
+        response.append("Created DietPlan with ID ").append(dietPlanId);
+        response.append(" ");
+        response.append(userRepository.addToUser(userId,new ArrayList<>(List.of(dietPlanId)), ReferenceType.DIET));
+
+        return ResponseEntity.ok().body(response.toString());
+    }
 }

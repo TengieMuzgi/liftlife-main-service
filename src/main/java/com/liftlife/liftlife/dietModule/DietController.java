@@ -1,8 +1,10 @@
 package com.liftlife.liftlife.dietModule;
 
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
+import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
+import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,13 @@ public class DietController {
         return ResponseEntity.ok(entity);
     }
 
+    @GetMapping("/full/{type}/{id}")
+    public <T extends FirestoreEntity> ResponseEntity<T> getFullById(@PathVariable String type, @PathVariable String id) {
+        DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
+        T entity = dietService.findFullById(id, serviceType);
+        return ResponseEntity.ok(entity);
+    }
+
     @GetMapping("/meals/name/{dietId}")
     public ResponseEntity<List<Meal>> getMealsByName(@PathVariable String dietId, @RequestParam String name) {
         List<Meal> meals = dietService.findByName(dietId, name);
@@ -54,16 +63,36 @@ public class DietController {
         return ResponseEntity.ok(entities);
     }
 
+    @GetMapping("/full/{type}")
+    public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
+        DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
+        List<T> entities = dietService.findFullByFields(serviceType, fields);
+        return ResponseEntity.ok(entities);
+    }
+
     @GetMapping("/template")
     public ResponseEntity<List<DietDay>> getTemplateDiets() {
         List<DietDay> diets = dietService.findByTemplate();
         return ResponseEntity.ok(diets);
     }
 
+    @GetMapping("/full/template")
+    public ResponseEntity<List<FullDietDay>> getFullTemplateDiets() {
+        List<FullDietDay> diets = dietService.findFullByTemplate();
+        return ResponseEntity.ok(diets);
+    }
+
     @GetMapping("/trainer/{type}/{id}")
-    public ResponseEntity<List<DietDay>> getByTrainerId(@PathVariable String type, @PathVariable String id) {
+    public <T extends FirestoreEntity> ResponseEntity<List<T>> getByTrainerId(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
-        List<DietDay> diets = dietService.findByTrainer(serviceType, id);
+        List<T> diets = dietService.findByTrainer(serviceType, id);
+        return ResponseEntity.ok(diets);
+    }
+
+    @GetMapping("/full/trainer/{type}/{id}")
+    public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullByTrainerId(@PathVariable String type, @PathVariable String id) {
+        DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
+        List<T> diets = dietService.findFullByTrainer(serviceType, id);
         return ResponseEntity.ok(diets);
     }
 
@@ -92,6 +121,11 @@ public class DietController {
         return dietService.update(entity);
     }
 
+    @PutMapping("/full/update")
+    public <T extends FirestoreEntity> ResponseEntity<String> updateFull(@RequestBody T entity) {
+        return dietService.updateFull(entity);
+    }
+
     @PutMapping("/{dietId}/update")
     public ResponseEntity<String> updateMeal(@PathVariable String dietId, @RequestBody Meal meal) {
         return dietService.update(dietId, meal);
@@ -101,6 +135,12 @@ public class DietController {
     public ResponseEntity<String> deleteEntityById(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         return dietService.delete(id, serviceType);
+    }
+
+    @DeleteMapping("/full/delete/{type}/{id}")
+    public ResponseEntity<String> deleteFullEntityById(@PathVariable String type, @PathVariable String id) {
+        DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
+        return dietService.deleteFull(id, serviceType);
     }
 
     @DeleteMapping("/delete/{dietId}/meals/{mealId}")
@@ -120,8 +160,19 @@ public class DietController {
         return dietService.createTemplate(template);
     }
 
+    @PostMapping("/full/create")
+    public <T extends FirestoreEntity> ResponseEntity<String> createFullTemplate( @RequestBody T template) {
+        System.out.println(template.toString());
+        return dietService.createFullTemplate(template);
+    }
+
     @PostMapping("/create/{userId}")
     public ResponseEntity<String> createDietPlanForUser(@RequestBody DietPlan dietPlan, @PathVariable String userId) {
         return dietService.createForUser(dietPlan, userId);
+    }
+
+    @PostMapping("/full/create/{userId}")
+    public ResponseEntity<String> createFullDietPlanForUser(@RequestBody FullDietPlan dietPlan, @PathVariable String userId) {
+        return dietService.createFullForUser(dietPlan, userId);
     }
 }
