@@ -1,12 +1,10 @@
 package com.liftlife.liftlife.userModule.user.utils;
 
-import com.liftlife.liftlife.userModule.user.User;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
-import java.io.NotActiveException;
 import java.util.List;
 
 @Repository

@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.userModule.user.admin;
 
-import com.liftlife.liftlife.userModule.user.trainer.Trainer;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;

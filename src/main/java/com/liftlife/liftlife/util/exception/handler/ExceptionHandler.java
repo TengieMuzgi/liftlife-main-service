@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.util.exception.handler;
 
-import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.util.exception.DbAccessException;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
@@ -48,7 +47,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         logger.info(bodyOfResponse);
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
-    
+
 
 
 }

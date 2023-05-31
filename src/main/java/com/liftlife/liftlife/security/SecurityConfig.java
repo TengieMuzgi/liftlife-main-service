@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.security;
 
-import
-        com.liftlife.liftlife.security.jwt.FirebaseTokenProvider;
+import com.liftlife.liftlife.security.jwt.FirebaseTokenProvider;
 import com.liftlife.liftlife.security.jwt.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

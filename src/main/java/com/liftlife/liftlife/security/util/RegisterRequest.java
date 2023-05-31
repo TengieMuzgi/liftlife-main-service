@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.security.util;
 
-import com.liftlife.liftlife.common.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
