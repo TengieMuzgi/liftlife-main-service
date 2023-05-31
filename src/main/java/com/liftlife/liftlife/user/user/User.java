@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.userModule.user;
+package com.liftlife.liftlife.user.user;
 
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
@@ -14,12 +14,11 @@ import java.util.Date;
 @Setter
 @Getter
 public class User extends FirestoreEntity {
-    private String authId;
     private UserRole userRole;
     private Date registerDate;
 
     public User(String authId, UserRole userRole) {
-        this.authId = authId;
+        this.setDocumentId(authId);
         this.userRole = userRole;
         this.registerDate = new Date();
     }

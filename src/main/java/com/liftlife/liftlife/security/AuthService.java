@@ -3,7 +3,6 @@ package com.liftlife.liftlife.security;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.liftlife.liftlife.security.util.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,11 +54,6 @@ public class AuthService {
         String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return uid;
     }
-
-//    public void createAdmin() {
-//        Admin admin = new Admin("5mZB564wq4QyfSEAJYFTpNFiVQT2", UserRole.ADMIN);
-//        adminRepository.insert(admin);
-//    }
 
     private boolean checkIfUserExists(String email) {
         try {
@@ -130,5 +124,4 @@ public class AuthService {
 
         return true;
     }
-
 }

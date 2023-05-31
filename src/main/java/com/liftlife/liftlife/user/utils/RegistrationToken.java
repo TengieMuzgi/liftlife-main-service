@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.userModule.user.utils;
+package com.liftlife.liftlife.user.utils;
 
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.util.database.FirestoreEntity;

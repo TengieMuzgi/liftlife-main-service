@@ -17,9 +17,9 @@ import java.util.concurrent.ExecutionException;
  */
 @Slf4j
 public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
-    private final CollectionReference collectionReference;
+    protected final CollectionReference collectionReference;
     @Autowired
-    private FirestoreMapper firestoreMapper;
+    protected FirestoreMapper firestoreMapper;
     private final Class<T> classType;
 
     public FirestoreRepositoryTemplate(Class<T> classType) {
@@ -36,6 +36,10 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
 
     public FirestoreMapper getFirestoreMapper(){
         return this.firestoreMapper;
+    }
+
+    public CollectionReference getCollectionReference() {
+        return collectionReference;
     }
 
     public String insert(T toSave) {

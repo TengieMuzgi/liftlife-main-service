@@ -1,17 +1,28 @@
-package com.liftlife.liftlife.userModule.user.client;
+package com.liftlife.liftlife.user.client;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.liftlife.liftlife.user.trainer.Trainer;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @DependsOn("firestoreConnector")
 public class ClientRepository extends FirestoreRepositoryTemplate<Client> {
     public ClientRepository() {
         super(Client.class);
+    }
+
+    @Override
+    public String insert(Client toSave) {
+        Map<String, Object> json = firestoreMapper.objectToMap(toSave);
+        DocumentReference inserted = collectionReference.document(toSave.getDocumentId());
+        inserted.set(json);
+        return toSave.getDocumentId();
     }
 
     public Client findByAuthId(String authId) {

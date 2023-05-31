@@ -1,10 +1,10 @@
-package com.liftlife.liftlife.userModule.user.trainer;
+package com.liftlife.liftlife.user.trainer;
 
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.trainingModule.trainingPlan.TrainingPlan;
-import com.liftlife.liftlife.userModule.user.User;
-import com.liftlife.liftlife.userModule.user.utils.RegistrationToken;
+import com.liftlife.liftlife.user.user.User;
+import com.liftlife.liftlife.user.utils.RegistrationToken;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,18 +1,18 @@
-package com.liftlife.liftlife.userModule.user;
+package com.liftlife.liftlife.user.user;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.security.AuthService;
-import com.liftlife.liftlife.userModule.user.admin.Admin;
-import com.liftlife.liftlife.userModule.user.admin.AdminRepository;
-import com.liftlife.liftlife.userModule.user.client.Client;
-import com.liftlife.liftlife.userModule.user.client.ClientRepository;
-import com.liftlife.liftlife.userModule.user.trainer.Trainer;
-import com.liftlife.liftlife.userModule.user.trainer.TrainerRepository;
-import com.liftlife.liftlife.userModule.user.utils.RegistrationToken;
-import com.liftlife.liftlife.userModule.user.utils.RegistrationTokenRepository;
+import com.liftlife.liftlife.user.admin.Admin;
+import com.liftlife.liftlife.user.admin.AdminRepository;
+import com.liftlife.liftlife.user.client.Client;
+import com.liftlife.liftlife.user.client.ClientRepository;
+import com.liftlife.liftlife.user.trainer.Trainer;
+import com.liftlife.liftlife.user.trainer.TrainerRepository;
+import com.liftlife.liftlife.user.utils.RegistrationToken;
+import com.liftlife.liftlife.user.utils.RegistrationTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,7 +74,7 @@ public class UserService {
             trainerRepository.update(trainer);
             verifyUserEmail(currentUserAuthId);
             registrationTokenRepository.delete(registrationToken.getDocumentId());
-            return ResponseEntity.ok().body(trainer.getAuthId() + " " + trainer.getRegisterDate());
+            return ResponseEntity.ok().body("Email successfully verified");
         } else if(registrationToken.getCreationRole().equals(UserRole.ADMIN)) {
             Admin admin = adminRepository.findById(registrationToken.getCreationId());
             Trainer newTrainer = new Trainer(currentUserAuthId, UserRole.TRAINER);
@@ -82,7 +82,7 @@ public class UserService {
             trainerRepository.insert(newTrainer);
             verifyUserEmail(currentUserAuthId);
             registrationTokenRepository.delete(registrationToken.getDocumentId());
-            return ResponseEntity.ok().body(admin.getAuthId() + " " + admin.getRegisterDate());
+            return ResponseEntity.ok().body("Email successfully verified");
         } else {
             return ResponseEntity.badRequest().body("Invalid token");
         }

@@ -28,7 +28,7 @@ public class SecurityConfig {
 //                .httpBasic();
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(firebaseTokenProvider));

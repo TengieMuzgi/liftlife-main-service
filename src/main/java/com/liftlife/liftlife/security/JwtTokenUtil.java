@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.security.util;
+package com.liftlife.liftlife.security;
 
 
 import io.jsonwebtoken.*;

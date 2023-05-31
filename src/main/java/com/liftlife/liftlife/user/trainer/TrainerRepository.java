@@ -1,17 +1,27 @@
-package com.liftlife.liftlife.userModule.user.trainer;
+package com.liftlife.liftlife.user.trainer;
 
+import com.google.cloud.firestore.DocumentReference;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @DependsOn("firestoreConnector")
 public class TrainerRepository extends FirestoreRepositoryTemplate<Trainer> {
     public TrainerRepository() {
         super(Trainer.class);
+    }
+
+    @Override
+    public String insert(Trainer toSave) {
+        Map<String, Object> json = firestoreMapper.objectToMap(toSave);
+        DocumentReference inserted = collectionReference.document(toSave.getDocumentId());
+        inserted.set(json);
+        return toSave.getDocumentId();
     }
 
     public Trainer findByAuthId(String authId) {
@@ -36,4 +46,5 @@ public class TrainerRepository extends FirestoreRepositoryTemplate<Trainer> {
             return false;
         else return true;
     }
+
 }

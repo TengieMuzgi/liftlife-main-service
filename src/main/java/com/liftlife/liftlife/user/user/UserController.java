@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.userModule.user;
+package com.liftlife.liftlife.user.user;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;

@@ -1,8 +1,8 @@
-package com.liftlife.liftlife.userModule.user.admin;
+package com.liftlife.liftlife.user.admin;
 
 import com.liftlife.liftlife.common.UserRole;
-import com.liftlife.liftlife.userModule.user.User;
-import com.liftlife.liftlife.userModule.user.utils.RegistrationToken;
+import com.liftlife.liftlife.user.user.User;
+import com.liftlife.liftlife.user.utils.RegistrationToken;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
