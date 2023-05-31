@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (firebaseToken != null) {
                 String userId = firebaseToken.getUid();
                 List<GrantedAuthority> authorities = Collections.emptyList();
-                System.out.println("User: " + userId);
+                System.out.println("Logged user: " + userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

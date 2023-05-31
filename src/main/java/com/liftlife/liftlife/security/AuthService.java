@@ -3,14 +3,21 @@ package com.liftlife.liftlife.security;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.security.util.RegisterRequest;
-import com.liftlife.liftlife.userModule.user.UserRepository;
+import com.liftlife.liftlife.userModule.user.admin.Admin;
+import com.liftlife.liftlife.userModule.user.admin.AdminRepository;
+import com.liftlife.liftlife.userModule.user.client.Client;
+import com.liftlife.liftlife.userModule.user.client.ClientRepository;
+import com.liftlife.liftlife.userModule.user.trainer.Trainer;
+import com.liftlife.liftlife.userModule.user.trainer.TrainerRepository;
+import com.liftlife.liftlife.userModule.user.utils.RegistrationToken;
+import com.liftlife.liftlife.userModule.user.utils.RegistrationTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +31,7 @@ public class AuthService {
     }
 
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
-        if(validateRegisterRequest(registerRequest))
+        if(!isRegisterRequestValid(registerRequest))
             return ResponseEntity.badRequest().body("Register request is invalid");
 
         if(checkIfUserExists(registerRequest.getEmail()))  //409 resource conflict
@@ -48,6 +55,21 @@ public class AuthService {
             return ResponseEntity.internalServerError().body("User with email" + registerRequest.getEmail() + " not registered");
         }
     }
+
+    public static UserRecord getCurrentUser() throws FirebaseAuthException {
+        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return FirebaseAuth.getInstance().getUser(uid);
+    }
+
+    public static String getCurrentUserAuthId() {
+        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return uid;
+    }
+
+//    public void createAdmin() {
+//        Admin admin = new Admin("5mZB564wq4QyfSEAJYFTpNFiVQT2", UserRole.ADMIN);
+//        adminRepository.insert(admin);
+//    }
 
     private boolean checkIfUserExists(String email) {
         try {
@@ -88,7 +110,7 @@ public class AuthService {
         return hasUppercase && hasLowercase && hasDigit;
     }
 
-    private boolean validateRegisterRequest(RegisterRequest request) {
+    private boolean isRegisterRequestValid(RegisterRequest request) {
         if (request == null)
             return false;
 
@@ -119,8 +141,4 @@ public class AuthService {
         return true;
     }
 
-    public static UserRecord getCurrentUser() throws FirebaseAuthException {
-        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return FirebaseAuth.getInstance().getUser(uid);
-    }
 }

@@ -17,7 +17,6 @@ public class FirebaseTokenProvider {
         } catch (FirebaseAuthException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Decoded token: " + decodedToken);
         return decodedToken;
     }
 }
