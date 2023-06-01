@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -17,13 +18,16 @@ import java.util.List;
 @Getter
 @Setter
 public class Client extends User {
-    private String trainerId;
+    private String coachId;
     private TrainingPlan trainingPlan;
     private DietPlan dietPlan;
     private List<TrainingSession> trainingSessionList;
 
-    public Client(String authId, UserRole userRole, String trainerId) {
+    public Client(String authId, UserRole userRole, String coachId) {
         super(authId, userRole);
-        this.trainerId = trainerId;
+        this.coachId = coachId;
+        this.trainingSessionList = new ArrayList<>();
     }
+
+
 }

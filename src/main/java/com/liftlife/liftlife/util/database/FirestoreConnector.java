@@ -18,6 +18,7 @@ public class FirestoreConnector {
         GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
+                .setStorageBucket("realtime-database-prototype.appspot.com")
                 .build();
         FirebaseApp.initializeApp(options);
     }

@@ -3,11 +3,15 @@ package com.liftlife.liftlife.security;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.liftlife.liftlife.common.UserRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,7 +37,7 @@ public class AuthService {
                 .setEmail(registerRequest.getEmail())
                 .setEmailVerified(false)
                 .setPassword(registerRequest.getPassword())
-                .setDisplayName(registerRequest.getFirstName() + registerRequest.getLastName());
+                .setDisplayName(registerRequest.getFirstName() + " " + registerRequest.getLastName());
 
         try{
             UserRecord createdUser = firebaseAuth.createUser(request);
@@ -46,13 +50,28 @@ public class AuthService {
     }
 
     public static UserRecord getCurrentUser() throws FirebaseAuthException {
-        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String uid = AuthService.getCurrentUserAuthId();
         return FirebaseAuth.getInstance().getUser(uid);
     }
 
     public static String getCurrentUserAuthId() {
         String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return uid;
+    }
+
+    public static UserRole getCurrentUserRole() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().isEmpty())
+            return null;
+        else {
+            List<GrantedAuthority> authorities = (List<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+            String role = authorities.get(0).getAuthority();
+            return UserRole.valueOf(role);
+        }
+    }
+
+    public static String extractCurrentUserRole(UserRecord userRecord) {
+        String role = (String) userRecord.getCustomClaims().get("role");
+        return role;
     }
 
     private boolean checkIfUserExists(String email) {

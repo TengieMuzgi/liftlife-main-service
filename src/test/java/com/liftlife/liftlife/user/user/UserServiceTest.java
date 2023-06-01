@@ -1,13 +1,14 @@
 package com.liftlife.liftlife.user.user;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
 import com.liftlife.liftlife.user.client.ClientRepository;
-import com.liftlife.liftlife.user.trainer.Trainer;
-import com.liftlife.liftlife.user.trainer.TrainerRepository;
+import com.liftlife.liftlife.user.coach.Coach;
+import com.liftlife.liftlife.user.coach.CoachRepository;
 import com.liftlife.liftlife.user.utils.RegistrationToken;
 import com.liftlife.liftlife.user.utils.RegistrationTokenRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.mock;
 public class UserServiceTest {
 
     @Mock
-    private TrainerRepository trainerRepository;
+    private CoachRepository coachRepository;
     @Mock
     private AdminRepository adminRepository;
     @Mock
@@ -48,15 +49,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void generateRegistrationToken_WithTrainer_ShouldReturnToken() {
+    public void generateRegistrationToken_WithCoach_ShouldReturnToken() {
         // given
         String authId = "authId";
-        Trainer trainer = mock(Trainer.class); //new Trainer();
+        Coach coach = mock(Coach.class); //new Trainer();
         RegistrationToken token = new RegistrationToken();
 
-        Mockito.when(trainerRepository.isPresentByAuthId(authId)).thenReturn(true);
-        Mockito.when(trainerRepository.findByAuthId(authId)).thenReturn(trainer);
-        Mockito.when(trainer.generateVerificationToken()).thenReturn(token);
+        Mockito.when(coachRepository.isPresentById(authId)).thenReturn(true);
+        Mockito.when(coachRepository.findById(authId)).thenReturn(coach);
+        Mockito.when(coach.generateVerificationToken()).thenReturn(token);
 
         // when
         ResponseEntity<String> response = userService.generateRegistrationToken();
@@ -73,8 +74,8 @@ public class UserServiceTest {
         Admin admin = mock(Admin.class);
         RegistrationToken token = new RegistrationToken();
 
-        Mockito.when(adminRepository.isPresentByAuthId(authId)).thenReturn(true);
-        Mockito.when(adminRepository.findByAuthId(authId)).thenReturn(admin);
+        Mockito.when(adminRepository.isPresentById(authId)).thenReturn(true);
+        Mockito.when(adminRepository.findById(authId)).thenReturn(admin);
         Mockito.when(admin.generateVerificationToken()).thenReturn(token);
 
         // when
@@ -88,8 +89,8 @@ public class UserServiceTest {
     @Test
     public void generateRegistrationToken_WithInvalidRole_ShouldReturnBadRequest() {
         // given
-        Mockito.when(trainerRepository.isPresentByAuthId(Mockito.anyString())).thenReturn(false);
-        Mockito.when(adminRepository.isPresentByAuthId(Mockito.anyString())).thenReturn(false);
+        Mockito.when(coachRepository.isPresentById(Mockito.anyString())).thenReturn(false);
+        Mockito.when(adminRepository.isPresentById(Mockito.anyString())).thenReturn(false);
 
         // when
         ResponseEntity<String> response = userService.generateRegistrationToken();
@@ -102,7 +103,7 @@ public class UserServiceTest {
     //verifyWithToken
 
     @Test
-    public void verifyWithToken_WithInvalidToken_ShouldReturnBadRequest() {
+    public void verifyWithToken_WithInvalidToken_ShouldReturnBadRequest() throws FirebaseAuthException {
         // given
         String token = "invalidToken";
         Mockito.when(registrationTokenRepository.isPresent(token)).thenReturn(false);
@@ -116,7 +117,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void verifyWithToken_WithClientToken_ShouldReturnBadRequest() {
+    public void verifyWithToken_WithClientToken_ShouldReturnBadRequest() throws FirebaseAuthException {
         // given
         String clientToken = "clientToken";
         Mockito.when(registrationTokenRepository.isPresent(clientToken)).thenReturn(true);

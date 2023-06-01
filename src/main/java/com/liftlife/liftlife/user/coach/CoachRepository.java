@@ -1,7 +1,6 @@
-package com.liftlife.liftlife.user.client;
+package com.liftlife.liftlife.user.coach;
 
 import com.google.cloud.firestore.DocumentReference;
-import com.liftlife.liftlife.user.coach.Coach;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
@@ -12,13 +11,13 @@ import java.util.Map;
 
 @Repository
 @DependsOn("firestoreConnector")
-public class ClientRepository extends FirestoreRepositoryTemplate<Client> {
-    public ClientRepository() {
-        super(Client.class);
+public class CoachRepository extends FirestoreRepositoryTemplate<Coach> {
+    public CoachRepository() {
+        super(Coach.class);
     }
 
     @Override
-    public String insert(Client toSave) {
+    public String insert(Coach toSave) {
         Map<String, Object> json = firestoreMapper.objectToMap(toSave);
         DocumentReference inserted = collectionReference.document(toSave.getDocumentId());
         inserted.set(json);
@@ -26,11 +25,11 @@ public class ClientRepository extends FirestoreRepositoryTemplate<Client> {
     }
 
     @Override
-    public Client findById(String id) {
+    public Coach findById(String id) {
         try {
-            Client client = super.findById(id);
-            if(client != null)
-                return client;
+            Coach coach = super.findById(id);
+            if(coach != null)
+                return coach;
         } catch (NullPointerException e) {
             throw new UserNotFoundException("User with authId: " + id + " is not registered");
         }
@@ -39,8 +38,8 @@ public class ClientRepository extends FirestoreRepositoryTemplate<Client> {
 
     public boolean isPresentById(String documentId) {
         try {
-            Client client = super.findById(documentId);
-            if(client != null)
+            Coach coach = super.findById(documentId);
+            if(coach != null)
                 return true;
         } catch (NullPointerException e) {
             return false;

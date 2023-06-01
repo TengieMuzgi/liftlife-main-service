@@ -14,9 +14,9 @@ public class PrivateController {
     @Autowired
     private FirebaseAuth firebaseAuth;
 
-//    @GetMapping("/private")
-//    public String privateEndpoint() throws FirebaseAuthException {
-//        System.out.println(firebaseAuth.getUser("mPpm9E3vCURi0tBfJH8IfgvGKTp2").getPhotoUrl());
-//        return "Hello, " + AuthService.getCurrentUserAuthId() + "! This is a private endpoint.";
-//    }
+    @GetMapping("/private")
+    public String privateEndpoint() throws FirebaseAuthException {
+        System.out.println(firebaseAuth.getUser("mPpm9E3vCURi0tBfJH8IfgvGKTp2").getPhotoUrl());
+        return "Hello, " + AuthService.getCurrentUserAuthId() + "! This is a private endpoint.";
+    }
 }

@@ -2,6 +2,7 @@ package com.liftlife.liftlife.user.admin;
 
 import com.google.cloud.firestore.DocumentReference;
 import com.liftlife.liftlife.user.client.Client;
+import com.liftlife.liftlife.user.coach.Coach;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
@@ -25,26 +26,27 @@ public class AdminRepository extends FirestoreRepositoryTemplate<Admin> {
         return toSave.getDocumentId();
     }
 
-    public Admin findByAuthId(String authId) {
-        List<Admin> admins = super.findByField("authId", authId);
-        if(admins.isEmpty())
-            throw new UserNotFoundException("User with authId: " + authId + " is not registered");
-        else if(admins.size() > 1)
-            throw new UserNotFoundException("Multiple users with authId : " + authId + " was found");
-        else return admins.get(0);
+    @Override
+    public Admin findById(String id) {
+        try {
+            Admin admin = super.findById(id);
+            if(admin != null)
+                return admin;
+        } catch (NullPointerException e) {
+            throw new UserNotFoundException("User with authId: " + id + " is not registered");
+        }
+        throw new UserNotFoundException("User with authId: " + id + " is not registered");
     }
 
-    public boolean isPresentByDocumentId(String documentId) {
-        Admin admin = super.findById(documentId);
-        if(admin == null)
+    public boolean isPresentById(String documentId) {
+        try {
+            Admin admin = super.findById(documentId);
+            if(admin != null)
+                return true;
+        } catch (NullPointerException e) {
             return false;
-        else return true;
+        }
+        return false;
     }
 
-    public boolean isPresentByAuthId(String authId) {
-        List<Admin> admins = super.findByField("authId", authId);
-        if(admins.isEmpty())
-            return false;
-        else return true;
-    }
 }
