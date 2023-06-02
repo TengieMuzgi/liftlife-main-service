@@ -32,6 +32,8 @@ public class SecurityConfig {
 //                .csrf(csrf -> csrf.disable())
 //                .httpBasic();
         http.csrf().disable()
+                .cors()
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
