@@ -156,13 +156,13 @@ public class DietController {
 
     @PostMapping("/create")
     public <T extends FirestoreEntity> ResponseEntity<String> createTemplate( @RequestBody T template) {
-        System.out.println(template.toString());
+        //System.out.println(template.toString());
         return dietService.createTemplate(template);
     }
 
     @PostMapping("/full/create")
     public <T extends FirestoreEntity> ResponseEntity<String> createFullTemplate( @RequestBody T template) {
-        System.out.println(template.toString());
+        //System.out.println(template.toString());
         return dietService.createFullTemplate(template);
     }
 

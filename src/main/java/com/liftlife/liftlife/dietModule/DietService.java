@@ -121,7 +121,7 @@ public class DietService {
             case DIET_PLAN: entity = (T) dietPlanRepository.findById(id); break;
         }
 
-        System.out.println(type);
+        //System.out.println(type);
 
         if(entity == null)
             throw new NotFoundException("Object with ID " + id + " not found");
@@ -289,14 +289,14 @@ public class DietService {
             return ResponseEntity.badRequest().body("Object is null");
 
         dietDayRepository.deleteMeal(dietId, meal);
-        return ResponseEntity.ok().body("DietPlan deleted with ID "
+        return ResponseEntity.ok().body("Meal deleted with ID "
                 + meal.getDocumentId());
     }
 
     public ResponseEntity<String> delete(String dietId, String mealId){
 
         dietDayRepository.deleteMeal(dietId, mealId);
-        return ResponseEntity.ok().body("DietPlan deleted with ID "
+        return ResponseEntity.ok().body("Meal deleted with ID "
                 + mealId);
     }
 
@@ -333,13 +333,13 @@ public class DietService {
         return null;
     }
 
-    private DietDay convertDietDay(FullDietDay day){
+    DietDay convertDietDay(FullDietDay day){
         DietDay dietDay =  new DietDay(day.getDayOfWeek(),day.getCaloriesSum(),day.isTemplate(),day.getTrainerId(), day.getDocumentId());
         dietDay.setDocumentId(dietDay.getDocumentId());
         return dietDay;
     }
 
-    private DietPlan convertDietPlan(FullDietPlan fullPlan){
+    DietPlan convertDietPlan(FullDietPlan fullPlan){
         DietPlan plan = new DietPlan(fullPlan.getName(),fullPlan.getUserId(),fullPlan.getTrainerId(),new ArrayList<>());
         List<String> ids = new ArrayList<>();
         for(FullDietDay day: fullPlan.getDietDays()){
@@ -350,7 +350,7 @@ public class DietService {
         return plan;
     }
     //TODO handling no object with this id
-    private <T extends FirestoreEntity, Q extends FirestoreEntity> T returnFull(Q object){
+    <T extends FirestoreEntity, Q extends FirestoreEntity> T returnFull(Q object){
 
         if(object == null)
             return null;
@@ -365,19 +365,19 @@ public class DietService {
             case "DietPlan": FullDietPlan fullPlan = new FullDietPlan(((DietPlan) object).getName(), ((DietPlan) object).getUserId(),
                         ((DietPlan) object).getTrainerId(),new ArrayList<FullDietDay>());
                 List<FullDietDay> days = new ArrayList<>();
-                System.out.println(object.toString());
+                //System.out.println(object.toString());
                 for(String day: ((DietPlan) object).getDietDays()){
-                    System.out.println(day);
+                    //System.out.println(day);
                     DietDay dietDay = dietDayRepository.findById(day);
                     FullDietDay fullDietDay = new FullDietDay(dietDay.getDayOfWeek(),dietDay.getCaloriesSum(),
                             dietDay.isTemplate(),dietDay.getTrainerId(),new ArrayList<>());
                     List<Meal> meals = dietDayRepository.findMeals(dietDay.getDocumentId());
                     fullDietDay.setMeals(meals);
                     fullDietDay.setDocumentId(dietDay.getDocumentId());
-                    System.out.println("saved");
+                    //System.out.println("saved");
                     days.add(fullDietDay);
                 }
-                System.out.println("ssss");
+                //System.out.println("ssss");
                 fullPlan.setDietDays(days);
                 fullPlan.setDocumentId(object.getDocumentId());
                 return (T) fullPlan;
@@ -392,15 +392,15 @@ public class DietService {
 
         switch(type){
             case DIET_DAY : entity = (T) dietDayRepository.findById(id);
-                System.out.println(entity);
+                //System.out.println(entity);
                 return returnFull(entity);
             //case PRODUCT: entity = (T) productRepository.findById(id); break;
             case DIET_PLAN: entity = (T) dietPlanRepository.findById(id);
-                System.out.println("plan " + entity.getDocumentId());
+                //System.out.println("plan " + entity.getDocumentId());
                 return returnFull(entity);
         }
 
-        System.out.println(type);
+        //System.out.println(type);
 
         if(entity == null)
             throw new NotFoundException("Object with ID " + id + " not found");
@@ -488,20 +488,20 @@ public class DietService {
 
              */
             case "FullDietPlan" :
-                System.out.println("1");
+                //System.out.println("1");
                 dietPlanRepository.update(convertDietPlan((FullDietPlan) object));
-                System.out.println("2");
+                //System.out.println("2");
                 for(FullDietDay day: ((FullDietPlan) object).getDietDays()){
-                    System.out.println("3");
+                    //System.out.println("3");
                     dietDayRepository.update(convertDietDay(day));
-                    System.out.println("4");
+                    //System.out.println("4");
                     for(Meal meal: day.getMeals()){
-                        System.out.println("5");
+                        //System.out.println("5");
                         dietDayRepository.updateMeal(day.getDocumentId(), meal);
-                        System.out.println("6");
+                        //System.out.println("6");
                     }
                 }
-                System.out.println("7");
+                //System.out.println("7");
                 return ResponseEntity.ok().body("DietPlan updated");
             default: return ResponseEntity.badRequest().body("Class cannot be recognized");
         }
