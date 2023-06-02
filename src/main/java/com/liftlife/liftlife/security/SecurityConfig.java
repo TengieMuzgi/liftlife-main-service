@@ -36,9 +36,10 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
-                .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
-                .requestMatchers("/api/user/client").hasAnyAuthority("CLIENT")
+                .requestMatchers("/api/user/coaches")
+//                .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
+//                .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
+//                .requestMatchers("/api/user/client").hasAnyAuthority("CLIENT")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(firebaseTokenProvider));
