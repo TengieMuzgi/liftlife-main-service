@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class UserController {
     @PostMapping
     public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
         byte[] fileInBytes = file.getBytes();
-        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
+        firebaseBucket.create(AuthService.getCurrentUserAuthId(), (InputStream) file);
     }
 
     @GetMapping("/coaches")

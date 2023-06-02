@@ -52,12 +52,13 @@ public class UserService {
     public ResponseEntity<String> generateRegistrationToken() {
         String authId = AuthService.getCurrentUserAuthId();
         UserRole role = AuthService.getCurrentUserRole();
-        if (role.equals(UserRole.COACH.name())) {
+        System.out.printf(role.name());
+        if (role.equals(UserRole.COACH)) {
             Coach coach = coachRepository.findById(authId);
             RegistrationToken registrationToken = coach.generateVerificationToken();
             registrationTokenRepository.insert(registrationToken);
             return ResponseEntity.ok().body(registrationToken.getToken());
-        } else if(role.equals(UserRole.ADMIN.name())) {
+        } else if(role.equals(UserRole.ADMIN)) {
             Admin admin = adminRepository.findById(authId);
             RegistrationToken registrationToken = admin.generateVerificationToken();
             registrationTokenRepository.insert(registrationToken);
