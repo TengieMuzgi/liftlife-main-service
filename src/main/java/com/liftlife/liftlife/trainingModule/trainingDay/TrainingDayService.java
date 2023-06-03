@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.trainingModule.trainingDay;
 
 import com.google.cloud.firestore.WriteResult;
-import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSessionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
