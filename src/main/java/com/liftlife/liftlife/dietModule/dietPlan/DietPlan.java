@@ -1,5 +1,6 @@
 package com.liftlife.liftlife.dietModule.dietPlan;
 
+import com.liftlife.liftlife.util.database.DietEntity;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
@@ -14,7 +15,7 @@ what coach suggested to eat throughout the week. It cycles each week unless it's
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DietPlan extends FirestoreEntity {
+public class DietPlan extends DietEntity {
     private String name;
     //id's for presentation, no implementation for now
     private String userId;

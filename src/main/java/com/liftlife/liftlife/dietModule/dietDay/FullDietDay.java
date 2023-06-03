@@ -1,7 +1,7 @@
 package com.liftlife.liftlife.dietModule.dietDay;
 
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
-import com.liftlife.liftlife.util.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.DietEntity;
 import lombok.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class FullDietDay extends FirestoreEntity {
+public class FullDietDay extends DietEntity {
     private int dayOfWeek;
     private transient int caloriesSum;
     private boolean isTemplate;
