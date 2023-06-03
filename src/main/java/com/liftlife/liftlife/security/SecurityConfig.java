@@ -35,11 +35,10 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/user/coaches").permitAll()
+                .requestMatchers("/api/auth/**", "/api/user/coaches", "/public").permitAll()
                 .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
                 .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
-                .requestMatchers("/api/user/client").hasAnyAuthority("CLIENT")
+                .requestMatchers("/api/user/client/**").hasAnyAuthority("CLIENT")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(firebaseTokenProvider));

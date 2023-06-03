@@ -3,6 +3,7 @@ package com.liftlife.liftlife.user.user;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.common.CoachSpecialization;
+import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.coach.Coach;
@@ -21,9 +22,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private Bucket firebaseBucket;
-
     @GetMapping("/token/generate")
     public ResponseEntity<String> generateRegistrationToken() {
         return userService.generateRegistrationToken();
@@ -32,12 +30,6 @@ public class UserController {
     @PostMapping("/token/verify")
     public ResponseEntity<String> registerWithToken(@RequestParam String token) throws FirebaseAuthException {
         return userService.verifyWithToken(token);
-    }
-
-    @PostMapping
-    public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
-        byte[] fileInBytes = file.getBytes();
-        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
     }
 
     @GetMapping("/coaches")
@@ -51,22 +43,24 @@ public class UserController {
     }
 
     @PostMapping("/coach/change/specialization")
-    public ResponseEntity<String> changeCoachSpecialization(@RequestBody CoachSpecialization specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(@RequestBody String specialization) {
         return userService.changeCoachSpecialization(specialization);
     }
 
+    @GetMapping("/coach/specializations")
+    public ResponseEntity<List<String>> getSpecializations() {
+        return ResponseEntity.ok().body(userService.getSpecializations());
+    }
 
-//    @GetMapping
-//    public void getProfilePicture() throws FirebaseAuthException {
-////        Blob downloadedBlob = firebaseBucket.get("MuA1nRxWA2OOpS0pNOSpZxMcKan2");
-////        String url = downloadedBlob.getMediaLink();
-//        UserRecord userRecord = AuthService.getCurrentUser();
-//        System.out.println(userRecord.getPhotoUrl());
-////        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(userRecord.getUid()).setPhotoUrl(url);
-////        UserRecord updatedUser = firebaseAuth.updateUser(request);
-////        System.out.println(url);
-////        System.out.println(updatedUser.getPhotoUrl());
-//    }
+    @PostMapping("/picture/insert")
+    public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
+        return userService.changeProfilePicture(file);
+    }
+
+    @GetMapping("/client/info")
+    public ResponseEntity<ClientDto> getClientData() {
+        return userService.getClientDto();
+    }
 
 
 }

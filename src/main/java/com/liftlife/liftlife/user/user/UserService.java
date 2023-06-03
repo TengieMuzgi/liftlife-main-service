@@ -1,10 +1,15 @@
 package com.liftlife.liftlife.user.user;
 
+import com.google.cloud.storage.Acl;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.common.UserRole;
+import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
@@ -20,7 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +49,9 @@ public class UserService {
     private RegistrationTokenRepository registrationTokenRepository;
     private ClientRepository clientRepository;
     private FirebaseAuth firebaseAuth;
+
+    @Autowired
+    private Bucket firebaseBucket;
 
     @Autowired
     public UserService(CoachRepository coachRepository, AdminRepository adminRepository,
@@ -74,6 +89,16 @@ public class UserService {
 
         RegistrationToken registrationToken = registrationTokenRepository.findByToken(token);
         String currentUserId = AuthService.getCurrentUserAuthId();
+
+        //save user picture from google to storage
+        try {
+            String url = AuthService.getCurrentUser().getPhotoUrl();
+            if(url != null) {
+                this.saveFileToStorage(url);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if(registrationToken.getCreationRole().equals(UserRole.COACH)) {
             Coach coach = coachRepository.findById(registrationToken.getCreationId());
@@ -134,9 +159,9 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    public ResponseEntity<String> changeCoachSpecialization(CoachSpecialization specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(String specialization) {
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
-        coach.setSpecialization(specialization);
+        coach.setSpecialization(CoachSpecialization.getSpecializationFromString(specialization));
         coachRepository.update(coach);
 
         return ResponseEntity.ok().body("");
@@ -161,5 +186,63 @@ public class UserService {
             log.error("Error during email verification for user: " + authId);
             throw new RuntimeException("Error during email verification for user: " + authId);
         }
+    }
+
+    private void saveFileToStorage(String strUrl) throws IOException {
+        URL url = new URL(strUrl);
+        try (InputStream in = url.openStream();
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(out.toByteArray()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResponseEntity<String> changeProfilePicture(MultipartFile file) {
+        byte[] imageInBytes = new byte[0];
+        try {
+            imageInBytes = file.getBytes();
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Wrong image format");
+        }
+
+        Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(imageInBytes));
+
+//        // Opcjonalnie możesz ustawić publiczne uprawnienia do dostępu do pliku
+//        blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+//
+//
+//        String downloadUrl = blob.getMediaLink();
+//        log.info("Zapisano zdjęcie. URL do pobrania: " + downloadUrl);
+        return ResponseEntity.ok().body("");
+    }
+
+    public List<String> getSpecializations() {
+        List<String> specializations = new ArrayList<>();
+
+        for (CoachSpecialization myEnum : CoachSpecialization.values()) {
+            if (myEnum.getDescription() != null) {
+                specializations.add(myEnum.getDescription());
+            }
+        }
+        return specializations;
+    }
+
+    public ResponseEntity<ClientDto> getClientDto() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        String[] name = userRecord.getDisplayName().split(" ");
+        ClientDto clientDto = new ClientDto(
+                userRecord.getUid(),
+                name[0],
+                name[1],
+                clientRepository.findById(userRecord.getUid()).getRegisterDate()
+        );
+
+        return ResponseEntity.ok().body(clientDto);
     }
 }
