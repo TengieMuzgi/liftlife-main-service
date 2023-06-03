@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.dietModule.dietPlan;
 
-import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;

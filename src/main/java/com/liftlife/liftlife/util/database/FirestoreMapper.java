@@ -2,12 +2,13 @@ package com.liftlife.liftlife.util.database;
 
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.liftlife.liftlife.trainingModule.exercise.Exercise;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Component
@@ -26,6 +27,7 @@ public class FirestoreMapper {
                         new ChildSerializer<Exercise>())
                 .registerTypeAdapter(new TypeToken<AttributeList<Exercise>>(){}.getType(),
                         new ChildDeserializer<>(Exercise.class))
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
     }
 
@@ -43,5 +45,21 @@ public class FirestoreMapper {
 
     public String mapToJson(Object object) {
         return gson.toJson(object);
+    }
+
+    private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+        private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        @Override
+        public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+            String formattedDate = src.format(DATE_FORMATTER);
+            return new JsonPrimitive(formattedDate);
+        }
+
+        @Override
+        public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            String dateString = json.getAsString();
+            return LocalDate.parse(dateString, DATE_FORMATTER);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.dietModule;
 
 
-
 import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.DietDayRepository;
 import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
@@ -12,7 +11,6 @@ import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlanRepository;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
-import com.liftlife.liftlife.user.utils.ReferenceType;
 import com.liftlife.liftlife.util.database.DietEntity;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

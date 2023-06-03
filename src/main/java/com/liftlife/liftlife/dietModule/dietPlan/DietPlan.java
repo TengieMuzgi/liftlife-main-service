@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.dietModule.dietPlan;
 
 import com.liftlife.liftlife.util.database.DietEntity;
-import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
 import java.util.List;

@@ -38,4 +38,8 @@ public class TrainingPlanService {
     public void deletePlan(String trainingPlanId) {
         trainingPlanRepository.delete(trainingPlanId);
     }
+
+    public List<TrainingPlan> findPlansForClient(String clientId) {
+        return trainingPlanRepository.findPlansForClient(clientId);
+    }
 }
