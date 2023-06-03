@@ -48,8 +48,13 @@ public class UserController {
     }
 
     @PostMapping("/coach/change/specialization")
-    public ResponseEntity<String> changeCoachSpecialization(@RequestBody CoachSpecialization specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(@RequestBody String specialization) {
         return userService.changeCoachSpecialization(specialization);
+    }
+
+    @GetMapping("/coach/specializations")
+    public ResponseEntity<List<String>> getSpecializations() {
+        return ResponseEntity.ok().body(userService.getSpecializations());
     }
 
     @PostMapping("/picture/insert")

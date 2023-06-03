@@ -158,9 +158,9 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    public ResponseEntity<String> changeCoachSpecialization(CoachSpecialization specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(String specialization) {
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
-        coach.setSpecialization(specialization);
+        coach.setSpecialization(CoachSpecialization.getSpecializationFromString(specialization));
         coachRepository.update(coach);
 
         return ResponseEntity.ok().body("");
@@ -219,5 +219,16 @@ public class UserService {
 //        String downloadUrl = blob.getMediaLink();
 //        log.info("Zapisano zdjęcie. URL do pobrania: " + downloadUrl);
         return ResponseEntity.ok().body("");
+    }
+
+    public List<String> getSpecializations() {
+        List<String> specializations = new ArrayList<>();
+
+        for (CoachSpecialization myEnum : CoachSpecialization.values()) {
+            if (myEnum.getDescription() != null) {
+                specializations.add(myEnum.getDescription());
+            }
+        }
+        return specializations;
     }
 }
