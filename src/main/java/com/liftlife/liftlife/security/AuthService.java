@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.common.UserRole;
+import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +50,13 @@ public class AuthService {
         }
     }
 
-    public static UserRecord getCurrentUser() throws FirebaseAuthException {
-        String uid = AuthService.getCurrentUserAuthId();
-        return FirebaseAuth.getInstance().getUser(uid);
+    public static UserRecord getCurrentUser() {
+        try {
+            String uid = AuthService.getCurrentUserAuthId();
+            return FirebaseAuth.getInstance().getUser(uid);
+        } catch (FirebaseAuthException e) {
+            throw new UserNotFoundException("Cannot find current logged user");
+        }
     }
 
     public static String getCurrentUserAuthId() {
