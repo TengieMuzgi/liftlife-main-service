@@ -32,12 +32,6 @@ public class UserController {
         return userService.verifyWithToken(token);
     }
 
-//    @PostMapping
-//    public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
-//        byte[] fileInBytes = file.getBytes();
-//        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
-//    }
-
     @GetMapping("/coaches")
     public ResponseEntity<List<CoachDto>> getCoachesBySpecialization() throws FirebaseAuthException {
         return userService.getCoachList();
@@ -67,19 +61,6 @@ public class UserController {
     public ResponseEntity<ClientDto> getClientData() {
         return userService.getClientDto();
     }
-
-
-//    @GetMapping
-//    public void getProfilePicture() throws FirebaseAuthException {
-////        Blob downloadedBlob = firebaseBucket.get("MuA1nRxWA2OOpS0pNOSpZxMcKan2");
-////        String url = downloadedBlob.getMediaLink();
-//        UserRecord userRecord = AuthService.getCurrentUser();
-//        System.out.println(userRecord.getPhotoUrl());
-////        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(userRecord.getUid()).setPhotoUrl(url);
-////        UserRecord updatedUser = firebaseAuth.updateUser(request);
-////        System.out.println(url);
-////        System.out.println(updatedUser.getPhotoUrl());
-//    }
 
 
 }

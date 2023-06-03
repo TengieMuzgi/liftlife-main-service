@@ -16,11 +16,11 @@ public class PublicController {
     @Autowired
     private FirebaseAuth firebaseAuth;
 
-    @GetMapping("/public")
-    public void privateEndpoint() throws FirebaseAuthException {
-
-        String url = firebaseAuth.getUser("MuA1nRxWA2OOpS0pNOSpZxMcKan2").getPhotoUrl();
-        log.info(url);
-//        return "Hello, " + AuthService.getCurrentUserAuthId() + "! This is a private endpoint.";
-    }
+//    @GetMapping("/public")
+//    public void privateEndpoint() throws FirebaseAuthException {
+//
+//        String url = firebaseAuth.getUser("MuA1nRxWA2OOpS0pNOSpZxMcKan2").getPhotoUrl();
+//        log.info(url);
+////        return "Hello, " + AuthService.getCurrentUserAuthId() + "! This is a private endpoint.";
+//    }
 }
