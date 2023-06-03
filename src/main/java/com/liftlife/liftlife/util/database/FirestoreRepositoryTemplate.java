@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.liftlife.liftlife.util.exception.DbAccessException;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -60,6 +61,9 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
 
         try{
             DocumentSnapshot document = future.get();
+            if(!document.exists()){
+                throw new NotFoundException("Object with id "+ documentId +" cannot be found");
+            }
             log.info("Result while saving to db: " + document);
             T entity = firestoreMapper.mapToObject(document, classType);
             entity.setDocumentId(documentId);
@@ -106,9 +110,11 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
 
     public WriteResult update(T toChange) {
         DocumentReference documentReference = collectionReference.document(toChange.getDocumentId());
-        Map<String, Object> json = firestoreMapper.objectToMap(toChange);
-        ApiFuture<WriteResult> result = documentReference.update(json);
         try {
+            if(!documentReference.get().get().exists())
+                throw new NotFoundException("Object with id "+toChange.getDocumentId()+" does not exist");
+            Map<String, Object> json = firestoreMapper.objectToMap(toChange);
+            ApiFuture<WriteResult> result = documentReference.update(json);
             return result.get();
         } catch (ExecutionException e) {
             throw new DbAccessException(e);
@@ -132,4 +138,5 @@ public class FirestoreRepositoryTemplate<T extends FirestoreEntity> {
     public void delete(T objectToDelete) {
         collectionReference.document(objectToDelete.getDocumentId()).delete();
     }
+
 }
