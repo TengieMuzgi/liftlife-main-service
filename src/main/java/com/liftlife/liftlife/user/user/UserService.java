@@ -136,7 +136,7 @@ public class UserService {
                     coach.getDocumentId(),
                     name[0],
                     name[1],
-                    specialization,
+                    specialization.getDescription(),
                     coach.getDescription(),
                     userRecord.getEmail()
             ));

@@ -12,7 +12,7 @@ public class CoachDto {
     private String id;
     private String firstName;
     private String lastName;
-    private CoachSpecialization specialization;
+    private String specialization;
     private String description;
     private String email;
 }

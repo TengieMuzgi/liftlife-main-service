@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -77,6 +78,13 @@ public class AuthService {
     public static String extractCurrentUserRole(UserRecord userRecord) {
         String role = (String) userRecord.getCustomClaims().get("role");
         return role;
+    }
+
+    private boolean isEmailValid(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(emailRegex);
+
+        return pattern.matcher(email).matches();
     }
 
     private boolean checkIfUserExists(String email) {
