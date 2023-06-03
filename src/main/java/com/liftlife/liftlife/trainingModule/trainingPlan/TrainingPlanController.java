@@ -23,13 +23,13 @@ public class TrainingPlanController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<String> insertPlan(@RequestBody TrainingPlan trainingPlan) {
+    public ResponseEntity<List<String>> insertPlan(@RequestBody TrainingPlan trainingPlan) {
         return ResponseEntity.ok(trainingPlanService.insertPlan(trainingPlan));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deletePlan(@RequestParam String trainingPlanId) {
-        trainingPlanService.deletePlan(trainingPlanId);
+    public ResponseEntity deletePlan(@RequestParam String planId) {
+        trainingPlanService.deletePlan(planId);
         return ResponseEntity.ok().build();
     }
 }

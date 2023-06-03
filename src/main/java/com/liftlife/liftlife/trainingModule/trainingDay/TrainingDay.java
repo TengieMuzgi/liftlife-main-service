@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.trainingModule.trainingDay;
 
-import com.liftlife.liftlife.common.DayOfWeek;
 import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
@@ -17,6 +16,6 @@ which consists of zero or more training sets.
 @NoArgsConstructor
 @ToString
 public class TrainingDay extends FirestoreEntity {
-    private DayOfWeek dayOfWeek;
+    private int dayOfWeek;
     private transient List<TrainingSession> trainingSessions;
 }
