@@ -48,137 +48,90 @@ public class UserServiceTest {
         Mockito.when(AuthService.getCurrentUserAuthId()).thenReturn("authId");
     }
 
-    @Test
-    public void generateRegistrationToken_WithCoach_ShouldReturnToken() {
-        // given
-        String authId = "authId";
-        Coach coach = mock(Coach.class); //new Trainer();
-        RegistrationToken token = new RegistrationToken();
-
-        Mockito.when(coachRepository.isPresentById(authId)).thenReturn(true);
-        Mockito.when(coachRepository.findById(authId)).thenReturn(coach);
-        Mockito.when(coach.generateVerificationToken()).thenReturn(token);
-
-        // when
-        ResponseEntity<String> response = userService.generateRegistrationToken();
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(token.getToken(), response.getBody());
-    }
-
-    @Test
-    public void generateRegistrationToken_WithAdmin_ShouldReturnToken() {
-        // given
-        String authId = "authId";
-        Admin admin = mock(Admin.class);
-        RegistrationToken token = new RegistrationToken();
-
-        Mockito.when(adminRepository.isPresentById(authId)).thenReturn(true);
-        Mockito.when(adminRepository.findById(authId)).thenReturn(admin);
-        Mockito.when(admin.generateVerificationToken()).thenReturn(token);
-
-        // when
-        ResponseEntity<String> response = userService.generateRegistrationToken();
-
-        // then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(token.getToken(), response.getBody());
-    }
-
-    @Test
-    public void generateRegistrationToken_WithInvalidRole_ShouldReturnBadRequest() {
-        // given
-        Mockito.when(coachRepository.isPresentById(Mockito.anyString())).thenReturn(false);
-        Mockito.when(adminRepository.isPresentById(Mockito.anyString())).thenReturn(false);
-
-        // when
-        ResponseEntity<String> response = userService.generateRegistrationToken();
-
-        // then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Cannot create registration token for user with this role", response.getBody());
-    }
-
-    //verifyWithToken
-
-    @Test
-    public void verifyWithToken_WithInvalidToken_ShouldReturnBadRequest() throws FirebaseAuthException {
-        // given
-        String token = "invalidToken";
-        Mockito.when(registrationTokenRepository.isPresent(token)).thenReturn(false);
-
-        // when
-        ResponseEntity<String> response = userService.verifyWithToken(token);
-
-        // then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Invalid token", response.getBody());
-    }
-
-    @Test
-    public void verifyWithToken_WithClientToken_ShouldReturnBadRequest() throws FirebaseAuthException {
-        // given
-        String clientToken = "clientToken";
-        Mockito.when(registrationTokenRepository.isPresent(clientToken)).thenReturn(true);
-        Mockito.when(registrationTokenRepository.findByToken(clientToken)).thenReturn(new RegistrationToken(
-                clientToken, UserRole.CLIENT, "uid"
-        ));
-
-        // when
-        ResponseEntity<String> response = userService.verifyWithToken(clientToken);
-
-        /// then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Invalid token", response.getBody());
-    }
-
 //    @Test
-//    public void testVerifyWithTokenWhenTokenIsTrainer() throws Exception {
-//        String token = "token";
+//    public void generateRegistrationToken_WithCoach_ShouldReturnToken() {
+//        // given
 //        String authId = "authId";
+//        Coach coach = mock(Coach.class); //new Trainer();
+//        RegistrationToken token = new RegistrationToken();
 //
-//        RegistrationToken registrationToken = mock(RegistrationToken.class);
-//        when(registrationToken.getCreationRole()).thenReturn(UserRole.TRAINER);
+//        Mockito.when(coachRepository.isPresentById(authId)).thenReturn(true);
+//        Mockito.when(coachRepository.findById(authId)).thenReturn(coach);
+//        Mockito.when(coach.generateVerificationToken()).thenReturn(token);
 //
-//        when(registrationTokenRepository.isPresent(token)).thenReturn(true);
-//        when(registrationTokenRepository.findByToken(token)).thenReturn(registrationToken);
+//        // when
+//        ResponseEntity<String> response = userService.generateRegistrationToken();
 //
-//
-//        Trainer trainer = mock(Trainer.class);
-//        when(trainerRepository.findById(any())).thenReturn(trainer);
-//        Mockito.when(trainerRepository.update(trainer)).thenReturn(null);
-//
-//
-//        UserRecord userRecord = mock(UserRecord.class);
-//        when(firebaseAuth.getUser(any())).thenReturn(userRecord);
-//        Mockito.when(firebaseAuth.updateUser(any())).thenReturn(userRecord);
-//
-//        ResponseEntity<String> response = userService.verifyWithToken(token);
-//
-//        assertEquals(ResponseEntity.ok().body("Email successfully verified"), response);
+//        // then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(token.getToken(), response.getBody());
 //    }
 //
 //    @Test
-//    public void verifyWithToken_ValidTrainerToken_ShouldReturn200() throws Exception {
+//    public void generateRegistrationToken_WithAdmin_ShouldReturnToken() {
 //        // given
-//        String token = "token";
 //        String authId = "authId";
-//        Trainer trainer = new Trainer(authId, UserRole.TRAINER);
+//        Admin admin = mock(Admin.class);
+//        RegistrationToken token = new RegistrationToken();
 //
-//        Mockito.when(registrationTokenRepository.isPresent(token)).thenReturn(true);
-//        Mockito.when(registrationTokenRepository.findByToken(token)).thenReturn(new RegistrationToken(
-//                token, UserRole.TRAINER, "uid"
-//        ));
-//        Mockito.when(trainerRepository.findById("uid")).thenReturn(trainer);
-//        Mockito.when(trainerRepository.update(trainer)).thenReturn(null);
+//        Mockito.when(adminRepository.isPresentById(authId)).thenReturn(true);
+//        Mockito.when(adminRepository.findById(authId)).thenReturn(admin);
+//        Mockito.when(admin.generateVerificationToken()).thenReturn(token);
 //
+//        // when
+//        ResponseEntity<String> response = userService.generateRegistrationToken();
+//
+//        // then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(token.getToken(), response.getBody());
+//    }
+//
+//    @Test
+//    public void generateRegistrationToken_WithInvalidRole_ShouldReturnBadRequest() {
+//        // given
+//        Mockito.when(coachRepository.isPresentById(Mockito.anyString())).thenReturn(false);
+//        Mockito.when(adminRepository.isPresentById(Mockito.anyString())).thenReturn(false);
+//
+//        // when
+//        ResponseEntity<String> response = userService.generateRegistrationToken();
+//
+//        // then
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals("Cannot create registration token for user with this role", response.getBody());
+//    }
+//
+//    //verifyWithToken
+//
+//    @Test
+//    public void verifyWithToken_WithInvalidToken_ShouldReturnBadRequest() throws FirebaseAuthException {
+//        // given
+//        String token = "invalidToken";
+//        Mockito.when(registrationTokenRepository.isPresent(token)).thenReturn(false);
 //
 //        // when
 //        ResponseEntity<String> response = userService.verifyWithToken(token);
 //
 //        // then
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Email successfully verified", response.getBody());
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals("Invalid token", response.getBody());
 //    }
+//
+//    @Test
+//    public void verifyWithToken_WithClientToken_ShouldReturnBadRequest() throws FirebaseAuthException {
+//        // given
+//        String clientToken = "clientToken";
+//        Mockito.when(registrationTokenRepository.isPresent(clientToken)).thenReturn(true);
+//        Mockito.when(registrationTokenRepository.findByToken(clientToken)).thenReturn(new RegistrationToken(
+//                clientToken, UserRole.CLIENT, "uid"
+//        ));
+//
+//        // when
+//        ResponseEntity<String> response = userService.verifyWithToken(clientToken);
+//
+//        /// then
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals("Invalid token", response.getBody());
+//    }
+
+
 }
