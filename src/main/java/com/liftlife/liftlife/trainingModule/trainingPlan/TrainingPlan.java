@@ -16,7 +16,6 @@ be contained inside of this class).
 @ToString
 public class TrainingPlan extends FirestoreEntity {
     private String name;
-    //id's for presentation, no implementation for now
-    private String userId;
+    private String clientId;
     private String coachId;
 }

@@ -1,7 +1,6 @@
 package com.liftlife.liftlife.dietModule.dietDay;
 
 
-import com.liftlife.liftlife.common.DayOfWeek;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import lombok.*;
 
@@ -15,7 +14,7 @@ eaten at each time of day.
 @NoArgsConstructor
 @ToString
 public class DietDay extends FirestoreEntity {
-    private DayOfWeek dayOfWeek;
+    private int dayOfWeek;
     private transient int caloriesSum;
     private boolean isTemplate;
 }
