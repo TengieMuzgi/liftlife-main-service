@@ -22,15 +22,9 @@ import java.util.UUID;
 public class Coach extends User {
     private CoachSpecialization specialization;
     private String description;
-    private List<String> clientIdList;
-    private List<TrainingPlan> trainingPlanList;
-    private List<DietPlan> dietPlanList;
 
     public Coach(String authId, UserRole userRole) {
         super(authId, userRole);
-        this.clientIdList = new ArrayList<>();
-        this.trainingPlanList = new ArrayList<>();
-        this.dietPlanList = new ArrayList<>();
         this.specialization = CoachSpecialization.PERSONAL;
         this.description = "";
     }
@@ -40,9 +34,6 @@ public class Coach extends User {
         RegistrationToken registrationToken = new RegistrationToken(token, UserRole.COACH, this.getDocumentId());
         return registrationToken;
     }
-
-    public void addNewClient(String id) {
-        clientIdList.add(id);
-    }
+    
 
 }

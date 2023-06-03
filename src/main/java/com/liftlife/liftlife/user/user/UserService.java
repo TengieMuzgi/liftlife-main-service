@@ -78,11 +78,10 @@ public class UserService {
         if(registrationToken.getCreationRole().equals(UserRole.COACH)) {
             Coach coach = coachRepository.findById(registrationToken.getCreationId());
             Client newClient = new Client(currentUserId, UserRole.CLIENT, coach.getDocumentId());
-            coach.addNewClient(clientRepository.insert(newClient));
+            clientRepository.insert(newClient);
 
             this.setUserRole(currentUserId, "CLIENT");
 
-            coachRepository.update(coach);
             verifyUserEmail(currentUserId);
             registrationTokenRepository.delete(registrationToken.getDocumentId());
             return ResponseEntity.ok().body("Email successfully verified");
