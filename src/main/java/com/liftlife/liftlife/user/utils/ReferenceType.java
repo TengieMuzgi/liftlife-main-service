@@ -1,4 +1,4 @@
-package com.liftlife.liftlife.userModule.user;
+package com.liftlife.liftlife.user.utils;
 
 public enum ReferenceType {
     DIET

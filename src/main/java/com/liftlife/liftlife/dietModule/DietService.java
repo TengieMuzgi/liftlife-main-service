@@ -12,8 +12,7 @@ import com.liftlife.liftlife.dietModule.dietPlan.DietPlanRepository;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlanRepository;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
-import com.liftlife.liftlife.userModule.user.ReferenceType;
-import com.liftlife.liftlife.userModule.user.UserRepository;
+import com.liftlife.liftlife.user.utils.ReferenceType;
 import com.liftlife.liftlife.util.database.FirestoreEntity;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +31,16 @@ public class DietService {
     private ProductRepository productRepository;
     private DietDayRepository dietDayRepository;
     private DietPlanRepository dietPlanRepository;
-    private UserRepository userRepository;
     private FullDietDayRepository fullDietDayRepository;
     private FullDietPlanRepository fullDietPlanRepository;
 
     @Autowired
     public DietService(ProductRepository productRepository, DietDayRepository dietDayRepository,
-                       DietPlanRepository dietPlanRepository, UserRepository userRepository,
+                       DietPlanRepository dietPlanRepository,
                        FullDietPlanRepository fullDietPlanRepository, FullDietDayRepository fullDietDayRepository) {
         this.productRepository = productRepository;
         this.dietDayRepository = dietDayRepository;
         this.dietPlanRepository = dietPlanRepository;
-        this.userRepository = userRepository;
         this.fullDietDayRepository = fullDietDayRepository;
         this.fullDietPlanRepository = fullDietPlanRepository;
     }
@@ -315,7 +312,7 @@ public class DietService {
         }
     }
 
-    public ResponseEntity<String> createForUser(DietPlan dietPlan, String userId){
+    public ResponseEntity<String> createForUser(DietPlan dietPlan){
         if(dietPlan == null)
             return ResponseEntity.badRequest().body("Object is null");
 
@@ -323,7 +320,6 @@ public class DietService {
         String dietPlanId = dietPlanRepository.insert(dietPlan);
         response.append("Created DietPlan with ID ").append(dietPlanId);
         response.append(" ");
-        response.append(userRepository.addToUser(userId,new ArrayList<>(List.of(dietPlanId)), ReferenceType.DIET));
 
         return ResponseEntity.ok().body(response.toString());
     }
@@ -561,7 +557,7 @@ public class DietService {
         }
     }
 
-    public ResponseEntity<String> createFullForUser(FullDietPlan dietPlan, String userId) {
+    public ResponseEntity<String> createFullForUser(FullDietPlan dietPlan) {
         if(dietPlan == null)
             return ResponseEntity.badRequest().body("Object is null");
 
@@ -581,7 +577,6 @@ public class DietService {
         String dietPlanId =  dietPlanRepository.insert(plan);
         response.append("Created DietPlan with ID ").append(dietPlanId);
         response.append(" ");
-        response.append(userRepository.addToUser(userId,new ArrayList<>(List.of(dietPlanId)), ReferenceType.DIET));
 
         return ResponseEntity.ok().body(response.toString());
     }

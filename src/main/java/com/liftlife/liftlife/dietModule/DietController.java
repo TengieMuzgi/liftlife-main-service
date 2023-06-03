@@ -166,13 +166,19 @@ public class DietController {
         return dietService.createFullTemplate(template);
     }
 
+    /*
     @PostMapping("/create/{userId}")
-    public ResponseEntity<String> createDietPlanForUser(@RequestBody DietPlan dietPlan, @PathVariable String userId) {
-        return dietService.createForUser(dietPlan, userId);
+    public ResponseEntity<String> createDietPlanForUser(@RequestBody DietPlan dietPlan) {
+        return dietService.createForUser(dietPlan);
     }
 
+     */
+
+    /*
     @PostMapping("/full/create/{userId}")
     public ResponseEntity<String> createFullDietPlanForUser(@RequestBody FullDietPlan dietPlan, @PathVariable String userId) {
         return dietService.createFullForUser(dietPlan, userId);
     }
+
+     */
 }

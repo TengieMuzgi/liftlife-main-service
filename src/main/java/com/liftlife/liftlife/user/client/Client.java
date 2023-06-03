@@ -21,12 +21,10 @@ public class Client extends User {
     private String coachId;
     private TrainingPlan trainingPlan;
     private DietPlan dietPlan;
-    private List<TrainingSession> trainingSessionList;
 
     public Client(String authId, UserRole userRole, String coachId) {
         super(authId, userRole);
         this.coachId = coachId;
-        this.trainingSessionList = new ArrayList<>();
     }
 
 
