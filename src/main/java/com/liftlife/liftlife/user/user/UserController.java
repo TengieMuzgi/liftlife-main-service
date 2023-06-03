@@ -21,9 +21,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private Bucket firebaseBucket;
-
     @GetMapping("/token/generate")
     public ResponseEntity<String> generateRegistrationToken() {
         return userService.generateRegistrationToken();
@@ -34,11 +31,11 @@ public class UserController {
         return userService.verifyWithToken(token);
     }
 
-    @PostMapping
-    public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
-        byte[] fileInBytes = file.getBytes();
-        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
-    }
+//    @PostMapping
+//    public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
+//        byte[] fileInBytes = file.getBytes();
+//        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
+//    }
 
     @GetMapping("/coaches")
     public ResponseEntity<List<CoachDto>> getCoachesBySpecialization() throws FirebaseAuthException {
@@ -53,6 +50,11 @@ public class UserController {
     @PostMapping("/coach/change/specialization")
     public ResponseEntity<String> changeCoachSpecialization(@RequestBody CoachSpecialization specialization) {
         return userService.changeCoachSpecialization(specialization);
+    }
+
+    @PostMapping("/picture/insert")
+    public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
+        return userService.changeProfilePicture(file);
     }
 
 
