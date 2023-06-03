@@ -2,7 +2,6 @@ package com.liftlife.liftlife.dietModule.dietDay;
 
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.WriteResult;
-import com.liftlife.liftlife.common.DayOfWeek;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietDay.meal.MealRepository;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
@@ -20,7 +19,7 @@ public class DietDayRepository extends FirestoreRepositoryTemplate<DietDay> {
         super(DietDay.class);
     }
 
-    public List<DietDay> findDietByDayOfWeek(DayOfWeek dayOfWeek) {
+    public List<DietDay> findDietByDayOfWeek(int dayOfWeek) {
         return super.findByField("dayOfWeek", dayOfWeek);
     }
 
