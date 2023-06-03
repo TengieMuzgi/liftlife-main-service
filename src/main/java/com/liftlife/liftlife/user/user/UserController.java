@@ -3,6 +3,7 @@ package com.liftlife.liftlife.user.user;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.common.CoachSpecialization;
+import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.coach.Coach;
@@ -60,6 +61,11 @@ public class UserController {
     @PostMapping("/picture/insert")
     public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
         return userService.changeProfilePicture(file);
+    }
+
+    @GetMapping("/client/info")
+    public ResponseEntity<ClientDto> getClientData() {
+        return userService.getClientDto();
     }
 
 

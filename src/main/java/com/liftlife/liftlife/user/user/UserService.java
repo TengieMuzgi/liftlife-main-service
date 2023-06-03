@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.common.UserRole;
+import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
@@ -230,5 +231,18 @@ public class UserService {
             }
         }
         return specializations;
+    }
+
+    public ResponseEntity<ClientDto> getClientDto() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        String[] name = userRecord.getDisplayName().split(" ");
+        ClientDto clientDto = new ClientDto(
+                userRecord.getUid(),
+                name[0],
+                name[1],
+                clientRepository.findById(userRecord.getUid()).getRegisterDate()
+        );
+
+        return ResponseEntity.ok().body(clientDto);
     }
 }
