@@ -44,25 +44,23 @@ public class UserService {
     private RegistrationTokenRepository registrationTokenRepository;
     private ClientRepository clientRepository;
     private FirebaseAuth firebaseAuth;
-
-    @Autowired
     private Bucket firebaseBucket;
 
     @Autowired
     public UserService(CoachRepository coachRepository, AdminRepository adminRepository,
                        RegistrationTokenRepository registrationTokenRepository, ClientRepository clientRepository,
-                       FirebaseAuth firebaseAuth) {
+                       FirebaseAuth firebaseAuth, Bucket firebaseBucket) {
         this.coachRepository = coachRepository;
         this.adminRepository = adminRepository;
         this.registrationTokenRepository = registrationTokenRepository;
         this.clientRepository = clientRepository;
         this.firebaseAuth = firebaseAuth;
+        this.firebaseBucket = firebaseBucket;
     }
 
     public ResponseEntity<String> generateRegistrationToken() {
         String authId = AuthService.getCurrentUserAuthId();
         UserRole role = AuthService.getCurrentUserRole();
-        System.out.printf(role.name());
         if (role.equals(UserRole.COACH)) {
             Coach coach = coachRepository.findById(authId);
             RegistrationToken registrationToken = coach.generateVerificationToken();
@@ -163,42 +161,6 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    private void setUserRole(String id, String role) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
-        try {
-            firebaseAuth.setCustomUserClaims(id, claims);
-        } catch (FirebaseAuthException e) {
-            log.error("Error while setting custom user claim - assigning user role");
-        }
-    }
-
-    private void verifyUserEmail(String authId) {
-        UserRecord user = null;
-        try {
-            user = firebaseAuth.getUser(authId);
-            user = firebaseAuth.updateUser(user.updateRequest().setEmailVerified(true));
-        } catch (FirebaseAuthException e) {
-            log.error("Error during email verification for user: " + authId);
-            throw new RuntimeException("Error during email verification for user: " + authId);
-        }
-    }
-
-    private void saveFileToStorage(String strUrl) throws IOException {
-        URL url = new URL(strUrl);
-        try (InputStream in = url.openStream();
-             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesRead);
-            }
-            Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(out.toByteArray()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public ResponseEntity<String> changeProfilePicture(MultipartFile file) {
         byte[] imageInBytes = new byte[0];
         try {
@@ -268,6 +230,42 @@ public class UserService {
             return ResponseEntity.ok().body(coachDto);
         } catch (FirebaseAuthException e) {
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    private void setUserRole(String id, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        try {
+            firebaseAuth.setCustomUserClaims(id, claims);
+        } catch (FirebaseAuthException e) {
+            log.error("Error while setting custom user claim - assigning user role");
+        }
+    }
+
+    private void verifyUserEmail(String authId) {
+        UserRecord user = null;
+        try {
+            user = firebaseAuth.getUser(authId);
+            user = firebaseAuth.updateUser(user.updateRequest().setEmailVerified(true));
+        } catch (FirebaseAuthException e) {
+            log.error("Error during email verification for user: " + authId);
+            throw new RuntimeException("Error during email verification for user: " + authId);
+        }
+    }
+
+    private void saveFileToStorage(String strUrl) throws IOException {
+        URL url = new URL(strUrl);
+        try (InputStream in = url.openStream();
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(out.toByteArray()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
