@@ -30,10 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -234,11 +232,15 @@ public class UserService {
     public ResponseEntity<ClientDto> getClientDto() {
         UserRecord userRecord = AuthService.getCurrentUser();
         String[] name = userRecord.getDisplayName().split(" ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = clientRepository.findById(userRecord.getUid()).getRegisterDate();
+        String formattedDate = sdf.format(date);
         ClientDto clientDto = new ClientDto(
                 userRecord.getUid(),
                 name[0],
                 name[1],
-                clientRepository.findById(userRecord.getUid()).getRegisterDate()
+                formattedDate,
+                firebaseBucket.get(userRecord.getUid()) != null ? true : false
         );
 
         return ResponseEntity.ok().body(clientDto);
@@ -248,19 +250,25 @@ public class UserService {
         UserRecord userRecord = AuthService.getCurrentUser();
         Client client = clientRepository.findById(userRecord.getUid());
         Coach coach = coachRepository.findById(client.getCoachId());
+        try {
+            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
 
-        String[] name = userRecord.getDisplayName().split(" ");
-        CoachDto coachDto = new CoachDto(
-                coach.getDocumentId(),
-                name[0],
-                name[1],
-                coach.getSpecialization().getDescription(),
-                coach.getDescription(),
-                userRecord.getEmail(),
-                firebaseBucket.get(userRecord.getUid()) != null ? true : false
-        );
+            String[] name = coachRecord.getDisplayName().split(" ");
+            CoachDto coachDto = new CoachDto(
+                    coach.getDocumentId(),
+                    name[0],
+                    name[1],
+                    coach.getSpecialization().getDescription(),
+                    coach.getDescription(),
+                    coachRecord.getEmail(),
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+            );
 
 
-        return ResponseEntity.ok().body(coachDto);
+            return ResponseEntity.ok().body(coachDto);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
+
 }
