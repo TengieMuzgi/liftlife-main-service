@@ -1,22 +1,13 @@
 package com.liftlife.liftlife.security;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import com.liftlife.liftlife.common.UserRole;
-import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
-import com.liftlife.liftlife.user.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")

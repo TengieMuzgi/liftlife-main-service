@@ -3,6 +3,7 @@ package com.liftlife.liftlife.trainingModule.trainingDay;
 import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
 import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSessionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class TrainingDayController {
         List<TrainingDay> days = trainingDayService.findDaysForPlan(planId);
         for (TrainingDay day : days) {
             List<TrainingSession> sessions =
-                    trainingSessionService.findSessionsForDay(day.getDocumentId(), planId);
+                    trainingSessionService.findSessionsForDay(planId, day.getDocumentId());
             day.setTrainingSessions(sessions);
         }
         return ResponseEntity.ok(days);
@@ -37,7 +38,7 @@ public class TrainingDayController {
 
     @PostMapping("/insert")
     public ResponseEntity<String> insertDay(
-            @RequestBody TrainingDay trainingDay,
+            @RequestBody @Valid TrainingDay trainingDay,
             @RequestParam(name = "planId") String planId) {
         return ResponseEntity.ok(trainingDayService.insert(trainingDay, planId));
     }
@@ -52,7 +53,7 @@ public class TrainingDayController {
 
     @PutMapping("/update")
     public ResponseEntity<WriteResult> updateDay(
-            @RequestBody TrainingDay trainingDay,
+            @RequestBody @Valid TrainingDay trainingDay,
             @RequestParam String planId) {
         return ResponseEntity.ok(trainingDayService.updateDay(trainingDay, planId));
     }

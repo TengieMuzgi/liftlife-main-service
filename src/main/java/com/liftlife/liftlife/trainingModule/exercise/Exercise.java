@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.trainingModule.exercise;
 
 import com.liftlife.liftlife.util.database.FirestoreEntity;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 /*
@@ -16,7 +17,9 @@ public class Exercise extends FirestoreEntity {
     private String name;
     private String bodyPart;
     private String description;
+    @PositiveOrZero
     private int numberOfReps;
+    @PositiveOrZero
     private int numberOfSets;
     private transient boolean isTemplate;
 }

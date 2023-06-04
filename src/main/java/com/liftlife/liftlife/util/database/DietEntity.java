@@ -7,7 +7,6 @@ import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

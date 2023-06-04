@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.liftlife.liftlife.util.exception.DbAccessException;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -105,17 +106,32 @@ public class FirestoreSubRepositoryTemplate<T extends FirestoreEntity> {
     private CollectionReference getSubCollectionReference(LinkedHashMap<String, String> documentIdsToSubCollections) {
         CollectionReference subReference = mainCollectionReference;
         for (Map.Entry<String, String> entry : documentIdsToSubCollections.entrySet()) {
-            subReference = subReference.document(entry.getKey()).collection(entry.getValue());
+            DocumentReference document = subReference.document(entry.getKey());
+            try {
+                if(!document.get().get().exists())
+                    throw new NotFoundException("Document with id "+document.getId()+" does not exist in a tree.");
+                subReference = document.collection(entry.getValue());
+            } catch (ExecutionException e) {
+                throw new DbAccessException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new DbAccessException(e);
+            }
+
         }
         return subReference;
     }
 
     public WriteResult update(T toChange, LinkedHashMap<String, String> documentIdsToSubCollections) {
+        if (toChange.getDocumentId() == null)
+            throw new IllegalArgumentException("DocumentId of updated element should not be null");
         CollectionReference subReference = getSubCollectionReference(documentIdsToSubCollections);
         DocumentReference documentReference = subReference.document(toChange.getDocumentId());
-        Map<String, Object> json = firestoreMapper.objectToMap(toChange);
-        ApiFuture<WriteResult> result = documentReference.update(json);
         try {
+            if(!documentReference.get().get().exists())
+                throw new NotFoundException("Object with id "+toChange.getDocumentId()+" does not exist");
+            Map<String, Object> json = firestoreMapper.objectToMap(toChange);
+            ApiFuture<WriteResult> result = documentReference.update(json);
             return result.get();
         } catch (ExecutionException e) {
             throw new DbAccessException(e);

@@ -14,4 +14,8 @@ public class TrainingPlanRepository extends FirestoreRepositoryTemplate<Training
     public List<TrainingPlan> findPlansForCoach(String coachId) {
         return super.findByField("coachId", coachId);
     }
+
+    public List<TrainingPlan> findPlansForClient(String clientId) {
+        return super.findByField("clientId", clientId);
+    }
 }

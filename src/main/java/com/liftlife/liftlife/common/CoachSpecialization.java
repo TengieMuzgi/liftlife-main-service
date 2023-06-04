@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.common;
 
-import com.google.auto.value.extension.serializable.SerializableAutoValue;
 import com.google.gson.annotations.SerializedName;
 
 public enum CoachSpecialization {

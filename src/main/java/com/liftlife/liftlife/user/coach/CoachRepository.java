@@ -6,7 +6,6 @@ import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 @Repository

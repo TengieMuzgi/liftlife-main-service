@@ -1,9 +1,7 @@
 package com.liftlife.liftlife.trainingModule.trainingSession.template;
 
-import com.liftlife.liftlife.trainingModule.exercise.Exercise;
 import com.liftlife.liftlife.trainingModule.exercise.TemplateExerciseRepository;
 import com.liftlife.liftlife.trainingModule.trainingSession.TrainingSession;
-import com.liftlife.liftlife.util.database.AttributeList;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -70,18 +68,6 @@ public class TemplateTrainingSessionService {
     }
 
     public List<TrainingSession> findAllByCoach(String trainerId) {
-        List<TrainingSession> sessions = templateTrainingSessionRepository.findAll();
-        for (TrainingSession session : sessions) {
-            fetchExercises(session);
-        }
-        return sessions;
-    }
-
-    private void fetchExercises(TrainingSession session) {
-        AttributeList<Exercise> exercises = new AttributeList<>();  //Try to do it better
-        for (Exercise exercise: session.getExercises()) {
-            exercises.add(templateExerciseRepository.findById(exercise.getDocumentId()));
-        }
-        session.setExercises(exercises);
+        return templateTrainingSessionRepository.findAll();
     }
 }

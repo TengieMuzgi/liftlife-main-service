@@ -1,20 +1,14 @@
 package com.liftlife.liftlife.user.user;
 
-import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
-import com.liftlife.liftlife.security.AuthService;
-import com.liftlife.liftlife.user.coach.Coach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")

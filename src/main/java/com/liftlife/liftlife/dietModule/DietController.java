@@ -4,7 +4,6 @@ import com.liftlife.liftlife.dietModule.dietDay.DietDay;
 import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
-import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
 import com.liftlife.liftlife.util.database.DietEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

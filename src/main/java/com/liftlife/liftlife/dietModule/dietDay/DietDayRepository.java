@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.dietModule.dietDay;
 
-import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.WriteResult;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietDay.meal.MealRepository;

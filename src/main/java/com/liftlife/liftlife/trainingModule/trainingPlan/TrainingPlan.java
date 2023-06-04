@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.trainingModule.trainingPlan;
 
 import com.liftlife.liftlife.util.database.FirestoreEntity;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /*
@@ -15,7 +16,10 @@ be contained inside of this class).
 @NoArgsConstructor
 @ToString
 public class TrainingPlan extends FirestoreEntity {
+    @NotNull
     private String name;
+    @NotNull
     private String clientId;
+    @NotNull
     private String coachId;
 }
