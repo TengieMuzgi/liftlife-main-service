@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -25,14 +26,21 @@ public class AuthService {
     }
 
     public ResponseEntity<String> register(RegisterRequest registerRequest) {
-        if(!isRegisterRequestValid(registerRequest))
+        if(!isRegisterRequestValid(registerRequest)) {
             return ResponseEntity.badRequest().body("Register request is invalid");
+        }
 
-        if(checkIfUserExists(registerRequest.getEmail()))  //409 resource conflict
+        if(checkIfUserExists(registerRequest.getEmail())) { //409 resource conflict
             return ResponseEntity.status(409).body("User with email: " + registerRequest.getEmail() + " is already registered!");
+        }
 
-        if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated()))
+        if(!verifyPassword(registerRequest.getPassword(), registerRequest.getPasswordRepeated())) {
             return ResponseEntity.badRequest().body("Password is not matching conditions");
+        }
+
+        if(!isEmailValid(registerRequest.getEmail())) {
+            return ResponseEntity.badRequest().body("Email is not matching requirements");
+        }
 
         UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                 .setEmail(registerRequest.getEmail())
@@ -77,6 +85,13 @@ public class AuthService {
     public static String extractCurrentUserRole(UserRecord userRecord) {
         String role = (String) userRecord.getCustomClaims().get("role");
         return role;
+    }
+
+    private boolean isEmailValid(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(emailRegex);
+
+        return pattern.matcher(email).matches();
     }
 
     private boolean checkIfUserExists(String email) {
