@@ -248,19 +248,25 @@ public class UserService {
         UserRecord userRecord = AuthService.getCurrentUser();
         Client client = clientRepository.findById(userRecord.getUid());
         Coach coach = coachRepository.findById(client.getCoachId());
+        try {
+            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
 
-        String[] name = userRecord.getDisplayName().split(" ");
-        CoachDto coachDto = new CoachDto(
-                coach.getDocumentId(),
-                name[0],
-                name[1],
-                coach.getSpecialization().getDescription(),
-                coach.getDescription(),
-                userRecord.getEmail(),
-                firebaseBucket.get(userRecord.getUid()) != null ? true : false
-        );
+            String[] name = coachRecord.getDisplayName().split(" ");
+            CoachDto coachDto = new CoachDto(
+                    coach.getDocumentId(),
+                    name[0],
+                    name[1],
+                    coach.getSpecialization().getDescription(),
+                    coach.getDescription(),
+                    coachRecord.getEmail(),
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+            );
 
 
-        return ResponseEntity.ok().body(coachDto);
+            return ResponseEntity.ok().body(coachDto);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
+    
 }
