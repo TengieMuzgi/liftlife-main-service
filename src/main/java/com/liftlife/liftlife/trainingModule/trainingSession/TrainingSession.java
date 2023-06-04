@@ -8,24 +8,24 @@ import lombok.*;
 
 import java.util.List;
 
-/*
-POJO class representing one training session, that exists in client's/coach's calendar.
-Is a part of training day.
- */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class TrainingSession extends FirestoreEntity {
-    @Min(0)
-    @Max(23)
+    @Min(value = 0, message = "The startHour must be greater than or equal to 0")
+    @Max(value = 23, message = "The startHour must be less than or equal to 23")
     private int startHour;
-    @Min(0)
-    @Max(23)
+
+    @Min(value = 0, message = "The finishHour must be greater than or equal to 0")
+    @Max(value = 23, message = "The finishHour must be less than or equal to 23")
     private int finishHour;
-    @NotEmpty
+
+    @NotEmpty(message = "The name must not be empty")
     private String name;
+
     private List<String> exercises;
+
     private transient boolean isTemplate;
 }

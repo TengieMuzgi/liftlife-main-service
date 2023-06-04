@@ -9,19 +9,15 @@ import lombok.*;
 
 import java.util.List;
 
-/*
-POJO class representing one day in client's training plan,
-which consists of zero or more training sets.
- */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class TrainingDay extends FirestoreEntity {
-    @NotNull
-    @Min(1)
-    @Max(7)
+    @NotNull(message = "The dayOfWeek must not be null")
+    @Min(value = 1, message = "The dayOfWeek must be greater than or equal to 1")
+    @Max(value = 7, message = "The dayOfWeek must be less than or equal to 7")
     private int dayOfWeek;
     private transient List<TrainingSession> trainingSessions;
 }

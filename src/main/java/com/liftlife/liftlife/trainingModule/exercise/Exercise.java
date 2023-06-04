@@ -1,13 +1,11 @@
 package com.liftlife.liftlife.trainingModule.exercise;
 
 import com.liftlife.liftlife.util.database.FirestoreEntity;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
-/*
-POJO class representing one exercise in training session assigned to client.
-It's atomic part of training.
- */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,11 +13,17 @@ It's atomic part of training.
 @ToString
 public class Exercise extends FirestoreEntity {
     private String name;
+
+    @NotNull(message = "The body part must not be null")
     private String bodyPart;
+
     private String description;
-    @PositiveOrZero
+
+    @Positive(message = "The number of reps must be a positive value")
     private int numberOfReps;
-    @PositiveOrZero
+
+    @Positive(message = "The number of sets must be a positive value")
     private int numberOfSets;
+
     private transient boolean isTemplate;
 }
