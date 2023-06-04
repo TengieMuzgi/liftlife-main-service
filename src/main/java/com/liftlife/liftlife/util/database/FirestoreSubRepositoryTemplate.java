@@ -27,6 +27,12 @@ public class FirestoreSubRepositoryTemplate<T extends FirestoreEntity> {
                 .collection(mainClassLowerCase);
     }
 
+    public FirestoreSubRepositoryTemplate(CollectionReference mainCollectionReference, FirestoreMapper firestoreMapper, Class<T> classType) {
+        this.mainCollectionReference = mainCollectionReference;
+        this.firestoreMapper = firestoreMapper;
+        this.classType = classType;
+    }
+
     public FirestoreMapper getFirestoreMapper(){
         return this.firestoreMapper;
     }
