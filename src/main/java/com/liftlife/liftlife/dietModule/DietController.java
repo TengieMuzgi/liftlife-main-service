@@ -5,7 +5,7 @@ import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
-import com.liftlife.liftlife.util.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.DietEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,14 +31,14 @@ public class DietController {
     }
 
     @GetMapping("/{type}/{id}")
-    public <T extends FirestoreEntity> ResponseEntity<T> getById(@PathVariable String type, @PathVariable String id) {
+    public <T extends DietEntity> ResponseEntity<T> getById(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         T entity = dietService.findById(id, serviceType);
         return ResponseEntity.ok(entity);
     }
 
     @GetMapping("/full/{type}/{id}")
-    public <T extends FirestoreEntity> ResponseEntity<T> getFullById(@PathVariable String type, @PathVariable String id) {
+    public <T extends DietEntity> ResponseEntity<T> getFullById(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         T entity = dietService.findFullById(id, serviceType);
         return ResponseEntity.ok(entity);
@@ -57,14 +57,14 @@ public class DietController {
     }
 
     @GetMapping("/{type}")
-    public <T extends FirestoreEntity> ResponseEntity<List<T>> getByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
+    public <T extends DietEntity> ResponseEntity<List<T>> getByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> entities = dietService.findByFields(serviceType, fields);
         return ResponseEntity.ok(entities);
     }
 
     @GetMapping("/full/{type}")
-    public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
+    public <T extends DietEntity> ResponseEntity<List<T>> getFullByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> entities = dietService.findFullByFields(serviceType, fields);
         return ResponseEntity.ok(entities);
@@ -83,14 +83,14 @@ public class DietController {
     }
 
     @GetMapping("/trainer/{type}/{id}")
-    public <T extends FirestoreEntity> ResponseEntity<List<T>> getByTrainerId(@PathVariable String type, @PathVariable String id) {
+    public <T extends DietEntity> ResponseEntity<List<T>> getByTrainerId(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> diets = dietService.findByTrainer(serviceType, id);
         return ResponseEntity.ok(diets);
     }
 
     @GetMapping("/full/trainer/{type}/{id}")
-    public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullByTrainerId(@PathVariable String type, @PathVariable String id) {
+    public <T extends DietEntity> ResponseEntity<List<T>> getFullByTrainerId(@PathVariable String type, @PathVariable String id) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> diets = dietService.findFullByTrainer(serviceType, id);
         return ResponseEntity.ok(diets);
@@ -117,12 +117,12 @@ public class DietController {
     //TODO get full dietPlan and DietDay;;; ?add trainer id in plan?
 
     @PutMapping("/update")
-    public <T extends FirestoreEntity> ResponseEntity<String> update(@RequestBody T entity) {
+    public <T extends DietEntity> ResponseEntity<String> update(@RequestBody T entity) {
         return dietService.update(entity);
     }
 
     @PutMapping("/full/update")
-    public <T extends FirestoreEntity> ResponseEntity<String> updateFull(@RequestBody T entity) {
+    public <T extends DietEntity> ResponseEntity<String> updateFull(@RequestBody T entity) {
         return dietService.updateFull(entity);
     }
 
@@ -155,13 +155,13 @@ public class DietController {
     }
 
     @PostMapping("/create")
-    public <T extends FirestoreEntity> ResponseEntity<String> createTemplate( @RequestBody T template) {
+    public <T extends DietEntity> ResponseEntity<String> createTemplate( @RequestBody T template) {
         //System.out.println(template.toString());
         return dietService.createTemplate(template);
     }
 
     @PostMapping("/full/create")
-    public <T extends FirestoreEntity> ResponseEntity<String> createFullTemplate( @RequestBody T template) {
+    public <T extends DietEntity> ResponseEntity<String> createFullTemplate( @RequestBody T template) {
         //System.out.println(template.toString());
         return dietService.createFullTemplate(template);
     }

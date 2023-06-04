@@ -13,7 +13,7 @@ import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlan;
 import com.liftlife.liftlife.dietModule.dietPlan.FullDietPlanRepository;
 import com.liftlife.liftlife.dietModule.product.ProductRepository;
 import com.liftlife.liftlife.user.utils.ReferenceType;
-import com.liftlife.liftlife.util.database.FirestoreEntity;
+import com.liftlife.liftlife.util.database.DietEntity;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -109,7 +109,7 @@ public class DietService {
     }
 
 
-    public <T extends FirestoreEntity> T findById(String id, DietServiceType type){
+    public <T extends DietEntity> T findById(String id, DietServiceType type){
         T entity = null;
 
         switch(type){
@@ -146,7 +146,7 @@ public class DietService {
     }
 
 
-    public <T extends FirestoreEntity> List<T> findByFields(DietServiceType type, Map<String, Object> fields){
+    public <T extends DietEntity> List<T> findByFields(DietServiceType type, Map<String, Object> fields){
         List<T> entityList = new ArrayList<>();
 
         switch(type){
@@ -170,7 +170,7 @@ public class DietService {
         return diets;
     }
 
-    public <T extends FirestoreEntity> List<T> findByTrainer(DietServiceType type, String id){
+    public <T extends DietEntity> List<T> findByTrainer(DietServiceType type, String id){
         List<T> entityList = new ArrayList<>();
 
         switch(type){
@@ -215,7 +215,7 @@ public class DietService {
         return dietPlan;
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> update(T object) {
+    public <T extends DietEntity> ResponseEntity<String> update(T object) {
 
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
@@ -241,7 +241,7 @@ public class DietService {
         return ResponseEntity.ok().body("meal updated " + dietDayRepository.updateMeal(dietId, meal).getUpdateTime());
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> delete(T object){
+    public <T extends DietEntity> ResponseEntity<String> delete(T object){
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
 
@@ -262,7 +262,7 @@ public class DietService {
         }
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> delete(String objectId, DietServiceType type){
+    public <T extends DietEntity> ResponseEntity<String> delete(String objectId, DietServiceType type){
 
         switch(type){
             case DIET_DAY : dietDayRepository.delete(objectId);
@@ -301,7 +301,7 @@ public class DietService {
         return ResponseEntity.ok().body(dietDayRepository.insertMeal(dietId, meal));
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> createTemplate(T object){
+    public <T extends DietEntity> ResponseEntity<String> createTemplate(T object){
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
 
@@ -346,7 +346,7 @@ public class DietService {
         return plan;
     }
     //TODO handling no object with this id
-    <T extends FirestoreEntity, Q extends FirestoreEntity> T returnFull(Q object){
+    <T extends DietEntity, Q extends DietEntity> T returnFull(Q object){
 
         if(object == null)
             return null;
@@ -383,7 +383,7 @@ public class DietService {
     }
 
 
-    public <T extends FirestoreEntity> T findFullById(String id, DietServiceType type) {
+    public <T extends DietEntity> T findFullById(String id, DietServiceType type) {
         T entity = null;
 
         switch(type){
@@ -404,7 +404,7 @@ public class DietService {
         return entity;
     }
 
-    public <T extends FirestoreEntity> List<T> findFullByFields(DietServiceType type, Map<String, Object> fields) {
+    public <T extends DietEntity> List<T> findFullByFields(DietServiceType type, Map<String, Object> fields) {
         List<T> entityList = new ArrayList<>();
 
         switch(type){
@@ -442,7 +442,7 @@ public class DietService {
         return fullDietDays;
     }
 
-    public <T extends FirestoreEntity> List<T> findFullByTrainer(DietServiceType type, String id) {
+    public <T extends DietEntity> List<T> findFullByTrainer(DietServiceType type, String id) {
 
         List<T> entityList;
 
@@ -466,7 +466,7 @@ public class DietService {
         throw new NotFoundException("No objects found");
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> updateFull(T object) {
+    public <T extends DietEntity> ResponseEntity<String> updateFull(T object) {
 
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
@@ -526,7 +526,7 @@ public class DietService {
         }
     }
 
-    public <T extends FirestoreEntity> ResponseEntity<String> createFullTemplate(T object) {
+    public <T extends DietEntity> ResponseEntity<String> createFullTemplate(T object) {
         if(object == null)
             return ResponseEntity.badRequest().body("Object is null");
 
