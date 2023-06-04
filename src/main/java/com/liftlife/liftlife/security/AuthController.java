@@ -29,26 +29,4 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest)  {
         return authService.register(registerRequest);
     }
-
-//    @GetMapping
-//    public String getRole() throws FirebaseAuthException {
-//        return AuthService.getCurrentUserRole();
-//    }
-
-//    @GetMapping("/name")
-//    public String getDisplayName() throws FirebaseAuthException {
-//        return firebaseAuth.getUser("MuA1nRxWA2OOpS0pNOSpZxMcKan2").getDisplayName();
-//    }
-
-
-    //hardcoded method for admin creation
-//    @GetMapping
-//    public void createAdmin() throws FirebaseAuthException {
-//        Admin admin = new Admin("5mZB564wq4QyfSEAJYFTpNFiVQT2", UserRole.ADMIN);
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put("role", "ADMIN");
-//        firebaseAuth.setCustomUserClaims("5mZB564wq4QyfSEAJYFTpNFiVQT2", claims);
-//        adminRepository.insert(admin);
-//    }
-
 }

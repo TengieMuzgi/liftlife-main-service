@@ -56,5 +56,8 @@ public class UserController {
         return userService.getClientDto();
     }
 
-
+    @GetMapping("/client/getCoach")
+    public ResponseEntity<CoachDto> getMyCoach() {
+        return userService.getMyCoach();
+    }
 }

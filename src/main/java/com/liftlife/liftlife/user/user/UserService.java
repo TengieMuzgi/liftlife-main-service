@@ -30,10 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -46,25 +44,23 @@ public class UserService {
     private RegistrationTokenRepository registrationTokenRepository;
     private ClientRepository clientRepository;
     private FirebaseAuth firebaseAuth;
-
-    @Autowired
     private Bucket firebaseBucket;
 
     @Autowired
     public UserService(CoachRepository coachRepository, AdminRepository adminRepository,
                        RegistrationTokenRepository registrationTokenRepository, ClientRepository clientRepository,
-                       FirebaseAuth firebaseAuth) {
+                       FirebaseAuth firebaseAuth, Bucket firebaseBucket) {
         this.coachRepository = coachRepository;
         this.adminRepository = adminRepository;
         this.registrationTokenRepository = registrationTokenRepository;
         this.clientRepository = clientRepository;
         this.firebaseAuth = firebaseAuth;
+        this.firebaseBucket = firebaseBucket;
     }
 
     public ResponseEntity<String> generateRegistrationToken() {
         String authId = AuthService.getCurrentUserAuthId();
         UserRole role = AuthService.getCurrentUserRole();
-        System.out.printf(role.name());
         if (role.equals(UserRole.COACH)) {
             Coach coach = coachRepository.findById(authId);
             RegistrationToken registrationToken = coach.generateVerificationToken();
@@ -133,18 +129,12 @@ public class UserService {
                     coach.getDocumentId(),
                     name[0],
                     name[1],
-                    specialization,
+                    specialization.getDescription(),
                     coach.getDescription(),
-                    userRecord.getEmail()
+                    userRecord.getEmail(),
+                    firebaseBucket.get(userRecord.getUid()) != null ? true : false
             ));
         }
-//        //grouping by specialization
-//        for (CoachDto object : coachDtoList) {
-//            CoachSpecialization specialization = object.getSpecialization();
-//            List<CoachDto> group = groupedObjects.getOrDefault(specialization, new ArrayList<>());
-//            group.add(object);
-//            groupedObjects.put(specialization, group);
-//        }
         return ResponseEntity.ok().body(coachDtoList);
     }
 
@@ -162,6 +152,77 @@ public class UserService {
         coachRepository.update(coach);
 
         return ResponseEntity.ok().body("");
+    }
+
+    public ResponseEntity<String> changeProfilePicture(MultipartFile file) {
+        byte[] imageInBytes = new byte[0];
+        try {
+            imageInBytes = file.getBytes();
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Wrong image format");
+        }
+
+        Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(imageInBytes));
+
+//        // Opcjonalnie możesz ustawić publiczne uprawnienia do dostępu do pliku
+//        blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+//
+//
+//        String downloadUrl = blob.getMediaLink();
+//        log.info("Zapisano zdjęcie. URL do pobrania: " + downloadUrl);
+        return ResponseEntity.ok().body("");
+    }
+
+    public List<String> getSpecializations() {
+        List<String> specializations = new ArrayList<>();
+
+        for (CoachSpecialization myEnum : CoachSpecialization.values()) {
+            if (myEnum.getDescription() != null) {
+                specializations.add(myEnum.getDescription());
+            }
+        }
+        return specializations;
+    }
+
+    public ResponseEntity<ClientDto> getClientDto() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        String[] name = userRecord.getDisplayName().split(" ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = clientRepository.findById(userRecord.getUid()).getRegisterDate();
+        String formattedDate = sdf.format(date);
+        ClientDto clientDto = new ClientDto(
+                userRecord.getUid(),
+                name[0],
+                name[1],
+                formattedDate,
+                firebaseBucket.get(userRecord.getUid()) != null ? true : false
+        );
+
+        return ResponseEntity.ok().body(clientDto);
+    }
+
+    public ResponseEntity<CoachDto> getMyCoach() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        Client client = clientRepository.findById(userRecord.getUid());
+        Coach coach = coachRepository.findById(client.getCoachId());
+        try {
+            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
+
+            String[] name = coachRecord.getDisplayName().split(" ");
+            CoachDto coachDto = new CoachDto(
+                    coach.getDocumentId(),
+                    name[0],
+                    name[1],
+                    coach.getSpecialization().getDescription(),
+                    coach.getDescription(),
+                    coachRecord.getEmail(),
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+            );
+
+            return ResponseEntity.ok().body(coachDto);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     private void setUserRole(String id, String role) {
@@ -200,46 +261,4 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<String> changeProfilePicture(MultipartFile file) {
-        byte[] imageInBytes = new byte[0];
-        try {
-            imageInBytes = file.getBytes();
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Wrong image format");
-        }
-
-        Blob blob = firebaseBucket.create(AuthService.getCurrentUserAuthId(), new ByteArrayInputStream(imageInBytes));
-
-//        // Opcjonalnie możesz ustawić publiczne uprawnienia do dostępu do pliku
-//        blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-//
-//
-//        String downloadUrl = blob.getMediaLink();
-//        log.info("Zapisano zdjęcie. URL do pobrania: " + downloadUrl);
-        return ResponseEntity.ok().body("");
-    }
-
-    public List<String> getSpecializations() {
-        List<String> specializations = new ArrayList<>();
-
-        for (CoachSpecialization myEnum : CoachSpecialization.values()) {
-            if (myEnum.getDescription() != null) {
-                specializations.add(myEnum.getDescription());
-            }
-        }
-        return specializations;
-    }
-
-    public ResponseEntity<ClientDto> getClientDto() {
-        UserRecord userRecord = AuthService.getCurrentUser();
-        String[] name = userRecord.getDisplayName().split(" ");
-        ClientDto clientDto = new ClientDto(
-                userRecord.getUid(),
-                name[0],
-                name[1],
-                clientRepository.findById(userRecord.getUid()).getRegisterDate()
-        );
-
-        return ResponseEntity.ok().body(clientDto);
-    }
 }
