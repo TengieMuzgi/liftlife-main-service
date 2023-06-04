@@ -15,4 +15,5 @@ public class CoachDto {
     private String specialization;
     private String description;
     private String email;
+    private boolean hasPhoto;
 }

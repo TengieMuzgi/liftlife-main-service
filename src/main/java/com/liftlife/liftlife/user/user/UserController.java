@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.user.user;
 
-import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.dto.ClientDto;
@@ -62,5 +61,8 @@ public class UserController {
         return userService.getClientDto();
     }
 
-
+    @GetMapping("/client/getCoach")
+    public ResponseEntity<CoachDto> getMyCoach() {
+        return userService.getMyCoach();
+    }
 }
