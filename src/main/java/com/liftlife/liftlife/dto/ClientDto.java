@@ -13,5 +13,6 @@ public class ClientDto {
     private String id;
     private String firstName;
     private String lastName;
-    private Date registerDate;
+    private String registerDate;
+    private boolean hasAvatar;
 }
