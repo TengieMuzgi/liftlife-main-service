@@ -135,13 +135,6 @@ public class UserService {
                     firebaseBucket.get(userRecord.getUid()) != null ? true : false
             ));
         }
-//        //grouping by specialization
-//        for (CoachDto object : coachDtoList) {
-//            CoachSpecialization specialization = object.getSpecialization();
-//            List<CoachDto> group = groupedObjects.getOrDefault(specialization, new ArrayList<>());
-//            group.add(object);
-//            groupedObjects.put(specialization, group);
-//        }
         return ResponseEntity.ok().body(coachDtoList);
     }
 
@@ -225,7 +218,6 @@ public class UserService {
                     coachRecord.getEmail(),
                     firebaseBucket.get(coachRecord.getUid()) != null ? true : false
             );
-
 
             return ResponseEntity.ok().body(coachDto);
         } catch (FirebaseAuthException e) {
