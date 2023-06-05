@@ -26,7 +26,10 @@ public class TemplateExerciseService {
 
 
     public List<Exercise> findPresetExercisesByBodyPart(String bodyPart) {
-        return repository.findExerciseByBodyPart(bodyPart);
+        List<Exercise> exercises = repository.findExerciseByBodyPart(bodyPart);
+        if (exercises.isEmpty())
+            exercises.add(new Exercise());
+        return exercises;
     }
 
     public List<Exercise> findAll() {
