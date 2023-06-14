@@ -60,4 +60,19 @@ public class UserController {
     public ResponseEntity<CoachDto> getMyCoach() {
         return userService.getMyCoach();
     }
+
+    @PutMapping("/client/update/age")
+    public ResponseEntity<Object> updateAge(@RequestBody int age) {
+        return userService.updateAge(age);
+    }
+
+    @PutMapping("/client/update/weight")
+    public ResponseEntity<Object> updateWeight(@RequestBody float weight) {
+        return userService.updateWeight(weight);
+    }
+
+    @PutMapping("/client/update/height")
+    public ResponseEntity<Object> updateHeight(@RequestBody float height) {
+        return userService.updateHeight(height);
+    }
 }

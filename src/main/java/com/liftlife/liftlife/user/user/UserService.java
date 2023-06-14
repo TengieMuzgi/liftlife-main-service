@@ -186,6 +186,7 @@ public class UserService {
 
     public ResponseEntity<ClientDto> getClientDto() {
         UserRecord userRecord = AuthService.getCurrentUser();
+        Client client = clientRepository.findById(userRecord.getUid());
         String[] name = userRecord.getDisplayName().split(" ");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = clientRepository.findById(userRecord.getUid()).getRegisterDate();
@@ -195,7 +196,10 @@ public class UserService {
                 name[0],
                 name[1],
                 formattedDate,
-                firebaseBucket.get(userRecord.getUid()) != null ? true : false
+                firebaseBucket.get(userRecord.getUid()) != null ? true : false,
+                client.getAge(),
+                client.getWeight(),
+                client.getHeight()
         );
 
         return ResponseEntity.ok().body(clientDto);
@@ -261,4 +265,24 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<Object> updateAge(int age) {
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setAge(age);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updateWeight(float weight) {
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setWeight(weight);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updateHeight(float height) {
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setWeight(height);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
 }
