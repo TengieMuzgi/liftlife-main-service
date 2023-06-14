@@ -295,4 +295,38 @@ public class UserService {
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }
+
+    public ResponseEntity<List<ClientDto>> getMyClients() {
+        List<Client> clientList = clientRepository.findByField("coachId", AuthService.getCurrentUserAuthId());
+        List<ClientDto> resultList = new ArrayList<>();
+
+        try {
+            for(Client client : clientList) {
+                UserRecord clientRecord = firebaseAuth.getUser(client.getDocumentId());
+                String[] name = clientRecord.getDisplayName().split(" ");
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = client.getRegisterDate();
+                String formattedDate = sdf.format(date);
+
+                ClientDto clientDto = new ClientDto(
+                        client.getDocumentId(),
+                        name[0],
+                        name[1],
+                        formattedDate,
+                        firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
+                        client.getAge(),
+                        client.getWeight(),
+                        client.getHeight()
+                );
+                resultList.add(clientDto);
+            }
+
+            return ResponseEntity.ok().body(resultList);
+        } catch (FirebaseAuthException e) {
+            log.error("Error mapping client for trainer with id: " + AuthService.getCurrentUserAuthId());
+        }
+
+        return ResponseEntity.accepted().body(resultList);
+    }
 }
