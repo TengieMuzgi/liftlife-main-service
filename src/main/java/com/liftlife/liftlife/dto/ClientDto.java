@@ -15,4 +15,7 @@ public class ClientDto {
     private String lastName;
     private String registerDate;
     private boolean hasAvatar;
+    private int age;
+    private float weight;
+    private float height;
 }
