@@ -128,7 +128,7 @@ class UserControllerTest {
 
     @Test
     void getClientData_shouldReturnClientDto() {
-        ClientDto expectedClientDto = new ClientDto("1", "John", "Doe", new Date().toString(), true);
+        ClientDto expectedClientDto = new ClientDto("1", "John", "Doe", new Date().toString(), true, 22, 80, 170);
         ResponseEntity<ClientDto> expectedResponse = ResponseEntity.ok(expectedClientDto);
         when(userService.getClientDto()).thenReturn(expectedResponse);
 
