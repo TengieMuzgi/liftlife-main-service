@@ -32,6 +32,11 @@ public class UserController {
         return userService.getCoachList();
     }
 
+    @PostMapping("/picture/insert")
+    public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
+        return userService.changeProfilePicture(file);
+    }
+
     @PostMapping("/coach/change/description")
     public ResponseEntity<String> changeCoachDescription(@RequestBody String description) {
         return userService.changeCoachDescription(description);
@@ -47,9 +52,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getSpecializations());
     }
 
-    @PostMapping("/picture/insert")
-    public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
-        return userService.changeProfilePicture(file);
+    @GetMapping("/coach/clients")
+    public ResponseEntity<List<ClientDto>> getMyClients() {
+        return userService.getMyClients();
     }
 
     @GetMapping("/client/info")
