@@ -24,5 +24,8 @@ public class Client extends User {
     public Client(String authId, UserRole userRole, String coachId) {
         super(authId, userRole);
         this.coachId = coachId;
+        this.age = 0;
+        this.weight = 0.0F;
+        this.height = 0.0F;
     }
 }
