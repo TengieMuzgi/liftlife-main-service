@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.dto.PhysiqueDto;
+import com.liftlife.liftlife.dto.TokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,9 @@ public class UserController {
     }
 
     @PostMapping("/token/verify")
-    public ResponseEntity<String> registerWithToken(@RequestParam String token) throws FirebaseAuthException {
-        return userService.verifyWithToken(token);
+    public ResponseEntity<String> registerWithToken(@RequestBody TokenDto token) throws FirebaseAuthException {
+        System.out.println(token.getToken());
+        return userService.verifyWithToken(token.getToken());
     }
 
     @GetMapping("/coaches")
