@@ -281,7 +281,7 @@ public class UserService {
 
     public ResponseEntity<Object> updateHeight(float height) {
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setWeight(height);
+        client.setHeight(height);
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }
