@@ -9,6 +9,7 @@ import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
+import com.liftlife.liftlife.dto.PhysiqueDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
@@ -282,6 +283,15 @@ public class UserService {
     public ResponseEntity<Object> updateHeight(float height) {
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
         client.setHeight(height);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updatePhysique(PhysiqueDto physiqueDto) {
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setAge(physiqueDto.getAge());
+        client.setWeight(physiqueDto.getWeight());
+        client.setHeight(physiqueDto.getHeight());
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }

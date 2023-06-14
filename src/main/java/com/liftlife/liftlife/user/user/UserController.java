@@ -3,6 +3,7 @@ package com.liftlife.liftlife.user.user;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
+import com.liftlife.liftlife.dto.PhysiqueDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,17 +63,22 @@ public class UserController {
     }
 
     @PutMapping("/client/update/age")
-    public ResponseEntity<Object> updateAge(@RequestBody int age) {
-        return userService.updateAge(age);
+    public ResponseEntity<Object> updateAge(@RequestBody int value) {
+        return userService.updateAge(value);
     }
 
     @PutMapping("/client/update/weight")
-    public ResponseEntity<Object> updateWeight(@RequestBody float weight) {
-        return userService.updateWeight(weight);
+    public ResponseEntity<Object> updateWeight(@RequestBody float value) {
+        return userService.updateWeight(value);
     }
 
     @PutMapping("/client/update/height")
-    public ResponseEntity<Object> updateHeight(@RequestBody float height) {
-        return userService.updateHeight(height);
+    public ResponseEntity<Object> updateHeight(@RequestBody float value) {
+        return userService.updateHeight(value);
+    }
+
+    @PutMapping("/client/update/physique")
+    public ResponseEntity<Object> updatePhysique(@RequestBody PhysiqueDto physiqueDto) {
+        return userService.updatePhysique(physiqueDto);
     }
 }
