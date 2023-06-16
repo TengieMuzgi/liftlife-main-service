@@ -123,18 +123,22 @@ public class UserService {
         List<CoachDto> coachDtoList = new ArrayList<>();
 
         for (Coach coach: coachList) {
-            UserRecord userRecord = firebaseAuth.getUser(coach.getDocumentId());
-            String[] name = userRecord.getDisplayName().split(" ");
-            CoachSpecialization specialization = coach.getSpecialization();
-            coachDtoList.add(new CoachDto(
-                    coach.getDocumentId(),
-                    name[0],
-                    name[1],
-                    specialization.getDescription(),
-                    coach.getDescription(),
-                    userRecord.getEmail(),
-                    firebaseBucket.get(userRecord.getUid()) != null ? true : false
-            ));
+            try {
+                UserRecord userRecord = firebaseAuth.getUser(coach.getDocumentId());
+                String[] name = userRecord.getDisplayName().split(" ");
+                CoachSpecialization specialization = coach.getSpecialization();
+                coachDtoList.add(new CoachDto(
+                        coach.getDocumentId(),
+                        name[0],
+                        name[1],
+                        specialization.getDescription(),
+                        coach.getDescription(),
+                        userRecord.getEmail(),
+                        firebaseBucket.get(userRecord.getUid()) != null ? true : false
+                ));
+            } catch (FirebaseAuthException e) {
+                continue;
+            }
         }
         return ResponseEntity.ok().body(coachDtoList);
     }
