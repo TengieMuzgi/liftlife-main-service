@@ -270,21 +270,33 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Object> updateAge(int age) {
+    public ResponseEntity<Object> updateAge(Map<String, Integer> body) {
+        Integer age = body.get("age");
+        if(age == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
         client.setAge(age);
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Object> updateWeight(float weight) {
+    public ResponseEntity<Object> updateWeight(Map<String, Float> body) {
+        Float weight = body.get("weight");
+        if(weight == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
         client.setWeight(weight);
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Object> updateHeight(float height) {
+    public ResponseEntity<Object> updateHeight(Map<String, Float> body) {
+        Float height = body.get("height");
+        if(height == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
         client.setHeight(height);
         clientRepository.update(client);

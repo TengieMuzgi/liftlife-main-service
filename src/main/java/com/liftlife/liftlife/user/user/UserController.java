@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -69,18 +70,18 @@ public class UserController {
     }
 
     @PutMapping("/client/update/age")
-    public ResponseEntity<Object> updateAge(@RequestBody int value) {
-        return userService.updateAge(value);
+    public ResponseEntity<Object> updateAge(@RequestBody Map<String, Integer> body) {
+        return userService.updateAge(body);
     }
 
     @PutMapping("/client/update/weight")
-    public ResponseEntity<Object> updateWeight(@RequestBody float value) {
-        return userService.updateWeight(value);
+    public ResponseEntity<Object> updateWeight(@RequestBody Map<String, Float> body) {
+        return userService.updateWeight(body);
     }
 
     @PutMapping("/client/update/height")
-    public ResponseEntity<Object> updateHeight(@RequestBody float value) {
-        return userService.updateHeight(value);
+    public ResponseEntity<Object> updateHeight(@RequestBody Map<String, Float> body) {
+        return userService.updateHeight(body);
     }
 
     @PutMapping("/client/update/physique")
