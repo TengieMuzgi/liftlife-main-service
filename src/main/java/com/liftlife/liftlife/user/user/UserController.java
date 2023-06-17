@@ -40,13 +40,13 @@ public class UserController {
     }
 
     @PostMapping("/coach/change/description")
-    public ResponseEntity<String> changeCoachDescription(@RequestBody String description) {
-        return userService.changeCoachDescription(description);
+    public ResponseEntity<String> changeCoachDescription(@RequestBody Map<String, String> body) {
+        return userService.changeCoachDescription(body);
     }
 
     @PostMapping("/coach/change/specialization")
-    public ResponseEntity<String> changeCoachSpecialization(@RequestBody String specialization) {
-        return userService.changeCoachSpecialization(specialization);
+    public ResponseEntity<String> changeCoachSpecialization(@RequestBody Map<String, String> body) {
+        return userService.changeCoachSpecialization(body);
     }
 
     @GetMapping("/coach/specializations")

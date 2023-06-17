@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -153,7 +154,7 @@ public class UserServiceTest {
         when(coachRepository.findById(userId)).thenReturn(coach);
 
         // When
-        ResponseEntity<String> response = userService.changeCoachDescription(newDescription);
+        ResponseEntity<String> response = userService.changeCoachDescription(Map.of("description", newDescription));
 
         // Then
         verify(coachRepository, times(1)).update(coach);
@@ -172,7 +173,7 @@ public class UserServiceTest {
         when(coachRepository.findById(userId)).thenReturn(coach);
 
         // When
-        ResponseEntity<String> response = userService.changeCoachSpecialization(newSpecialization);
+        ResponseEntity<String> response = userService.changeCoachSpecialization(Map.of("specialization", newSpecialization));
 
         // Then
         verify(coachRepository, times(1)).update(coach);

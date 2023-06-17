@@ -16,6 +16,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -78,26 +79,26 @@ class UserControllerTest {
     void changeCoachDescription_shouldReturnSuccessMessage() {
         String description = "New description";
         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Description changed successfully");
-        when(userService.changeCoachDescription(description)).thenReturn(expectedResponse);
+        when(userService.changeCoachDescription(Map.of("description", description))).thenReturn(expectedResponse);
 
-        ResponseEntity<String> response = userController.changeCoachDescription(description);
+        ResponseEntity<String> response = userController.changeCoachDescription(Map.of("description", description));
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Description changed successfully", response.getBody());
-        verify(userService, times(1)).changeCoachDescription(description);
+        verify(userService, times(1)).changeCoachDescription(Map.of("description", description));
     }
 
     @Test
     void changeCoachSpecialization_shouldReturnSuccessMessage() {
         String specialization = "New specialization";
         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Specialization changed successfully");
-        when(userService.changeCoachSpecialization(specialization)).thenReturn(expectedResponse);
+        when(userService.changeCoachSpecialization(Map.of("specialization", specialization))).thenReturn(expectedResponse);
 
-        ResponseEntity<String> response = userController.changeCoachSpecialization(specialization);
+        ResponseEntity<String> response = userController.changeCoachSpecialization(Map.of("specialization", specialization));
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Specialization changed successfully", response.getBody());
-        verify(userService, times(1)).changeCoachSpecialization(specialization);
+        verify(userService, times(1)).changeCoachSpecialization(Map.of("specialization", specialization));
     }
 
     @Test

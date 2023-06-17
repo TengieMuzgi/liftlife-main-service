@@ -143,7 +143,11 @@ public class UserService {
         return ResponseEntity.ok().body(coachDtoList);
     }
 
-    public ResponseEntity<String> changeCoachDescription(String description) {
+    public ResponseEntity<String> changeCoachDescription(Map<String, String> body) {
+        String description = body.get("description");
+        if(description == null)
+            return ResponseEntity.badRequest().body("Description is null");
+
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
         coach.setDescription(description);
         coachRepository.update(coach);
@@ -151,7 +155,11 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    public ResponseEntity<String> changeCoachSpecialization(String specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(Map<String, String> body) {
+        String specialization = body.get("specialization");
+        if(specialization == null)
+            return ResponseEntity.badRequest().body("Specialization is null");
+
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
         coach.setSpecialization(CoachSpecialization.getSpecializationFromString(specialization));
         coachRepository.update(coach);
