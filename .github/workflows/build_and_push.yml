@@ -1,16 +1,14 @@
 name: Build and Publish
 
 on:
-#  pull_request:
-#    branches: ["main"]
-#    types:
-#      - closed
-  push:
-    branches: ["build"]
+  pull_request:
+    branches: ["main"]
+    types:
+      - closed
 
 jobs:
   if_merged_build-and-push-docker-image:
-#    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     name: Build Docker image and push to repositories
     runs-on: ubuntu-latest
 
