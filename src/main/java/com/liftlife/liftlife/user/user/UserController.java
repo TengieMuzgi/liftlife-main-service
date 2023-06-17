@@ -25,7 +25,6 @@ public class UserController {
 
     @PostMapping("/token/verify")
     public ResponseEntity<String> registerWithToken(@RequestBody TokenDto token) throws FirebaseAuthException {
-        System.out.println(token.getToken());
         return userService.verifyWithToken(token.getToken());
     }
 
