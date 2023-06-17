@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/user/coaches").permitAll()
+                .requestMatchers("/api/user/token/**").authenticated()
                 .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
                 .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
                 .requestMatchers("/api/user/client").hasAnyAuthority("CLIENT")

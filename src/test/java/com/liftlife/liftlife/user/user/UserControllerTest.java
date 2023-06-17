@@ -3,6 +3,7 @@ package com.liftlife.liftlife.user.user;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
+import com.liftlife.liftlife.dto.TokenDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,7 +51,7 @@ class UserControllerTest {
         ResponseEntity<String> expectedResponse = ResponseEntity.ok("Registered successfully");
         when(userService.verifyWithToken(token)).thenReturn(expectedResponse);
 
-        ResponseEntity<String> response = userController.registerWithToken(token);
+        ResponseEntity<String> response = userController.registerWithToken(new TokenDto(token));
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Registered successfully", response.getBody());
