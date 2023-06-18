@@ -78,7 +78,7 @@ public class UserService {
 
     public ResponseEntity<String> verifyWithToken(String token) throws FirebaseAuthException {
         if(!registrationTokenRepository.isPresent(token)) {
-            return ResponseEntity.badRequest().body("Invalid token");
+            return ResponseEntity.badRequest().body("Invalid registration token");
         }
 
         RegistrationToken registrationToken = registrationTokenRepository.findByToken(token);
