@@ -84,6 +84,10 @@ public class UserService {
         RegistrationToken registrationToken = registrationTokenRepository.findByToken(token);
         String currentUserId = AuthService.getCurrentUserAuthId();
 
+        if(AuthService.getCurrentUserRole() != null) {
+            return ResponseEntity.badRequest().body("User already assigned");
+        }
+
         //save user picture from google to storage
         try {
             String url = AuthService.getCurrentUser().getPhotoUrl();
