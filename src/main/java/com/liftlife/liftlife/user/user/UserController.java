@@ -59,6 +59,16 @@ public class UserController {
         return userService.getMyClients();
     }
 
+    @GetMapping("/coach/client")
+    public ResponseEntity<Object> getMyClient(@RequestParam String clientId) {
+        return userService.getMyClient(clientId);
+    }
+
+    @GetMapping("/coach/info")
+    public ResponseEntity<Object> getCoachData() {
+        return userService.getCoachDto();
+    }
+
     @GetMapping("/client/info")
     public ResponseEntity<ClientDto> getClientData() {
         return userService.getClientDto();
