@@ -357,4 +357,54 @@ public class UserService {
 
         return ResponseEntity.accepted().body(resultList);
     }
+
+    public ResponseEntity<Object> getMyClient(String clientId) {
+        try {
+            Client client = clientRepository.findById(clientId);
+            UserRecord clientRecord = firebaseAuth.getUser(clientId);
+            String[] name = clientRecord.getDisplayName().split(" ");
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = client.getRegisterDate();
+            String formattedDate = sdf.format(date);
+
+            ClientDto clientDto = new ClientDto(
+                    client.getDocumentId(),
+                    name[0],
+                    name[1],
+                    formattedDate,
+                    firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
+                    client.getAge(),
+                    client.getWeight(),
+                    client.getHeight()
+            );
+            return ResponseEntity.ok(clientDto);
+        } catch (FirebaseAuthException e) {
+            log.error("Error while searching for client with id: " + clientId);
+            return ResponseEntity.badRequest().body("Error while searching for client with id: " + clientId);
+        }
+    }
+
+    public ResponseEntity<Object> getCoachDto() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        Coach coach = coachRepository.findById(userRecord.getUid());
+        try {
+            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
+
+            String[] name = coachRecord.getDisplayName().split(" ");
+            CoachDto coachDto = new CoachDto(
+                    coach.getDocumentId(),
+                    name[0],
+                    name[1],
+                    coach.getSpecialization().getDescription(),
+                    coach.getDescription(),
+                    coachRecord.getEmail(),
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+            );
+
+            return ResponseEntity.ok().body(coachDto);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body("Error while searching for coach with id: " + coach.getDocumentId());
+        }
+    }
 }
