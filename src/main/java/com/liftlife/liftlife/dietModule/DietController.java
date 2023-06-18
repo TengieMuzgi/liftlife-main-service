@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,14 @@ public class DietController {
     public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullByFields(@PathVariable String type, @RequestBody Map<String, Object> fields) {
         DietServiceType serviceType = DietServiceType.valueOf(type.toUpperCase());
         List<T> entities = dietService.findFullByFields(serviceType, fields);
+        return ResponseEntity.ok(entities);
+    }
+
+    @GetMapping("/fullByUser/{userId}")
+    public <T extends FirestoreEntity> ResponseEntity<List<T>> getFullPlanByUser(@PathVariable String userId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        List<T> entities = dietService.findFullByFields(DietServiceType.DIET_PLAN, map);
         return ResponseEntity.ok(entities);
     }
 
