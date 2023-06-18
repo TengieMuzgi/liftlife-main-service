@@ -9,6 +9,7 @@ import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
+import com.liftlife.liftlife.dto.PhysiqueDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
@@ -77,11 +78,15 @@ public class UserService {
 
     public ResponseEntity<String> verifyWithToken(String token) throws FirebaseAuthException {
         if(!registrationTokenRepository.isPresent(token)) {
-            return ResponseEntity.badRequest().body("Invalid token");
+            return ResponseEntity.badRequest().body("Invalid registration token");
         }
 
         RegistrationToken registrationToken = registrationTokenRepository.findByToken(token);
         String currentUserId = AuthService.getCurrentUserAuthId();
+
+        if(AuthService.getCurrentUserRole() != null) {
+            return ResponseEntity.badRequest().body("User already assigned");
+        }
 
         //save user picture from google to storage
         try {
@@ -122,23 +127,31 @@ public class UserService {
         List<CoachDto> coachDtoList = new ArrayList<>();
 
         for (Coach coach: coachList) {
-            UserRecord userRecord = firebaseAuth.getUser(coach.getDocumentId());
-            String[] name = userRecord.getDisplayName().split(" ");
-            CoachSpecialization specialization = coach.getSpecialization();
-            coachDtoList.add(new CoachDto(
-                    coach.getDocumentId(),
-                    name[0],
-                    name[1],
-                    specialization.getDescription(),
-                    coach.getDescription(),
-                    userRecord.getEmail(),
-                    firebaseBucket.get(userRecord.getUid()) != null ? true : false
-            ));
+            try {
+                UserRecord userRecord = firebaseAuth.getUser(coach.getDocumentId());
+                String[] name = userRecord.getDisplayName().split(" ");
+                CoachSpecialization specialization = coach.getSpecialization();
+                coachDtoList.add(new CoachDto(
+                        coach.getDocumentId(),
+                        name[0],
+                        name[1],
+                        specialization.getDescription(),
+                        coach.getDescription(),
+                        userRecord.getEmail(),
+                        firebaseBucket.get(userRecord.getUid()) != null ? true : false
+                ));
+            } catch (FirebaseAuthException e) {
+                continue;
+            }
         }
         return ResponseEntity.ok().body(coachDtoList);
     }
 
-    public ResponseEntity<String> changeCoachDescription(String description) {
+    public ResponseEntity<String> changeCoachDescription(Map<String, String> body) {
+        String description = body.get("description");
+        if(description == null)
+            return ResponseEntity.badRequest().body("Description is null");
+
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
         coach.setDescription(description);
         coachRepository.update(coach);
@@ -146,7 +159,11 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    public ResponseEntity<String> changeCoachSpecialization(String specialization) {
+    public ResponseEntity<String> changeCoachSpecialization(Map<String, String> body) {
+        String specialization = body.get("specialization");
+        if(specialization == null)
+            return ResponseEntity.badRequest().body("Specialization is null");
+
         Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
         coach.setSpecialization(CoachSpecialization.getSpecializationFromString(specialization));
         coachRepository.update(coach);
@@ -186,6 +203,7 @@ public class UserService {
 
     public ResponseEntity<ClientDto> getClientDto() {
         UserRecord userRecord = AuthService.getCurrentUser();
+        Client client = clientRepository.findById(userRecord.getUid());
         String[] name = userRecord.getDisplayName().split(" ");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = clientRepository.findById(userRecord.getUid()).getRegisterDate();
@@ -195,7 +213,10 @@ public class UserService {
                 name[0],
                 name[1],
                 formattedDate,
-                firebaseBucket.get(userRecord.getUid()) != null ? true : false
+                firebaseBucket.get(userRecord.getUid()) != null ? true : false,
+                client.getAge(),
+                client.getWeight(),
+                client.getHeight()
         );
 
         return ResponseEntity.ok().body(clientDto);
@@ -261,4 +282,129 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<Object> updateAge(Map<String, Integer> body) {
+        Integer age = body.get("age");
+        if(age == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setAge(age);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updateWeight(Map<String, Float> body) {
+        Float weight = body.get("weight");
+        if(weight == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setWeight(weight);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updateHeight(Map<String, Float> body) {
+        Float height = body.get("height");
+        if(height == null)
+            return ResponseEntity.badRequest().body("Wrong format");
+
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setHeight(height);
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> updatePhysique(PhysiqueDto physiqueDto) {
+        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
+        client.setAge(physiqueDto.getAge());
+        client.setWeight(physiqueDto.getWeight());
+        client.setHeight(physiqueDto.getHeight());
+        clientRepository.update(client);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<List<ClientDto>> getMyClients() {
+        List<Client> clientList = clientRepository.findByField("coachId", AuthService.getCurrentUserAuthId());
+        List<ClientDto> resultList = new ArrayList<>();
+
+        try {
+            for(Client client : clientList) {
+                UserRecord clientRecord = firebaseAuth.getUser(client.getDocumentId());
+                String[] name = clientRecord.getDisplayName().split(" ");
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = client.getRegisterDate();
+                String formattedDate = sdf.format(date);
+
+                ClientDto clientDto = new ClientDto(
+                        client.getDocumentId(),
+                        name[0],
+                        name[1],
+                        formattedDate,
+                        firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
+                        client.getAge(),
+                        client.getWeight(),
+                        client.getHeight()
+                );
+                resultList.add(clientDto);
+            }
+
+            return ResponseEntity.ok().body(resultList);
+        } catch (FirebaseAuthException e) {
+            log.error("Error mapping client for trainer with id: " + AuthService.getCurrentUserAuthId());
+        }
+
+        return ResponseEntity.accepted().body(resultList);
+    }
+
+    public ResponseEntity<Object> getMyClient(String clientId) {
+        try {
+            Client client = clientRepository.findById(clientId);
+            UserRecord clientRecord = firebaseAuth.getUser(clientId);
+            String[] name = clientRecord.getDisplayName().split(" ");
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = client.getRegisterDate();
+            String formattedDate = sdf.format(date);
+
+            ClientDto clientDto = new ClientDto(
+                    client.getDocumentId(),
+                    name[0],
+                    name[1],
+                    formattedDate,
+                    firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
+                    client.getAge(),
+                    client.getWeight(),
+                    client.getHeight()
+            );
+            return ResponseEntity.ok(clientDto);
+        } catch (FirebaseAuthException e) {
+            log.error("Error while searching for client with id: " + clientId);
+            return ResponseEntity.badRequest().body("Error while searching for client with id: " + clientId);
+        }
+    }
+
+    public ResponseEntity<Object> getCoachDto() {
+        UserRecord userRecord = AuthService.getCurrentUser();
+        Coach coach = coachRepository.findById(userRecord.getUid());
+        try {
+            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
+
+            String[] name = coachRecord.getDisplayName().split(" ");
+            CoachDto coachDto = new CoachDto(
+                    coach.getDocumentId(),
+                    name[0],
+                    name[1],
+                    coach.getSpecialization().getDescription(),
+                    coach.getDescription(),
+                    coachRecord.getEmail(),
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+            );
+
+            return ResponseEntity.ok().body(coachDto);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.badRequest().body("Error while searching for coach with id: " + coach.getDocumentId());
+        }
+    }
 }
