@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class FullDietDay extends DietEntity {
+
+    private String name;
     private int dayOfWeek;
     private transient int caloriesSum;
     private boolean isTemplate;
