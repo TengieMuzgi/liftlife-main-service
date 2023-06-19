@@ -131,6 +131,9 @@ public class UserService {
                 UserRecord userRecord = firebaseAuth.getUser(coach.getDocumentId());
                 String[] name = userRecord.getDisplayName().split(" ");
                 CoachSpecialization specialization = coach.getSpecialization();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = coach.getRegisterDate();
+                String formattedDate = sdf.format(date);
                 coachDtoList.add(new CoachDto(
                         coach.getDocumentId(),
                         name[0],
@@ -138,7 +141,8 @@ public class UserService {
                         specialization.getDescription(),
                         coach.getDescription(),
                         userRecord.getEmail(),
-                        firebaseBucket.get(userRecord.getUid()) != null ? true : false
+                        firebaseBucket.get(userRecord.getUid()) != null ? true : false,
+                        formattedDate
                 ));
             } catch (FirebaseAuthException e) {
                 continue;
@@ -230,6 +234,9 @@ public class UserService {
             UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
 
             String[] name = coachRecord.getDisplayName().split(" ");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = coach.getRegisterDate();
+            String formattedDate = sdf.format(date);
             CoachDto coachDto = new CoachDto(
                     coach.getDocumentId(),
                     name[0],
@@ -237,7 +244,8 @@ public class UserService {
                     coach.getSpecialization().getDescription(),
                     coach.getDescription(),
                     coachRecord.getEmail(),
-                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false,
+                    formattedDate
             );
 
             return ResponseEntity.ok().body(coachDto);
@@ -392,6 +400,9 @@ public class UserService {
             UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
 
             String[] name = coachRecord.getDisplayName().split(" ");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = coach.getRegisterDate();
+            String formattedDate = sdf.format(date);
             CoachDto coachDto = new CoachDto(
                     coach.getDocumentId(),
                     name[0],
@@ -399,12 +410,18 @@ public class UserService {
                     coach.getSpecialization().getDescription(),
                     coach.getDescription(),
                     coachRecord.getEmail(),
-                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false
+                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false,
+                    formattedDate
             );
 
             return ResponseEntity.ok().body(coachDto);
         } catch (FirebaseAuthException e) {
             return ResponseEntity.badRequest().body("Error while searching for coach with id: " + coach.getDocumentId());
         }
+    }
+
+    public ResponseEntity<String> getCoachDescription() {
+        Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
+        return ResponseEntity.ok().body(coach.getDescription());
     }
 }
