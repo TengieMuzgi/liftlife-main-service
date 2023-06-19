@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/token/**").authenticated()
                 .requestMatchers("/api/user/admin").hasAnyAuthority("ADMIN")
                 .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
-                .requestMatchers("/api/user/client").hasAnyAuthority("CLIENT")
+                .requestMatchers("/api/user/client/**").hasAnyAuthority("CLIENT")
                 .requestMatchers("/api/dietDay/**").hasAnyAuthority("COACH","CLIENT")
                 .anyRequest().authenticated()
                 .and()
