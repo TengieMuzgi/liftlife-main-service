@@ -19,6 +19,7 @@ import com.liftlife.liftlife.user.coach.Coach;
 import com.liftlife.liftlife.user.coach.CoachRepository;
 import com.liftlife.liftlife.user.utils.RegistrationToken;
 import com.liftlife.liftlife.user.utils.RegistrationTokenRepository;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,8 @@ public class UserService {
     private ClientRepository clientRepository;
     private FirebaseAuth firebaseAuth;
     private Bucket firebaseBucket;
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 
     @Autowired
     public UserService(CoachRepository coachRepository, AdminRepository adminRepository,
@@ -151,30 +154,6 @@ public class UserService {
         return ResponseEntity.ok().body(coachDtoList);
     }
 
-    public ResponseEntity<String> changeCoachDescription(Map<String, String> body) {
-        String description = body.get("description");
-        if(description == null)
-            return ResponseEntity.badRequest().body("Description is null");
-
-        Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
-        coach.setDescription(description);
-        coachRepository.update(coach);
-
-        return ResponseEntity.ok().body("");
-    }
-
-    public ResponseEntity<String> changeCoachSpecialization(Map<String, String> body) {
-        String specialization = body.get("specialization");
-        if(specialization == null)
-            return ResponseEntity.badRequest().body("Specialization is null");
-
-        Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
-        coach.setSpecialization(CoachSpecialization.getSpecializationFromString(specialization));
-        coachRepository.update(coach);
-
-        return ResponseEntity.ok().body("");
-    }
-
     public ResponseEntity<String> changeProfilePicture(MultipartFile file) {
         byte[] imageInBytes = new byte[0];
         try {
@@ -194,50 +173,60 @@ public class UserService {
         return ResponseEntity.ok().body("");
     }
 
-    public List<String> getSpecializations() {
-        List<String> specializations = new ArrayList<>();
+    public ClientDto extractClientDto(String clientId) throws NotFoundException {
+        try {
+            UserRecord userRecord = firebaseAuth.getUser(clientId);
+            Client client = clientRepository.findById(userRecord.getUid());
 
-        for (CoachSpecialization myEnum : CoachSpecialization.values()) {
-            if (myEnum.getDescription() != null) {
-                specializations.add(myEnum.getDescription());
-            }
+            String[] name = this.splitDisplayName(userRecord.getDisplayName());
+            String formattedDate = this.formatRegisterDate(clientRepository.findById(userRecord.getUid()).getRegisterDate());
+
+            return new ClientDto(
+                    userRecord.getUid(),
+                    name[0],
+                    name[1],
+                    formattedDate,
+                    firebaseBucket.get(userRecord.getUid()) != null ? true : false,
+                    client.getAge(),
+                    client.getWeight(),
+                    client.getHeight()
+            );
+        } catch (FirebaseAuthException | NullPointerException e) {
+            throw new NotFoundException("Error while searching for client with id: " + clientId);
         }
-        return specializations;
     }
 
-    public ResponseEntity<ClientDto> getClientDto() {
-        UserRecord userRecord = AuthService.getCurrentUser();
-        Client client = clientRepository.findById(userRecord.getUid());
-        String[] name = userRecord.getDisplayName().split(" ");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = clientRepository.findById(userRecord.getUid()).getRegisterDate();
-        String formattedDate = sdf.format(date);
-        ClientDto clientDto = new ClientDto(
-                userRecord.getUid(),
-                name[0],
-                name[1],
-                formattedDate,
-                firebaseBucket.get(userRecord.getUid()) != null ? true : false,
-                client.getAge(),
-                client.getWeight(),
-                client.getHeight()
-        );
+    public ClientDto extractClientDto(Client client) throws NotFoundException {
+        try {
+            UserRecord userRecord = firebaseAuth.getUser(client.getDocumentId());
 
-        return ResponseEntity.ok().body(clientDto);
+            String[] name = this.splitDisplayName(userRecord.getDisplayName());
+            String formattedDate = this.formatRegisterDate(clientRepository.findById(userRecord.getUid()).getRegisterDate());
+
+            return new ClientDto(
+                    client.getDocumentId(),
+                    name[0],
+                    name[1],
+                    formattedDate,
+                    firebaseBucket.get(userRecord.getUid()) != null ? true : false,
+                    client.getAge(),
+                    client.getWeight(),
+                    client.getHeight()
+            );
+        } catch (FirebaseAuthException | NullPointerException e) {
+            throw new NotFoundException("Error while searching for client with id: " + client.getDocumentId());
+        }
     }
 
-    public ResponseEntity<CoachDto> getMyCoach() {
-        UserRecord userRecord = AuthService.getCurrentUser();
-        Client client = clientRepository.findById(userRecord.getUid());
-        Coach coach = coachRepository.findById(client.getCoachId());
+    public CoachDto extractCoachDto(String coachId) {
+        Coach coach = coachRepository.findById(coachId);
         try {
             UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
 
-            String[] name = coachRecord.getDisplayName().split(" ");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = coach.getRegisterDate();
-            String formattedDate = sdf.format(date);
-            CoachDto coachDto = new CoachDto(
+            String[] name = this.splitDisplayName(coachRecord.getDisplayName());
+            String formattedDate = this.formatRegisterDate(coach.getRegisterDate());
+
+            return new CoachDto(
                     coach.getDocumentId(),
                     name[0],
                     name[1],
@@ -247,10 +236,8 @@ public class UserService {
                     firebaseBucket.get(coachRecord.getUid()) != null ? true : false,
                     formattedDate
             );
-
-            return ResponseEntity.ok().body(coachDto);
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.badRequest().body(null);
+        } catch (FirebaseAuthException | NullPointerException e) {
+            throw new NotFoundException("Error while searching for coach with id: " + coach.getDocumentId());
         }
     }
 
@@ -290,138 +277,14 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Object> updateAge(Map<String, Integer> body) {
-        Integer age = body.get("age");
-        if(age == null)
-            return ResponseEntity.badRequest().body("Wrong format");
-
-        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setAge(age);
-        clientRepository.update(client);
-        return ResponseEntity.ok().build();
+    private String[] splitDisplayName(String displayName) {
+        String[] name = displayName.split(" ");
+        return name;
     }
 
-    public ResponseEntity<Object> updateWeight(Map<String, Float> body) {
-        Float weight = body.get("weight");
-        if(weight == null)
-            return ResponseEntity.badRequest().body("Wrong format");
-
-        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setWeight(weight);
-        clientRepository.update(client);
-        return ResponseEntity.ok().build();
+    private String formatRegisterDate(Date date) {
+        return sdf.format(date);
     }
 
-    public ResponseEntity<Object> updateHeight(Map<String, Float> body) {
-        Float height = body.get("height");
-        if(height == null)
-            return ResponseEntity.badRequest().body("Wrong format");
 
-        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setHeight(height);
-        clientRepository.update(client);
-        return ResponseEntity.ok().build();
-    }
-
-    public ResponseEntity<Object> updatePhysique(PhysiqueDto physiqueDto) {
-        Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setAge(physiqueDto.getAge());
-        client.setWeight(physiqueDto.getWeight());
-        client.setHeight(physiqueDto.getHeight());
-        clientRepository.update(client);
-        return ResponseEntity.ok().build();
-    }
-
-    public ResponseEntity<List<ClientDto>> getMyClients() {
-        List<Client> clientList = clientRepository.findByField("coachId", AuthService.getCurrentUserAuthId());
-        List<ClientDto> resultList = new ArrayList<>();
-
-        try {
-            for(Client client : clientList) {
-                UserRecord clientRecord = firebaseAuth.getUser(client.getDocumentId());
-                String[] name = clientRecord.getDisplayName().split(" ");
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = client.getRegisterDate();
-                String formattedDate = sdf.format(date);
-
-                ClientDto clientDto = new ClientDto(
-                        client.getDocumentId(),
-                        name[0],
-                        name[1],
-                        formattedDate,
-                        firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
-                        client.getAge(),
-                        client.getWeight(),
-                        client.getHeight()
-                );
-                resultList.add(clientDto);
-            }
-
-            return ResponseEntity.ok().body(resultList);
-        } catch (FirebaseAuthException e) {
-            log.error("Error mapping client for trainer with id: " + AuthService.getCurrentUserAuthId());
-        }
-
-        return ResponseEntity.accepted().body(resultList);
-    }
-
-    public ResponseEntity<Object> getMyClient(String clientId) {
-        try {
-            Client client = clientRepository.findById(clientId);
-            UserRecord clientRecord = firebaseAuth.getUser(clientId);
-            String[] name = clientRecord.getDisplayName().split(" ");
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = client.getRegisterDate();
-            String formattedDate = sdf.format(date);
-
-            ClientDto clientDto = new ClientDto(
-                    client.getDocumentId(),
-                    name[0],
-                    name[1],
-                    formattedDate,
-                    firebaseBucket.get(clientRecord.getUid()) != null ? true : false,
-                    client.getAge(),
-                    client.getWeight(),
-                    client.getHeight()
-            );
-            return ResponseEntity.ok(clientDto);
-        } catch (FirebaseAuthException e) {
-            log.error("Error while searching for client with id: " + clientId);
-            return ResponseEntity.badRequest().body("Error while searching for client with id: " + clientId);
-        }
-    }
-
-    public ResponseEntity<Object> getCoachDto() {
-        UserRecord userRecord = AuthService.getCurrentUser();
-        Coach coach = coachRepository.findById(userRecord.getUid());
-        try {
-            UserRecord coachRecord = firebaseAuth.getUser(coach.getDocumentId());
-
-            String[] name = coachRecord.getDisplayName().split(" ");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = coach.getRegisterDate();
-            String formattedDate = sdf.format(date);
-            CoachDto coachDto = new CoachDto(
-                    coach.getDocumentId(),
-                    name[0],
-                    name[1],
-                    coach.getSpecialization().getDescription(),
-                    coach.getDescription(),
-                    coachRecord.getEmail(),
-                    firebaseBucket.get(coachRecord.getUid()) != null ? true : false,
-                    formattedDate
-            );
-
-            return ResponseEntity.ok().body(coachDto);
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.badRequest().body("Error while searching for coach with id: " + coach.getDocumentId());
-        }
-    }
-
-    public ResponseEntity<String> getCoachDescription() {
-        Coach coach = coachRepository.findById(AuthService.getCurrentUserAuthId());
-        return ResponseEntity.ok().body(coach.getDescription());
-    }
 }
