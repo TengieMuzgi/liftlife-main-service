@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,19 @@ public class DietController {
     public ResponseEntity<List<DietDay>> getTemplateDiets() {
         List<DietDay> diets = dietService.findByTemplate();
         return ResponseEntity.ok(diets);
+    }
+
+    @GetMapping("/template/truncated")
+    public ResponseEntity<List<Map<String,String>>> getTemplateDietsTruncated() {
+        List<DietDay> diets = dietService.findByTemplate();
+        List<Map<String,String>> truncatedDiets = new ArrayList<>();
+        for(DietDay diet: diets){
+            Map<String, String> truncatedMap = new HashMap<>();
+            truncatedMap.put("id", diet.getDocumentId());
+            truncatedMap.put("name", diet.getName());
+            truncatedDiets.add(truncatedMap);
+        }
+        return ResponseEntity.ok(truncatedDiets);
     }
 
     @GetMapping("/full/template")
