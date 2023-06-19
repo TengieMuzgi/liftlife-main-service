@@ -16,4 +16,5 @@ public class CoachDto {
     private String description;
     private String email;
     private boolean hasPhoto;
+    private String registerDate;
 }
