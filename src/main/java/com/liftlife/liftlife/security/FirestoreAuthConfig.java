@@ -1,6 +1,8 @@
 package com.liftlife.liftlife.security;
 
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.cloud.StorageClient;
 import org.springframework.context.annotation.Bean;

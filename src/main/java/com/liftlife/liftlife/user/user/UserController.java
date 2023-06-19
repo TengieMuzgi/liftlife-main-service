@@ -1,15 +1,17 @@
 package com.liftlife.liftlife.user.user;
 
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.liftlife.liftlife.dto.ClientDto;
+import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.dto.CoachDto;
-import com.liftlife.liftlife.dto.PhysiqueDto;
-import com.liftlife.liftlife.dto.TokenDto;
+import com.liftlife.liftlife.security.AuthService;
+import com.liftlife.liftlife.user.coach.Coach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,14 +21,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Bucket firebaseBucket;
+
     @GetMapping("/token/generate")
     public ResponseEntity<String> generateRegistrationToken() {
         return userService.generateRegistrationToken();
     }
 
     @PostMapping("/token/verify")
-    public ResponseEntity<String> registerWithToken(@RequestBody TokenDto token) throws FirebaseAuthException {
-        return userService.verifyWithToken(token.getToken());
+    public ResponseEntity<String> registerWithToken(@RequestParam String token) throws FirebaseAuthException {
+        return userService.verifyWithToken(token);
+    }
+
+    @PostMapping
+    public void saveProfilePictureToBucket(@RequestParam("image") MultipartFile file) throws IOException {
+        byte[] fileInBytes = file.getBytes();
+        firebaseBucket.create(AuthService.getCurrentUserAuthId(), fileInBytes);
     }
 
     @GetMapping("/coaches")
@@ -34,68 +45,28 @@ public class UserController {
         return userService.getCoachList();
     }
 
-    @PostMapping("/picture/insert")
-    public ResponseEntity<String> changeProfilePicture(@RequestParam("image") MultipartFile file) {
-        return userService.changeProfilePicture(file);
-    }
-
     @PostMapping("/coach/change/description")
-    public ResponseEntity<String> changeCoachDescription(@RequestBody Map<String, String> body) {
-        return userService.changeCoachDescription(body);
+    public ResponseEntity<String> changeCoachDescription(@RequestBody String description) {
+        return userService.changeCoachDescription(description);
     }
 
     @PostMapping("/coach/change/specialization")
-    public ResponseEntity<String> changeCoachSpecialization(@RequestBody Map<String, String> body) {
-        return userService.changeCoachSpecialization(body);
+    public ResponseEntity<String> changeCoachSpecialization(@RequestBody CoachSpecialization specialization) {
+        return userService.changeCoachSpecialization(specialization);
     }
 
-    @GetMapping("/coach/specializations")
-    public ResponseEntity<List<String>> getSpecializations() {
-        return ResponseEntity.ok().body(userService.getSpecializations());
-    }
 
-    @GetMapping("/coach/clients")
-    public ResponseEntity<List<ClientDto>> getMyClients() {
-        return userService.getMyClients();
-    }
+//    @GetMapping
+//    public void getProfilePicture() throws FirebaseAuthException {
+////        Blob downloadedBlob = firebaseBucket.get("MuA1nRxWA2OOpS0pNOSpZxMcKan2");
+////        String url = downloadedBlob.getMediaLink();
+//        UserRecord userRecord = AuthService.getCurrentUser();
+//        System.out.println(userRecord.getPhotoUrl());
+////        UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(userRecord.getUid()).setPhotoUrl(url);
+////        UserRecord updatedUser = firebaseAuth.updateUser(request);
+////        System.out.println(url);
+////        System.out.println(updatedUser.getPhotoUrl());
+//    }
 
-    @GetMapping("/coach/client")
-    public ResponseEntity<Object> getMyClient(@RequestParam String clientId) {
-        return userService.getMyClient(clientId);
-    }
 
-    @GetMapping("/coach/info")
-    public ResponseEntity<Object> getCoachData() {
-        return userService.getCoachDto();
-    }
-
-    @GetMapping("/client/info")
-    public ResponseEntity<ClientDto> getClientData() {
-        return userService.getClientDto();
-    }
-
-    @GetMapping("/client/getCoach")
-    public ResponseEntity<CoachDto> getMyCoach() {
-        return userService.getMyCoach();
-    }
-
-    @PutMapping("/client/update/age")
-    public ResponseEntity<Object> updateAge(@RequestBody Map<String, Integer> body) {
-        return userService.updateAge(body);
-    }
-
-    @PutMapping("/client/update/weight")
-    public ResponseEntity<Object> updateWeight(@RequestBody Map<String, Float> body) {
-        return userService.updateWeight(body);
-    }
-
-    @PutMapping("/client/update/height")
-    public ResponseEntity<Object> updateHeight(@RequestBody Map<String, Float> body) {
-        return userService.updateHeight(body);
-    }
-
-    @PutMapping("/client/update/physique")
-    public ResponseEntity<Object> updatePhysique(@RequestBody PhysiqueDto physiqueDto) {
-        return userService.updatePhysique(physiqueDto);
-    }
 }

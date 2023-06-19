@@ -1,7 +1,8 @@
 package com.liftlife.liftlife.util.exception.handler;
 
 import com.liftlife.liftlife.util.exception.DbAccessException;
-import com.liftlife.liftlife.util.exception.RetroActivityException;
+import com.liftlife.liftlife.util.exception.InvalidTokenException;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,18 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 //    }
 
     //runtime ex
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
+    protected ResponseEntity<Object> handleConflict(RuntimeException exception, WebRequest request) {
+        String bodyOfResponse = exception.getMessage();
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { NotFoundException.class})
+    protected ResponseEntity<Object> handleNotFound(NotFoundException exception, WebRequest request) {
+        String bodyOfResponse = exception.getMessage();
+        logger.info(bodyOfResponse);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = { DbAccessException.class})
     protected ResponseEntity<Object> handleDatabaseGet(DbAccessException exception, WebRequest request) {
@@ -51,12 +64,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = { RetroActivityException.class})
-    protected ResponseEntity<Object> handleRetrpActivity(RetroActivityException exception, WebRequest request) {
-        String bodyOfResponse = exception.getMessage();
-        logger.info(bodyOfResponse);
-        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
+
 
 
 

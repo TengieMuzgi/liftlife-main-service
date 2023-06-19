@@ -1,11 +1,14 @@
 package com.liftlife.liftlife.user.admin;
 
 import com.google.cloud.firestore.DocumentReference;
+import com.liftlife.liftlife.user.client.Client;
+import com.liftlife.liftlife.user.coach.Coach;
 import com.liftlife.liftlife.util.database.FirestoreRepositoryTemplate;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository

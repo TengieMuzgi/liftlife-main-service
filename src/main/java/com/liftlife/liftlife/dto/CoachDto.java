@@ -12,8 +12,7 @@ public class CoachDto {
     private String id;
     private String firstName;
     private String lastName;
-    private String specialization;
+    private CoachSpecialization specialization;
     private String description;
     private String email;
-    private boolean hasPhoto;
 }

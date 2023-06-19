@@ -1,13 +1,22 @@
 package com.liftlife.liftlife.security;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.liftlife.liftlife.common.UserRole;
+import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
+import com.liftlife.liftlife.user.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,4 +38,26 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest)  {
         return authService.register(registerRequest);
     }
+
+//    @GetMapping
+//    public String getRole() throws FirebaseAuthException {
+//        return AuthService.getCurrentUserRole();
+//    }
+
+//    @GetMapping("/name")
+//    public String getDisplayName() throws FirebaseAuthException {
+//        return firebaseAuth.getUser("MuA1nRxWA2OOpS0pNOSpZxMcKan2").getDisplayName();
+//    }
+
+
+    //hardcoded method for admin creation
+//    @GetMapping
+//    public void createAdmin() throws FirebaseAuthException {
+//        Admin admin = new Admin("5mZB564wq4QyfSEAJYFTpNFiVQT2", UserRole.ADMIN);
+//        Map<String, Object> claims = new HashMap<>();
+//        claims.put("role", "ADMIN");
+//        firebaseAuth.setCustomUserClaims("5mZB564wq4QyfSEAJYFTpNFiVQT2", claims);
+//        adminRepository.insert(admin);
+//    }
+
 }

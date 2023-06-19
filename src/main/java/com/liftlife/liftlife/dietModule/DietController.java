@@ -5,10 +5,13 @@ import com.liftlife.liftlife.dietModule.dietDay.FullDietDay;
 import com.liftlife.liftlife.dietModule.dietDay.meal.Meal;
 import com.liftlife.liftlife.dietModule.dietPlan.DietPlan;
 import com.liftlife.liftlife.util.database.DietEntity;
+import com.liftlife.liftlife.util.database.FirestoreEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +72,14 @@ public class DietController {
         return ResponseEntity.ok(entities);
     }
 
+    @GetMapping("/fullByUser/{userId}")
+    public <T extends DietEntity> ResponseEntity<List<T>> getFullPlanByUser(@PathVariable String userId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        List<T> entities = dietService.findFullByFields(DietServiceType.DIET_PLAN, map);
+        return ResponseEntity.ok(entities);
+    }
+
     @GetMapping("/template")
     public ResponseEntity<List<DietDay>> getTemplateDiets() {
         List<DietDay> diets = dietService.findByTemplate();
@@ -79,6 +90,19 @@ public class DietController {
     public ResponseEntity<List<FullDietDay>> getFullTemplateDiets() {
         List<FullDietDay> diets = dietService.findFullByTemplate();
         return ResponseEntity.ok(diets);
+    }
+
+    @GetMapping("/template/truncated")
+    public ResponseEntity<List<Map<String,String>>> getTemplateDietsTruncated() {
+        List<DietDay> diets = dietService.findByTemplate();
+        List<Map<String,String>> truncatedDiets = new ArrayList<>();
+        for(DietDay diet: diets){
+            Map<String, String> truncatedMap = new HashMap<>();
+            truncatedMap.put("id", diet.getDocumentId());
+            truncatedMap.put("name", diet.getName());
+            truncatedDiets.add(truncatedMap);
+        }
+        return ResponseEntity.ok(truncatedDiets);
     }
 
     @GetMapping("/trainer/{type}/{id}")
