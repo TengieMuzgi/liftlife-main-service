@@ -9,7 +9,6 @@ import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.common.UserRole;
 import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
-import com.liftlife.liftlife.dto.PhysiqueDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.admin.Admin;
 import com.liftlife.liftlife.user.admin.AdminRepository;
