@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PhysiqueDto {
-    private int age;
-    private float weight;
-    private float height;
+    private String age;
+    private String weight;
+    private String height;
 }

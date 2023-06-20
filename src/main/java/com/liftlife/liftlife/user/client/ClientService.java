@@ -1,26 +1,16 @@
 package com.liftlife.liftlife.user.client;
 
-import com.google.cloud.storage.Bucket;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.dto.PhysiqueDto;
 import com.liftlife.liftlife.security.AuthService;
-import com.liftlife.liftlife.user.coach.Coach;
-import com.liftlife.liftlife.user.coach.CoachRepository;
 import com.liftlife.liftlife.user.user.UserService;
 import com.liftlife.liftlife.util.exception.NotFoundException;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 
@@ -90,9 +80,16 @@ public class ClientService {
 
     public ResponseEntity<Object> updatePhysique(PhysiqueDto physiqueDto) {
         Client client = clientRepository.findById(AuthService.getCurrentUserAuthId());
-        client.setAge(physiqueDto.getAge());
-        client.setWeight(physiqueDto.getWeight());
-        client.setHeight(physiqueDto.getHeight());
+
+        try {
+            client.setAge(Integer.parseInt(physiqueDto.getAge()));
+            client.setWeight(Float.parseFloat(physiqueDto.getWeight()));
+            client.setHeight(Float.parseFloat(physiqueDto.getHeight()));
+        } catch (NumberFormatException e) {
+            log.error("Error parsing physique");
+            return ResponseEntity.badRequest().body("Error parsing physique");
+        }
+
         clientRepository.update(client);
         return ResponseEntity.ok().build();
     }

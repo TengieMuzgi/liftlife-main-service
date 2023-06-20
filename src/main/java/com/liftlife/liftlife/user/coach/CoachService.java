@@ -1,12 +1,7 @@
 package com.liftlife.liftlife.user.coach;
 
-import com.google.cloud.storage.Bucket;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import com.liftlife.liftlife.common.CoachSpecialization;
 import com.liftlife.liftlife.dto.ClientDto;
-import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.security.AuthService;
 import com.liftlife.liftlife.user.client.Client;
 import com.liftlife.liftlife.user.client.ClientRepository;
@@ -17,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

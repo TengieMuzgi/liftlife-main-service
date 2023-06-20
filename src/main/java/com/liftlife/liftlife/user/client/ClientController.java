@@ -1,6 +1,5 @@
 package com.liftlife.liftlife.user.client;
 
-import com.liftlife.liftlife.dto.ClientDto;
 import com.liftlife.liftlife.dto.CoachDto;
 import com.liftlife.liftlife.dto.PhysiqueDto;
 import org.springframework.beans.factory.annotation.Autowired;
