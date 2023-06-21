@@ -22,7 +22,7 @@ public class Coach extends User {
     public Coach(String authId, UserRole userRole) {
         super(authId, userRole);
         this.specialization = CoachSpecialization.PERSONAL;
-        this.description = "";
+        this.description = "Description has not been set yet";
     }
 
     public RegistrationToken generateVerificationToken() {
