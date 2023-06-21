@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/token/**").authenticated()
                 .requestMatchers("/api/user/admin/**").hasAnyAuthority("ADMIN")
                 .requestMatchers("/api/user/coach/**").hasAnyAuthority("COACH")
-                .requestMatchers("/api/user/coach//update/physique").authenticated()
                 .requestMatchers("/api/user/client/**").hasAnyAuthority("CLIENT")
                 .requestMatchers("/api/dietDay/**").hasAnyAuthority("COACH","CLIENT")
                 .anyRequest().authenticated()
@@ -51,7 +50,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://liftlife-frontend:3000")); // replace with your url
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000", "http://liftlife-frontend:3000",
+                "https://localhost:3000", "https://liftlife-frontend:3000")); // replace with your url
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
