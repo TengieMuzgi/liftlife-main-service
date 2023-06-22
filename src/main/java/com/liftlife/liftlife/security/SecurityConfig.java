@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/coach//update/physique").authenticated()
                 .requestMatchers("/api/user/client/**").hasAnyAuthority("CLIENT")
                 .requestMatchers("/api/dietDay/**").hasAnyAuthority("COACH","CLIENT")
+                .requestMatchers("/api/trainings/**").hasAnyAuthority("COACH","CLIENT")    
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(firebaseTokenProvider));
