@@ -328,7 +328,7 @@ public class DietService {
     }
 
     DietDay convertDietDay(FullDietDay day){
-        DietDay dietDay =  new DietDay(day.getDayOfWeek(),day.getCaloriesSum(),day.isTemplate(),day.getTrainerId(), day.getDocumentId());
+        DietDay dietDay =  new DietDay(day.getName(), day.getDayOfWeek(),day.getCaloriesSum(),day.isTemplate(),day.getTrainerId(), day.getDocumentId());
         dietDay.setDocumentId(dietDay.getDocumentId());
         return dietDay;
     }
@@ -350,7 +350,7 @@ public class DietService {
             return null;
 
         switch(object.getClass().getSimpleName()){
-            case "DietDay" : FullDietDay fullDay = new FullDietDay(((DietDay) object).getDayOfWeek(),((DietDay) object).getCaloriesSum(),
+            case "DietDay" : FullDietDay fullDay = new FullDietDay(((DietDay) object).getName(),((DietDay) object).getDayOfWeek(),((DietDay) object).getCaloriesSum(),
                         ((DietDay) object).isTemplate(), ((DietDay) object).getTrainerId(), new ArrayList<>());
                 fullDay.setMeals(dietDayRepository.findMeals(object.getDocumentId()));
                 fullDay.setDocumentId(object.getDocumentId());
@@ -363,7 +363,7 @@ public class DietService {
                 for(String day: ((DietPlan) object).getDietDays()){
                     //System.out.println(day);
                     DietDay dietDay = dietDayRepository.findById(day);
-                    FullDietDay fullDietDay = new FullDietDay(dietDay.getDayOfWeek(),dietDay.getCaloriesSum(),
+                    FullDietDay fullDietDay = new FullDietDay(dietDay.getName(), dietDay.getDayOfWeek(),dietDay.getCaloriesSum(),
                             dietDay.isTemplate(),dietDay.getTrainerId(),new ArrayList<>());
                     List<Meal> meals = dietDayRepository.findMeals(dietDay.getDocumentId());
                     fullDietDay.setMeals(meals);
@@ -529,7 +529,7 @@ public class DietService {
             return ResponseEntity.badRequest().body("Object is null");
 
         switch(object.getClass().getSimpleName()){
-            case "FullDietDay" : DietDay day = new DietDay(((FullDietDay) object).getDayOfWeek(),((FullDietDay) object).getCaloriesSum(),
+            case "FullDietDay" : DietDay day = new DietDay(((FullDietDay) object).getName(),((FullDietDay) object).getDayOfWeek(),((FullDietDay) object).getCaloriesSum(),
                     ((FullDietDay) object).isTemplate(), ((FullDietDay) object).getTrainerId(), object.getDocumentId());
                     String id = dietDayRepository.insert(day);
                     for(Meal meal: ((FullDietDay) object).getMeals()){

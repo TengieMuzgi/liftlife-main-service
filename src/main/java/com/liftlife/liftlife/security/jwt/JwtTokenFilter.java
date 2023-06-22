@@ -1,5 +1,7 @@
 package com.liftlife.liftlife.security.jwt;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.liftlife.liftlife.common.UserRole;
 import jakarta.servlet.FilterChain;
@@ -36,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (firebaseToken != null) {
                 String userId = firebaseToken.getUid();
 
-                List<GrantedAuthority> authorities = extractRole(firebaseToken);
+                List<GrantedAuthority> authorities = extractRole(userId, firebaseToken);
                 System.out.println("Logged user: " + userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -56,8 +58,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return firebaseToken;
     }
 
-    private List<GrantedAuthority> extractRole(FirebaseToken firebaseToken) {
+    private List<GrantedAuthority> extractRole(String userId, FirebaseToken firebaseToken) {
         String role = (String) firebaseToken.getClaims().get("role");
+
+        //search in db if role not in token - on first log there is no role in token
+        if(role == null) {
+            try {
+                role = (String)  FirebaseAuth.getInstance().getUser(userId).getCustomClaims().get("role");
+            } catch (FirebaseAuthException | NullPointerException e) {
+                logger.info("Cannot get role for user with id" + userId);
+                return Collections.emptyList();
+            }
+        }
         List<GrantedAuthority> authorities = Collections.emptyList();
         if(role == null) {
             return authorities;

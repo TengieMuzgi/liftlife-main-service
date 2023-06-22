@@ -105,7 +105,7 @@ class DietServiceTest {
 
     @Test
     void test_ReturnFull(){
-        DietDay dietDay = new DietDay(1,0,true,"3","1");
+        DietDay dietDay = new DietDay("name",1,0,true,"3","1");
         when(dietDayRepository.findMeals("1")).thenReturn(new ArrayList<Meal>());
 
         assertEquals(dietService.returnFull(dietDay).getClass(),FullDietDay.class);
@@ -113,7 +113,7 @@ class DietServiceTest {
 
     @Test
     void test_ConvertDietDay(){
-        FullDietDay fullDietDay = new FullDietDay(1,0,true,"2",new ArrayList<Meal>());
+        FullDietDay fullDietDay = new FullDietDay("name",1,0,true,"2",new ArrayList<Meal>());
 
         assertEquals(dietService.convertDietDay(fullDietDay).getClass(),DietDay.class);
     }
