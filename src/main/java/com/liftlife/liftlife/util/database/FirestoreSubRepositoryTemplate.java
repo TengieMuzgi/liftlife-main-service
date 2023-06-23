@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 public class FirestoreSubRepositoryTemplate<T extends FirestoreEntity> {
     private final CollectionReference mainCollectionReference;
     @Autowired
-    private FirestoreMapper firestoreMapper;
+    protected FirestoreMapper firestoreMapper;
     private final Class<T> classType;
 
     public FirestoreSubRepositoryTemplate(Class<T> subClassType, String mainClassLowerCase) {
@@ -109,7 +109,7 @@ public class FirestoreSubRepositoryTemplate<T extends FirestoreEntity> {
     /*
     @param LinkedHashMap containing documentId to name of collection inside. Linked, because of maintaining order.
      */
-    private CollectionReference getSubCollectionReference(LinkedHashMap<String, String> documentIdsToSubCollections) {
+    protected CollectionReference getSubCollectionReference(LinkedHashMap<String, String> documentIdsToSubCollections) {
         CollectionReference subReference = mainCollectionReference;
         for (Map.Entry<String, String> entry : documentIdsToSubCollections.entrySet()) {
             DocumentReference document = subReference.document(entry.getKey());
