@@ -24,15 +24,12 @@ public class TrainingPlanService {
         return trainingPlanRepository.findPlansForCoach(coachId);
     }
 
-    public List<String> insertPlan(TrainingPlan trainingPlan) {
+    public String insertPlan(TrainingPlan trainingPlan) {
         String planId = trainingPlanRepository.insert(trainingPlan);
-        List<String> ids = new ArrayList<>();
-        ids.add(planId);
         for (int i = 0; i < 7; i++) {
-            String dayId = trainingDayService.insert(new TrainingDay(i, null), planId);
-            ids.add(dayId);
+            trainingDayService.insert(new TrainingDay(String.valueOf(i)), planId);
         }
-        return ids;
+        return planId;
     }
 
     public void deletePlan(String trainingPlanId) {
