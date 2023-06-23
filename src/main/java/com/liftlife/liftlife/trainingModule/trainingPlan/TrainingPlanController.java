@@ -34,7 +34,7 @@ public class TrainingPlanController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<List<String>> insertPlan(@RequestBody @Valid TrainingPlan trainingPlan) {
+    public ResponseEntity<String> insertPlan(@RequestBody @Valid TrainingPlan trainingPlan) {
         return ResponseEntity.ok(trainingPlanService.insertPlan(trainingPlan));
     }
 
