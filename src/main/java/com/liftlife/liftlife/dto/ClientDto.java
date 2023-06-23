@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,7 +12,7 @@ public class ClientDto {
     private String firstName;
     private String lastName;
     private String registerDate;
-    private boolean hasAvatar;
+    private boolean hasPhoto;
     private int age;
     private float weight;
     private float height;
