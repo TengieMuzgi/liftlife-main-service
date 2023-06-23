@@ -1,6 +1,7 @@
 package com.liftlife.liftlife.util.exception.handler;
 
 import com.liftlife.liftlife.util.exception.DbAccessException;
+import com.liftlife.liftlife.util.exception.NotFoundException;
 import com.liftlife.liftlife.util.exception.RetroActivityException;
 import com.liftlife.liftlife.util.exception.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -58,6 +59,11 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = { NotFoundException.class})
+    protected ResponseEntity<Object> handleInsertPathException(NotFoundException exception, WebRequest request) {
+        String bodyOfResponse = "Error while accessing database, E: " + exception.getMessage();
+        logger.error(bodyOfResponse);
+        return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 
 }
